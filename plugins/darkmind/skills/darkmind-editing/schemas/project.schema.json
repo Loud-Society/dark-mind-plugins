@@ -1,0 +1,302 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://darkmind.cloud/schemas/editing-pipeline/v1/project.schema.json",
+  "title": "Dark Mind editing pipeline: project.json",
+  "description": "Format contract v1 of the Dark Mind editing pipeline (doc/AI_EDITING_PIPELINE.md). Structure only; run \"darkmind-agent validate\" for references, frame arithmetic, overlaps, gaps and path rules.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Optional JSON Schema reference for editors; ignored by the validator."
+    },
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "kind": {
+      "type": "string",
+      "const": "darkmind-edit-project"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 16,
+          "maximum": 7680,
+          "multipleOf": 2
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 16,
+          "maximum": 7680,
+          "multipleOf": 2
+        },
+        "fps": {
+          "type": "string",
+          "pattern": "^(?:(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,12})?|(?:0|[1-9][0-9]{0,17})\\/[1-9][0-9]{0,17})$",
+          "description": "Whole frame rate such as \"30/1\" or \"25\"; NTSC rates are not supported in v1"
+        },
+        "sampleRate": {
+          "type": "number",
+          "const": 48000
+        }
+      },
+      "required": [
+        "width",
+        "height",
+        "fps",
+        "sampleRate"
+      ],
+      "additionalProperties": false
+    },
+    "duration": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "minSeconds": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 86400
+            },
+            "maxSeconds": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 86400
+            }
+          },
+          "required": [
+            "minSeconds",
+            "maxSeconds"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Duration frame; outside it the validator warns (F8, explicit exception in the review, no truncation)"
+    },
+    "recipe": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Format recipe (Phase 6), e.g. nei-short; sets output profile and duration frame"
+    },
+    "audioMaster": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "integratedLufs": {
+              "type": "number",
+              "minimum": -40,
+              "maximum": -5,
+              "description": "Target integrated loudness of the whole program (EBU R128), e.g. -14"
+            },
+            "toleranceLu": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 3,
+              "description": "Allowed deviation of the measured result (the render check fails outside)"
+            },
+            "truePeakDbtp": {
+              "type": "number",
+              "minimum": -9,
+              "maximum": 0,
+              "description": "Maximum true peak, e.g. -1"
+            },
+            "ducking": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "underDialogDb": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 40,
+                      "description": "Music tracks are lowered by this many dB while a dialog clip plays"
+                    },
+                    "rampSeconds": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 2,
+                      "description": "Length of the fade into and out of the ducked level"
+                    }
+                  },
+                  "required": [
+                    "underDialogDb",
+                    "rampSeconds"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "integratedLufs",
+            "toleranceLu",
+            "truePeakDbtp"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Final loudness step of the renderer (Phase 6 audio_master): two-pass loudnorm over the whole mix, optional music ducking"
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400,
+          "pattern": "^(?!\\/)(?!.*\\/\\/)(?!.*\\/$)(?!(?:.*\\/)?\\.{1,2}(?:\\/|$))[^\\\\<>:\"|?*\\u0000-\\u001f\\u007f]+$"
+        },
+        "edit": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400,
+          "pattern": "^(?!\\/)(?!.*\\/\\/)(?!.*\\/$)(?!(?:.*\\/)?\\.{1,2}(?:\\/|$))[^\\\\<>:\"|?*\\u0000-\\u001f\\u007f]+$"
+        },
+        "timeline": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400,
+          "pattern": "^(?!\\/)(?!.*\\/\\/)(?!.*\\/$)(?!(?:.*\\/)?\\.{1,2}(?:\\/|$))[^\\\\<>:\"|?*\\u0000-\\u001f\\u007f]+$"
+        },
+        "captions": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400,
+          "pattern": "^(?!\\/)(?!.*\\/\\/)(?!.*\\/$)(?!(?:.*\\/)?\\.{1,2}(?:\\/|$))[^\\\\<>:\"|?*\\u0000-\\u001f\\u007f]+$"
+        },
+        "brief": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400,
+          "pattern": "^(?!\\/)(?!.*\\/\\/)(?!.*\\/$)(?!(?:.*\\/)?\\.{1,2}(?:\\/|$))[^\\\\<>:\"|?*\\u0000-\\u001f\\u007f]+$"
+        },
+        "toolchain": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400,
+          "pattern": "^(?!\\/)(?!.*\\/\\/)(?!.*\\/$)(?!(?:.*\\/)?\\.{1,2}(?:\\/|$))[^\\\\<>:\"|?*\\u0000-\\u001f\\u007f]+$"
+        }
+      },
+      "required": [
+        "sources",
+        "edit",
+        "timeline",
+        "captions"
+      ],
+      "additionalProperties": false
+    },
+    "extensions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 400,
+        "pattern": "^(?!\\/)(?!.*\\/\\/)(?!.*\\/$)(?!(?:.*\\/)?\\.{1,2}(?:\\/|$))[^\\\\<>:\"|?*\\u0000-\\u001f\\u007f]+$"
+      },
+      "maxItems": 500,
+      "default": [],
+      "description": "Paths of extension.json files under extensions/"
+    },
+    "origin": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "explore-cutlist"
+            },
+            "file": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 400,
+              "pattern": "^(?!\\/)(?!.*\\/\\/)(?!.*\\/$)(?!(?:.*\\/)?\\.{1,2}(?:\\/|$))[^\\\\<>:\"|?*\\u0000-\\u001f\\u007f]+$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "converterVersion": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "importedAt": {
+              "type": "string",
+              "maxLength": 40
+            }
+          },
+          "required": [
+            "kind",
+            "file",
+            "sha256",
+            "converterVersion",
+            "importedAt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 20000
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "title",
+    "output",
+    "artifacts"
+  ],
+  "additionalProperties": false
+}

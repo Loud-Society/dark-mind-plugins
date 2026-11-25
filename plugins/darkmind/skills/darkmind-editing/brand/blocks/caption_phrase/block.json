@@ -1,0 +1,18 @@
+{
+  "block": "caption_phrase",
+  "description": "Phrase captions 9:16 (brand style \"brand-phrase\"): Neuborn 2.8 % H, at most 2 lines of 32 characters (balanced breaks, explicit line breaks kept), bottom line at 78 % H, hard shadow. Reads captions.json. Alpha overlay for the whole timeline.",
+  "profiles": [
+    "vertical"
+  ],
+  "captionStyle": "brand-phrase",
+  "scene": "lib/captions-scene.mjs",
+  "logo": [],
+  "output": {
+    "alpha": true,
+    "duration": "timeline"
+  },
+  "parameters": {
+    "captions": "Path of captions.json (default \"captions.json\")",
+    "startFrame": "Timeline frame shown by output frame 0 (default 0)"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "block": "loud_sounds",
+  "description": "Loud sounds montage of long formats (jackhammer, helicopter, peacock …): sounds back to back, each cut to secondsEach with a short fade; audio-only output.",
+  "profiles": [
+    "landscape"
+  ],
+  "scene": null,
+  "logo": [],
+  "output": {
+    "video": false,
+    "alpha": false,
+    "audio": true,
+    "duration": "sum of the sounds"
+  },
+  "parameters": {
+    "sounds": "1–5 asset ids (loud-sound or animal-scream; default jackhammer, helicopter, peacock)",
+    "secondsEach": "0.5–3 s per sound (default 1.2)"
+  }
+}

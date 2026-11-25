@@ -1,0 +1,18 @@
+{
+  "block": "caption_word",
+  "description": "Word captions 9:16 (brand style \"brand-word\"): Neuborn 5 % H, 1–3 words, word by word on their own start frames, emphasised words alone with a pop, hard shadow, no box, centred at 66 % H. Reads captions.json with word timings (rule W1). Alpha overlay for the whole timeline (overlay track).",
+  "profiles": [
+    "vertical"
+  ],
+  "captionStyle": "brand-word",
+  "scene": "lib/captions-scene.mjs",
+  "logo": [],
+  "output": {
+    "alpha": true,
+    "duration": "timeline"
+  },
+  "parameters": {
+    "captions": "Path of captions.json (default \"captions.json\"; must be a declared input)",
+    "startFrame": "Timeline frame shown by output frame 0 (default 0; chapters of long overlays)"
+  }
+}

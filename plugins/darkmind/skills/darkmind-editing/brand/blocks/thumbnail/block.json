@@ -1,0 +1,21 @@
+{
+  "block": "thumbnail",
+  "description": "YouTube thumbnail 1280 × 720 PNG (grey): a frame of the footage in black and white, the white chevron at the left edge and a 2–5-word headline in Neuborn capitals, right-aligned. With candidates: 2–4 proposals as a 2 × 2 contact sheet for the editor's choice. A still image next to the video – never on the timeline; the editor approves it in the thumbnail review.",
+  "profiles": [
+    "landscape"
+  ],
+  "scene": "lib/thumbnail-scene.mjs",
+  "logo": [],
+  "output": {
+    "image": true,
+    "alpha": false,
+    "audio": false,
+    "duration": "one still image"
+  },
+  "parameters": {
+    "headline": "2–5 words, drawn in capitals; explicit line breaks with \\n, otherwise spread over up to 3 balanced lines",
+    "frame": "The frame the editor chose { sourceId | extensionId, in, crop? } (in = source seconds, crop like a timeline clip; without crop the picture covers the frame)",
+    "candidates": "Instead of frame: 2–4 proposed frames (same shape) rendered as a labelled contact sheet A–D",
+    "contrast": "Contrast of the black-and-white grade, 1–1.6 (default 1.2)"
+  }
+}

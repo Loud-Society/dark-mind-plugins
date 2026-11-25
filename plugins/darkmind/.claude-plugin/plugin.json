@@ -1,0 +1,9 @@
+{
+  "name": "darkmind",
+  "version": "0.14.0+caa75c1aac83",
+  "description": "Edit videos with Dark Mind: the darkmind-editing skill with the local script darkmind-agent and the Dark Mind MCP server (https://darkmind.cloud/mcp, sign-in with your Dark Mind account).",
+  "author": { "name": "Loud Society" },
+  "homepage": "https://darkmind.cloud",
+  "license": "UNLICENSED",
+  "keywords": ["video", "editing", "dark-mind", "loud-society", "mcp"]
+}

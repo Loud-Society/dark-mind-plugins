@@ -1,0 +1,18 @@
+{
+  "block": "title_card",
+  "description": "Title card 16:9: title in Neuborn as written (e.g. \"jensen x mark tremonti\") with RGB split, optionally \"LOUD SOCIETY PRESENTS\" above; on black (H.264) or transparent over footage (alpha). Glitch-in 0.4 s, glitch-out 0.2 s, 1.5–8 s.",
+  "profiles": [
+    "landscape"
+  ],
+  "scene": "lib/title-card-scene.mjs",
+  "logo": [],
+  "output": {
+    "alpha": "background == transparent",
+    "duration": "limits"
+  },
+  "parameters": {
+    "title": "Title text, up to 40 characters",
+    "presents": "true: \"LOUD SOCIETY PRESENTS\" above the title (default false)",
+    "background": "\"black\" (default, opaque H.264) or \"transparent\" (alpha overlay)"
+  }
+}

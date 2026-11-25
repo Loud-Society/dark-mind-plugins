@@ -1,0 +1,14 @@
+{
+  "name": "darkmind-brand-pack",
+  "version": "0.6.0",
+  "private": true,
+  "description": "Loud Society brand pack of the Dark Mind editing skill: HTML compositor (Playwright + Microsoft Edge + ffmpeg) and brand blocks. Vendored into a project's extensions/ folder; install there with npm ci (nothing is installed automatically).",
+  "license": "UNLICENSED",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test test/layout.test.mjs test/recipes.test.mjs test/nei-chain.test.mjs test/render.test.mjs test/motion.test.mjs test/thumbnail.test.mjs test/nei-blocks.test.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.65.1"
+  }
+}

@@ -1,0 +1,633 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://darkmind.cloud/schemas/editing-pipeline/v1/sources.schema.json",
+  "title": "Dark Mind editing pipeline: sources.json",
+  "description": "Format contract v1 of the Dark Mind editing pipeline (doc/AI_EDITING_PIPELINE.md). Structure only; run \"darkmind-agent validate\" for references, frame arithmetic, overlaps, gaps and path rules.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Optional JSON Schema reference for editors; ignored by the validator."
+    },
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+              },
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "media": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "durationSeconds": {
+                        "type": "string",
+                        "pattern": "^(?:(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,12})?|(?:0|[1-9][0-9]{0,17})\\/[1-9][0-9]{0,17})$"
+                      },
+                      "video": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "width": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 100000,
+                                "description": "Display width of the correctly oriented image (rotation applied)"
+                              },
+                              "height": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 100000,
+                                "description": "Display height of the correctly oriented image (rotation applied)"
+                              },
+                              "rotation": {
+                                "type": "integer"
+                              },
+                              "frameRate": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "pattern": "^(?:(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,12})?|(?:0|[1-9][0-9]{0,17})\\/[1-9][0-9]{0,17})$"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ],
+                                "description": "Nominal frame rate (r_frame_rate); not used for VFR sources"
+                              },
+                              "vfr": {
+                                "type": "boolean"
+                              },
+                              "sampleAspectRatio": {
+                                "type": "string",
+                                "pattern": "^[1-9][0-9]*:[1-9][0-9]*$"
+                              },
+                              "colorTransfer": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 40
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "colorPrimaries": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 40
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "colorSpace": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 40
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "codec": {
+                                "type": "string",
+                                "maxLength": 40
+                              },
+                              "pixelFormat": {
+                                "type": "string",
+                                "maxLength": 40
+                              },
+                              "alpha": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "width",
+                              "height",
+                              "rotation",
+                              "frameRate",
+                              "vfr",
+                              "sampleAspectRatio",
+                              "colorTransfer",
+                              "colorPrimaries"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "audio": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "sampleRate": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 768000
+                              },
+                              "channels": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 64
+                              },
+                              "codec": {
+                                "type": "string",
+                                "maxLength": 40
+                              }
+                            },
+                            "required": [
+                              "sampleRate",
+                              "channels"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "probedFrom": {
+                        "type": "string",
+                        "enum": [
+                          "original",
+                          "asset"
+                        ]
+                      },
+                      "probedAt": {
+                        "type": "string",
+                        "maxLength": 40
+                      }
+                    },
+                    "required": [
+                      "durationSeconds",
+                      "video",
+                      "audio"
+                    ],
+                    "additionalProperties": false,
+                    "description": "ffprobe facts of the original (or the asset file); decide conform need (C1) and colour gate (C2)"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "ffprobe facts of the original (or the asset file); decide conform need (C1) and colour gate (C2)"
+              },
+              "notes": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rights": {
+                "type": "object",
+                "properties": {
+                  "holder": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Rights holder (person, company, library)"
+                  },
+                  "license": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Licence or agreement, e.g. \"CC0\", \"Artlist standard\", \"written permission 2026-11-02\""
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "cleared",
+                      "pending",
+                      "unknown"
+                    ],
+                    "description": "cleared = usable in the final render and export; pending/unknown block them"
+                  },
+                  "scope": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 400
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Where the material may be used (platforms, territories, duration)"
+                  },
+                  "source": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 400
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Where the material comes from (URL, delivery, archive)"
+                  }
+                },
+                "required": [
+                  "holder",
+                  "license",
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Rights of third-party material (Phase 6 T14): required for asset origins \"stock\" and \"other\"; final render and export block unless \"cleared\""
+              },
+              "kind": {
+                "type": "string",
+                "const": "darkmind-video"
+              },
+              "videoId": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+              },
+              "fileName": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 400
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "original": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "size": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Identity of the downloaded original (size, SHA-256); a changed original needs a new source revision"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "videoId"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+              },
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "media": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "durationSeconds": {
+                        "type": "string",
+                        "pattern": "^(?:(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,12})?|(?:0|[1-9][0-9]{0,17})\\/[1-9][0-9]{0,17})$"
+                      },
+                      "video": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "width": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 100000,
+                                "description": "Display width of the correctly oriented image (rotation applied)"
+                              },
+                              "height": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 100000,
+                                "description": "Display height of the correctly oriented image (rotation applied)"
+                              },
+                              "rotation": {
+                                "type": "integer"
+                              },
+                              "frameRate": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "pattern": "^(?:(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,12})?|(?:0|[1-9][0-9]{0,17})\\/[1-9][0-9]{0,17})$"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ],
+                                "description": "Nominal frame rate (r_frame_rate); not used for VFR sources"
+                              },
+                              "vfr": {
+                                "type": "boolean"
+                              },
+                              "sampleAspectRatio": {
+                                "type": "string",
+                                "pattern": "^[1-9][0-9]*:[1-9][0-9]*$"
+                              },
+                              "colorTransfer": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 40
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "colorPrimaries": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 40
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "colorSpace": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 40
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "codec": {
+                                "type": "string",
+                                "maxLength": 40
+                              },
+                              "pixelFormat": {
+                                "type": "string",
+                                "maxLength": 40
+                              },
+                              "alpha": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "width",
+                              "height",
+                              "rotation",
+                              "frameRate",
+                              "vfr",
+                              "sampleAspectRatio",
+                              "colorTransfer",
+                              "colorPrimaries"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "audio": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "sampleRate": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 768000
+                              },
+                              "channels": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 64
+                              },
+                              "codec": {
+                                "type": "string",
+                                "maxLength": 40
+                              }
+                            },
+                            "required": [
+                              "sampleRate",
+                              "channels"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "probedFrom": {
+                        "type": "string",
+                        "enum": [
+                          "original",
+                          "asset"
+                        ]
+                      },
+                      "probedAt": {
+                        "type": "string",
+                        "maxLength": 40
+                      }
+                    },
+                    "required": [
+                      "durationSeconds",
+                      "video",
+                      "audio"
+                    ],
+                    "additionalProperties": false,
+                    "description": "ffprobe facts of the original (or the asset file); decide conform need (C1) and colour gate (C2)"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "ffprobe facts of the original (or the asset file); decide conform need (C1) and colour gate (C2)"
+              },
+              "notes": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rights": {
+                "type": "object",
+                "properties": {
+                  "holder": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Rights holder (person, company, library)"
+                  },
+                  "license": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Licence or agreement, e.g. \"CC0\", \"Artlist standard\", \"written permission 2026-11-02\""
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "cleared",
+                      "pending",
+                      "unknown"
+                    ],
+                    "description": "cleared = usable in the final render and export; pending/unknown block them"
+                  },
+                  "scope": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 400
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Where the material may be used (platforms, territories, duration)"
+                  },
+                  "source": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 400
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "description": "Where the material comes from (URL, delivery, archive)"
+                  }
+                },
+                "required": [
+                  "holder",
+                  "license",
+                  "status"
+                ],
+                "additionalProperties": false,
+                "description": "Rights of third-party material (Phase 6 T14): required for asset origins \"stock\" and \"other\"; final render and export block unless \"cleared\""
+              },
+              "kind": {
+                "type": "string",
+                "const": "asset"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 400,
+                "pattern": "^(?!\\/)(?!.*\\/\\/)(?!.*\\/$)(?!(?:.*\\/)?\\.{1,2}(?:\\/|$))[^\\\\<>:\"|?*\\u0000-\\u001f\\u007f]+$",
+                "description": "File under assets/ (synced with the project; AI media as generated-media)"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "size": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "origin": {
+                "type": "string",
+                "enum": [
+                  "generated",
+                  "stock",
+                  "brand",
+                  "recorded",
+                  "other"
+                ]
+              },
+              "provenance": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "path",
+              "sha256",
+              "size",
+              "origin"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "maxItems": 2000
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "sources"
+  ],
+  "additionalProperties": false
+}

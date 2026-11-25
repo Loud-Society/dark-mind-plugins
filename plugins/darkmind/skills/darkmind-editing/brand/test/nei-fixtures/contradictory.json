@@ -1,0 +1,77 @@
+{
+  "description": "Synthetic NEI transcripts (fictional bands): a contradictory chain – one question answered by two bands (branch), an announcement that names a different asker than the question read out (contradiction), a paraphrased question that fits two near-identical questions of the same band in two files (ambiguous), and a clip of another band inside an answer (mixed speakers).",
+  "transcripts": [
+    {
+      "videoId": "00000000-0000-4000-8000-000000000301",
+      "fileName": "NEI_SaltCathedral_Question.mov",
+      "lines": [
+        "0.00-2.40 S2: Hi, we're Salt Cathedral.",
+        "2.40-8.00 S2: Our question for the next band is: if you could only bring one item on tour, what would it be?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000302",
+      "fileName": "NEI_NightFerry.mp4",
+      "lines": [
+        "0.00-2.00 S2: We are Night Ferry.",
+        "2.00-6.80 S1: This question comes from Salt Cathedral: if you could only bring one item on tour, what would it be?",
+        "6.80-13.00 S2: My pillow. Without my pillow I am a monster.",
+        "13.00-15.50 S3: Hi, this is Pale Rider, we just walked in, sorry!",
+        "15.50-18.00 S1: Now you get to ask a question for the next band.",
+        "18.00-23.40 S2: My question for the next band is: what is the craziest thing you have ever seen in the audience?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000303",
+      "fileName": "NEI_StaticOrchard.mp4",
+      "lines": [
+        "0.00-2.10 S2: Hello, we are Static Orchard.",
+        "2.10-7.00 S1: The question is from Salt Cathedral. If you could only bring one item on tour, what would it be?",
+        "7.00-12.50 S2: A kettle. Proper tea, every day, everywhere.",
+        "12.50-15.00 S1: Now you can ask a question for the next band.",
+        "15.00-20.00 S2: My question for the next band is: when were you last scared to go on stage?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000304",
+      "fileName": "NEI_VelourEngine.mp4",
+      "lines": [
+        "0.00-2.20 S2: We're Velour Engine.",
+        "2.20-7.10 S1: This question comes from Night Ferry: what is the craziest thing you have ever seen in the audience?",
+        "7.10-15.00 S2: A guy proposing to his girlfriend during our loudest song. She said yes, I think.",
+        "15.00-17.30 S1: Now you get to ask a question for the next band.",
+        "17.30-22.00 S2: My question for the next band is: what was the worst show you have ever played?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000305",
+      "fileName": "NEI_VelourEngine_Question2.mov",
+      "lines": [
+        "0.00-2.00 S2: This is Velour Engine again.",
+        "2.00-6.50 S2: I want to know: what was the worst gig you have ever played?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000306",
+      "fileName": "NEI_EmberChoir.mp4",
+      "lines": [
+        "0.00-2.00 S2: Hi, we are Ember Choir.",
+        "2.00-7.20 S1: This question comes from Static Orchard: what is the craziest thing you have ever seen in the audience?",
+        "7.20-13.00 S2: Someone crowd-surfing in a rubber boat. Twice.",
+        "13.00-15.20 S1: Now you get to ask a question for the next band.",
+        "15.20-20.00 S2: My question for the next band is: which band would you love to tour with?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000307",
+      "fileName": "NEI_GraniteBloom.mp4",
+      "lines": [
+        "0.00-2.00 S2: This is Granite Bloom.",
+        "2.00-6.20 S1: Velour Engine wants to know: what was your worst show or gig?",
+        "6.20-14.00 S2: Ten people, a broken PA, and the bar closed before we started.",
+        "14.00-16.00 S1: Now you get to ask a question for the next band.",
+        "16.00-20.00 S2: My question for the next band is: what do you do the minute you get off stage?"
+      ]
+    }
+  ]
+}

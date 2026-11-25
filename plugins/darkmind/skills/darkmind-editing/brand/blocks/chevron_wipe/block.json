@@ -1,0 +1,19 @@
+{
+  "block": "chevron_wipe",
+  "description": "Giant white chevron sweeping left to right with motion blur and orange/blue fringe (0.4–0.6 s). With a and b: finished A/B transition, B already visible behind the leading edge and in the notch. Without: alpha overlay of the chevron alone.",
+  "profiles": [
+    "landscape",
+    "vertical"
+  ],
+  "scene": "lib/chevron-wipe-scene.mjs",
+  "logo": [],
+  "output": {
+    "alpha": "false with a/b, true without",
+    "audio": false,
+    "duration": "limits"
+  },
+  "parameters": {
+    "a": "Outgoing shot { sourceId | extensionId, in, crop? } – the frames A shows during the wipe (in = source seconds, crop like the timeline clip)",
+    "b": "Incoming shot { sourceId | extensionId, in, crop? } – the timeline continues B at in + wipe length"
+  }
+}

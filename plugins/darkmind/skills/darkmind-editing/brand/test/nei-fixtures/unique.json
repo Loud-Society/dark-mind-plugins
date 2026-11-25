@@ -1,0 +1,73 @@
+{
+  "description": "Synthetic NEI transcripts (fictional bands, no real material): a unique linear chain of five appearances – starter question, four answered links, the last question stays open. Format of saved MCP get_transcript results.",
+  "transcripts": [
+    {
+      "videoId": "00000000-0000-4000-8000-000000000101",
+      "fileName": "NEI_GlassHarbor_Question.mp4",
+      "language": "en-US",
+      "speakers": { "S1": "Speaker #1", "S2": "Speaker #2" },
+      "lines": [
+        "0.00-3.20 S2: Hi, we are Glass Harbor and this is the Never Ending Interview.",
+        "3.20-6.10 S2: We start it, so we get to ask the very first question.",
+        "6.10-11.40 S2: Our question for the next band is: if your tour bus could talk, what would it complain about?",
+        "11.40-13.00 S2: Good luck with that one!"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000102",
+      "fileName": "NEI_VelvetCoyote.mp4",
+      "language": "en-US",
+      "speakers": { "S1": "Speaker #1", "S2": "Speaker #2" },
+      "lines": [
+        "0.00-2.50 S1: Welcome to the Never Ending Interview.",
+        "2.50-5.00 S2: Thanks, we're Velvet Coyote from Leeds.",
+        "5.00-8.20 S1: This question comes from Glass Harbor.",
+        "8.20-12.00 S1: If your tour bus could talk, what would it complain about?",
+        "12.00-19.50 S2: Oh man, it would complain about the smell. Definitely the socks of our drummer.",
+        "19.50-26.00 S2: And about the fact that we never let it sleep, we drive every night.",
+        "26.00-29.00 S1: Now you get to ask a question for the next band.",
+        "29.00-34.40 S2: Okay. My question for the next band is: what is the worst haircut you ever had on tour?",
+        "34.40-36.00 S2: Be honest!"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000103",
+      "fileName": "NEI_IronLullaby.mp4",
+      "language": "en-US",
+      "speakers": { "S1": "Speaker #1", "S2": "Speaker #2" },
+      "lines": [
+        "0.00-2.80 S2: Hello, we are Iron Lullaby.",
+        "2.80-6.00 S1: Your question is from Velvet Coyote: what is the worst haircut you ever had on tour?",
+        "6.00-14.00 S2: Ha! Our bassist cut my hair in a hotel bathroom in Prague. I looked like a broom for three weeks.",
+        "14.00-17.00 S1: So, do you have a question for the next band?",
+        "17.00-22.30 S2: I want to know: which song would you never ever play again?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000104",
+      "fileName": "NEI_NeonBurial.mp4",
+      "language": "en-US",
+      "speakers": { "S1": "Speaker #1", "S2": "Speaker #2" },
+      "lines": [
+        "0.00-2.40 S2: This is Neon Burial!",
+        "2.40-6.20 S1: The question comes from Iron Lullaby. Which song would you never ever play again?",
+        "6.20-15.10 S2: Our first single. We played it four hundred times and nobody liked it, not even our mums.",
+        "15.10-18.00 S1: Now you can ask a question for the next band.",
+        "18.00-23.00 S2: My question for the next band is: what do you eat right before a show?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000105",
+      "fileName": "NEI_PaperWolves.mp4",
+      "language": "en-US",
+      "speakers": { "S1": "Speaker #1", "S2": "Speaker #2" },
+      "lines": [
+        "0.00-2.60 S2: Hi, we're Paper Wolves.",
+        "2.60-6.50 S1: This question is from Neon Burial: what do you eat right before a show?",
+        "6.50-13.80 S2: Nothing. If I eat before a show I throw up on the first row. Bananas after, though.",
+        "13.80-16.20 S1: And now you get to ask the next band.",
+        "16.20-21.00 S2: My question for the next band is: who in your band snores the loudest?"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "block": "vertical_in_16x9",
+  "description": "Vertical footage (selfie questions) in a 16:9 episode: the clip fitted to the frame height in the middle over the same picture blurred and darkened (cover). Picture only (opaque H.264, as long as the clip) – place it on a graphics track over the statement's video clip; the dialog clip keeps the sound.",
+  "profiles": [
+    "landscape"
+  ],
+  "scene": "lib/vertical-in-16x9-scene.mjs",
+  "logo": [],
+  "output": {
+    "alpha": false,
+    "audio": false,
+    "duration": "clip in/out"
+  },
+  "parameters": {
+    "clip": "{ sourceId | extensionId, in, out, crop? } – the vertical clip (crop with the 9:16 aspect; without crop the picture covers 9:16)"
+  }
+}

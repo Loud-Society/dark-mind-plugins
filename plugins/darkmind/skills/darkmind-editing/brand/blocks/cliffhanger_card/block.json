@@ -1,0 +1,19 @@
+{
+  "block": "cliffhanger_card",
+  "description": "Never Ending Interview cliffhanger (16:9): \"SUBSCRIBE to find out if the question goes to NEXT and if they will answer…\" right-aligned top right over a darkened still or black, optionally the open question quoted below. Glitch-in 0.3 s, glitch-out 0.2 s, 4–6 s, opaque H.264.",
+  "profiles": [
+    "landscape"
+  ],
+  "scene": "lib/cliffhanger-card-scene.mjs",
+  "logo": [],
+  "output": {
+    "alpha": false,
+    "audio": false,
+    "duration": "limits"
+  },
+  "parameters": {
+    "next": "Name of the band the question goes to (drawn in capitals, up to 28 characters); without: \"to find out who answers the next question…\"",
+    "question": "Optional open question (up to 100 characters), drawn quoted below",
+    "image": "Optional still { sourceId | extensionId, in, crop? }, darkened behind the text"
+  }
+}

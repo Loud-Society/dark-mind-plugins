@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "darkmind-edit-project",
+  "title": "First concert – interview short",
+  "output": { "width": 1080, "height": 1920, "fps": "30/1", "sampleRate": 48000 },
+  "duration": { "minSeconds": 30, "maxSeconds": 60 },
+  "recipe": null,
+  "artifacts": {
+    "sources": "sources.json",
+    "edit": "edit.json",
+    "timeline": "timeline.json",
+    "captions": "captions.json",
+    "brief": "brief.md",
+    "toolchain": "toolchain.json"
+  },
+  "extensions": ["extensions/title-card/extension.json"]
+}

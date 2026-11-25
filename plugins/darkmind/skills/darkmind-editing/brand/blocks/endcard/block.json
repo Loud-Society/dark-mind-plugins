@@ -1,0 +1,19 @@
+{
+  "block": "endcard",
+  "description": "AI sticker wall (black and white, cover) with three black sticker labels on the left – wordmark, subscribe., thank you! – slapped on one after another; YouTube end-screen zone on the right stays free (10–11 s).",
+  "profiles": [
+    "landscape"
+  ],
+  "scene": "lib/endcard-scene.mjs",
+  "logo": [
+    "wordmark"
+  ],
+  "output": {
+    "alpha": false,
+    "audio": false,
+    "duration": "limits"
+  },
+  "parameters": {
+    "image": "Endcard background asset id (default endcard-angled-gpt-image-2-1)"
+  }
+}

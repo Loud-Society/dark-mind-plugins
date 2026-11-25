@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "language": "en",
+  "style": "plain",
+  "captions": [
+    {
+      "id": "t01",
+      "start": 60,
+      "end": 150,
+      "text": "My first concert was in a tiny club in Hamburg.",
+      "statementId": "s01",
+      "words": [
+        { "text": "My", "start": 60, "end": 66 },
+        { "text": "first", "start": 66, "end": 75 },
+        { "text": "concert", "start": 75, "end": 90 },
+        { "text": "was", "start": 90, "end": 96 },
+        { "text": "in", "start": 96, "end": 100 },
+        { "text": "a", "start": 100, "end": 103 },
+        { "text": "tiny", "start": 103, "end": 114 },
+        { "text": "club", "start": 114, "end": 124 },
+        { "text": "in", "start": 124, "end": 128 },
+        { "text": "Hamburg.", "start": 128, "end": 150 }
+      ]
+    },
+    { "id": "t02", "start": 150, "end": 346, "text": "I was fifteen and I didn't know\nany of the songs.", "statementId": "s01" },
+    { "id": "t03", "start": 346, "end": 520, "text": "Everybody was jumping,\nthe floor was shaking.", "statementId": "s02" },
+    { "id": "t04", "start": 520, "end": 688, "text": "That night I knew I wanted\nto be on that stage.", "statementId": "s02" },
+    { "id": "t05", "start": 688, "end": 870, "text": "Mine was a stadium show with my dad.\nHonestly, I was bored.", "statementId": "s03" },
+    { "id": "t06", "start": 870, "end": 1049, "text": "Small clubs are where it happens.", "statementId": "s03" }
+  ]
+}

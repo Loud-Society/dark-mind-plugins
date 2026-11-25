@@ -1,0 +1,19 @@
+{
+  "block": "glitch_flash",
+  "description": "1–3 frames of white flash with horizontal glitch bars (black, red, cyan) as alpha overlay over a hard cut.",
+  "profiles": [
+    "landscape",
+    "vertical"
+  ],
+  "scene": "lib/glitch-flash-scene.mjs",
+  "logo": [],
+  "output": {
+    "alpha": true,
+    "audio": false,
+    "duration": "limits (frames)"
+  },
+  "parameters": {
+    "intensity": "0.2–1 (default 0.8)",
+    "seed": "Variation 0–1000000 (default 0)"
+  }
+}

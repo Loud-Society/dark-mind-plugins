@@ -1,0 +1,18 @@
+{
+  "block": "subtitles_16x9",
+  "description": "Subtitles 16:9 (brand style \"brand-16x9\"): Neuborn 4 % H, centred at the bottom (last line at 88 % H), at most 2 lines of 48 characters, hard shadow. Reads captions.json. Alpha overlay for the whole timeline; startFrame allows chapter files for long episodes.",
+  "profiles": [
+    "landscape"
+  ],
+  "captionStyle": "brand-16x9",
+  "scene": "lib/captions-scene.mjs",
+  "logo": [],
+  "output": {
+    "alpha": true,
+    "duration": "timeline"
+  },
+  "parameters": {
+    "captions": "Path of captions.json (default \"captions.json\")",
+    "startFrame": "Timeline frame shown by output frame 0 (default 0)"
+  }
+}

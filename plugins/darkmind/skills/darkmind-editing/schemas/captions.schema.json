@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://darkmind.cloud/schemas/editing-pipeline/v1/captions.schema.json",
+  "title": "Dark Mind editing pipeline: captions.json",
+  "description": "Format contract v1 of the Dark Mind editing pipeline (doc/AI_EDITING_PIPELINE.md). Structure only; run \"darkmind-agent validate\" for references, frame arithmetic, overlaps, gaps and path rules.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Optional JSON Schema reference for editors; ignored by the validator."
+    },
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+    },
+    "style": {
+      "type": "string",
+      "enum": [
+        "plain",
+        "brand-word",
+        "brand-phrase",
+        "brand-16x9"
+      ],
+      "default": "plain",
+      "description": "plain: burnt in by the renderer, SRT for Premiere; brand-*: rendered by the brand caption block as an overlay (Phase 6, T8)"
+    },
+    "captions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "statementId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+          },
+          "sceneId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+          },
+          "words": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "emphasis": {
+                  "type": "boolean",
+                  "description": "Keyword pop of the brand word captions (agent choice, part of the caption text review)"
+                }
+              },
+              "required": [
+                "text",
+                "start",
+                "end"
+              ],
+              "additionalProperties": false
+            },
+            "maxItems": 200,
+            "description": "Optional word timings in timeline frames (Phase 6 word captions, rule W1)"
+          }
+        },
+        "required": [
+          "id",
+          "start",
+          "end",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 10000
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "language",
+    "captions"
+  ],
+  "additionalProperties": false
+}

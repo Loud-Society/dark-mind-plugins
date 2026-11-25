@@ -1,0 +1,22 @@
+{
+  "block": "logo_sting",
+  "description": "White flash with black bars, block glitch settling into the wordmark loud>society on black (glow, RGB split), optional country suffix revealed in steps (inline 16:9, second line 9:16), micro glitch; sound: noise hit + shouted voice tag (2–5 s).",
+  "profiles": [
+    "landscape",
+    "vertical"
+  ],
+  "scene": "lib/logo-sting-scene.mjs",
+  "logo": [
+    "wordmark"
+  ],
+  "output": {
+    "alpha": false,
+    "audio": true,
+    "duration": "limits"
+  },
+  "parameters": {
+    "suffix": "Country suffix of the wordmark (brazil, indonesia, colombia; others: build-logo.mjs --suffix) or empty",
+    "voiceTag": "Voice tag asset id (default voice-shout-guy) or null for none",
+    "noiseHit": "Noise hit asset id (default noise-hit-c) or null for none"
+  }
+}

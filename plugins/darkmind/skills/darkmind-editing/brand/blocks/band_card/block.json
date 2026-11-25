@@ -1,0 +1,19 @@
+{
+  "block": "band_card",
+  "description": "Never Ending Interview band card (16:9 and 9:16): 1–2 lines as written (names in capitals, band or \"x NAME\" below) with RGB split on black and a still of the interview in the image box, fading into black on the text side. Revealed and left by chevron wipes (band_card as extension input of a wipe). Glitch-in over 3 frames, 1–2.5 s, opaque H.264.",
+  "profiles": [
+    "landscape",
+    "vertical"
+  ],
+  "scene": "lib/band-card-scene.mjs",
+  "logo": [],
+  "output": {
+    "alpha": false,
+    "audio": false,
+    "duration": "limits"
+  },
+  "parameters": {
+    "lines": "1–2 lines of at most 24 characters, as written: [\"MYLES KENNEDY\", \"alter bridge\"] or [\"EVIL JARED\", \"x KROGI\"]",
+    "image": "Optional still { sourceId | extensionId, in, crop? } (in = source seconds; crop with the output aspect like a timeline clip, otherwise cover)"
+  }
+}

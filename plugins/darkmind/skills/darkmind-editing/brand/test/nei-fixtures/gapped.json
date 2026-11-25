@@ -1,0 +1,68 @@
+{
+  "description": "Synthetic NEI transcripts (fictional bands): a gapped chain like the reference material – a question nobody answers (reserve), an answer whose question was never filmed (starter candidate), a question by Loud Society off camera, a band appearing twice (identified by question content and file, not the name) and three separate sub-chains.",
+  "transcripts": [
+    {
+      "videoId": "00000000-0000-4000-8000-000000000201",
+      "fileName": "NEI_RustParade_Question.mov",
+      "lines": [
+        "0.00-2.00 S2: We are Rust Parade.",
+        "2.00-7.50 S2: Our question for the next band is: what is the most useless thing you ever bought on tour?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000202",
+      "fileName": "NEI_HollowKings_Wacken.mov",
+      "lines": [
+        "0.00-2.30 S2: Hi, we're Hollow Kings.",
+        "2.30-6.00 S1: This question comes from Rust Parade: what is the most useless thing you ever bought on tour?",
+        "6.00-12.00 S2: A karaoke machine. We never switched it on.",
+        "12.00-14.50 S1: Now you get to ask a question for the next band.",
+        "14.50-19.20 S2: My question for the next band is: did you ever sleep in a festival toilet?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000203",
+      "fileName": "NEI_MirrorStatic.mp4",
+      "lines": [
+        "0.00-2.20 S2: Hello, we are Mirror Static.",
+        "2.20-5.40 S1: The question for you is: when did you decide to make music?",
+        "5.40-13.00 S2: When I was eleven and saw my uncle play drums at a wedding. That was it.",
+        "13.00-15.40 S1: And now it's your turn, you can ask the next band.",
+        "15.40-21.00 S2: I'd like to ask: what is the strangest gift a fan ever gave you?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000204",
+      "fileName": "NEI_CopperSaints.mp4",
+      "lines": [
+        "0.00-2.00 S2: We're Copper Saints.",
+        "2.00-6.30 S1: This question is from Mirror Static. What is the strangest gift a fan ever gave you?",
+        "6.30-14.00 S2: A jar of pickled onions with my face painted on it. I still have it.",
+        "14.00-16.20 S1: Now you get to ask a question for the next band.",
+        "16.20-21.00 S2: My question is: have you ever fallen asleep on stage?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000205",
+      "fileName": "NEI_HollowKings_Summerbreeze.mov",
+      "lines": [
+        "0.00-2.40 S2: Hi again, we are Hollow Kings, second festival this summer.",
+        "2.40-6.80 S1: Your question comes from Copper Saints: have you ever fallen asleep on stage?",
+        "6.80-14.20 S2: Not asleep, but our singer once forgot the whole second verse and just smiled.",
+        "14.20-16.50 S1: Now you can ask a question for the next band.",
+        "16.50-21.00 S2: My question for the next band is: what is your favourite festival food?"
+      ]
+    },
+    {
+      "videoId": "00000000-0000-4000-8000-000000000206",
+      "fileName": "NEI_BrassTooth.mp4",
+      "lines": [
+        "0.00-2.20 S2: Hey, we are Brass Tooth.",
+        "2.20-8.00 S1: This question comes from the Loud Society team: have you ever missed a show because you partied too hard the night before?",
+        "8.00-15.50 S2: Almost. We made it, but our guitarist played the whole set lying on the floor.",
+        "15.50-18.00 S1: Now you get to ask a question for the next band.",
+        "18.00-23.20 S2: My question for the next band is: would you rather be a wrestler or an acrobat?"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "kind": "darkmind-brand-recipe",
+  "id": "nei-episode",
+  "title": "The Never Ending Interview – episode (16:9)",
+  "document": "nei-episode.md",
+  "profile": "landscape",
+  "duration": {
+    "minSeconds": 300,
+    "maxSeconds": 1500,
+    "reference": {
+      "minSeconds": 300,
+      "maxSeconds": 480,
+      "links": "4–6",
+      "note": "MVP reference test (E2E_REFERENCE_TEST.md, result A)"
+    }
+  },
+  "captions": {
+    "styles": [
+      "brand-16x9"
+    ],
+    "required": false,
+    "default": "none",
+    "note": "subtitles_16x9 optional, off by default (references without burnt-in subtitles)"
+  },
+  "audioMaster": "required",
+  "music": {
+    "slot": "optional",
+    "track": "audio track with role \"music\"",
+    "note": "MVP without music bed (T14, decided 2026-11-08): the template ships no music; a music bed needs its source and rights documented in sources.json (asset provenance) and is ducked by audio_master"
+  },
+  "blocks": {
+    "logo_sting": {
+      "use": "required",
+      "min": 1,
+      "max": 1,
+      "role": "after the cold open, followed by a chevron wipe"
+    },
+    "format_card": {
+      "use": "required",
+      "min": 2,
+      "max": 2,
+      "role": "explainer (title + up to 3 sentences, ~6 s) and transition (\"Our starting question comes from none other than…\", ~3 s)"
+    },
+    "band_card": {
+      "use": "required",
+      "min": 2,
+      "role": "starter card and one card at the first appearance of every link, revealed and left by chevron wipes"
+    },
+    "chevron_wipe": {
+      "use": "required",
+      "min": 1,
+      "parameters": {
+        "required": [
+          "a",
+          "b"
+        ]
+      },
+      "role": "transition after the sting, into and out of every band card, into the logo end"
+    },
+    "vertical_in_16x9": {
+      "use": "optional",
+      "role": "vertical selfie questions"
+    },
+    "cliffhanger_card": {
+      "use": "required",
+      "min": 1,
+      "max": 1,
+      "role": "after the last link: the open question goes to the next band"
+    },
+    "loud_sounds": {
+      "use": "required",
+      "min": 1,
+      "max": 1,
+      "role": "outro sound montage before the logo end"
+    },
+    "logo_end": {
+      "use": "required",
+      "min": 1,
+      "max": 1
+    },
+    "endcard": {
+      "use": "required",
+      "min": 1,
+      "max": 1,
+      "role": "last picture, YouTube end screen zone free"
+    },
+    "subtitles_16x9": {
+      "use": "optional",
+      "max": 1
+    },
+    "glitch_flash": {
+      "use": "optional"
+    },
+    "thumbnail": {
+      "use": "required",
+      "min": 1,
+      "max": 1,
+      "still": true,
+      "role": "YouTube thumbnail: frame chosen by the editor, headline = the question or a \"WHO IS NEXT?\"-like claim"
+    }
+  },
+  "order": [
+    "logo_sting",
+    "format_card",
+    "band_card",
+    "cliffhanger_card",
+    "loud_sounds",
+    "logo_end",
+    "endcard"
+  ],
+  "endsWith": "endcard",
+  "hook": {
+    "until": "logo_sting",
+    "forbidden": [
+      "band_card",
+      "format_card",
+      "lower_third"
+    ],
+    "note": "cold open: the strongest/funniest answer, ~9 s, no cards"
+  },
+  "chapters": {
+    "required": true,
+    "derive": "band_card",
+    "introTitle": "Intro",
+    "note": "one chapter per link (band card) for the YouTube description; chapters.json overrides the derived titles"
+  },
+  "done": {
+    "reviews": [
+      "editorial",
+      "captions-text",
+      "preview",
+      "final",
+      "thumbnail"
+    ],
+    "note": "\"captions-text\" counts as done when the project has no captions (status not-required); outside the duration frame the duration-exception review is needed as well"
+  },
+  "chain": {
+    "guide": "NEI_CHAIN.md",
+    "links": {
+      "min": 4,
+      "max": 6,
+      "reference": true
+    },
+    "note": "reconstruct the chain from transcripts only (nei-chain.mjs), every link with source and timecode"
+  },
+  "rules": [
+    "Only the NEI segment of a festival interview belongs into the recipe (not \"Who Follows Who\" or shout-outs).",
+    "Chain from transcripts only: the question of link n is answered in link n+1; report breaks, never invent questions.",
+    "Shorten answers to the punchline; keep question and hand-over complete.",
+    "Band card at the first appearance of every link; names spelled as in the transcript, uncertain spellings flagged.",
+    "Cold open: strongest answer (~9 s), reason the choice in the review report.",
+    "Vertical selfie questions with vertical_in_16x9.",
+    "No transitions other than chevron wipe and glitch flash.",
+    "Brand layer only within the brand.json limits; episode-layer elements as free extensions."
+  ]
+}

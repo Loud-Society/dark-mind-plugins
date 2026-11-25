@@ -1,0 +1,17 @@
+{
+  "block": "lower_third",
+  "description": "Lower third: NAME in capitals (Neuborn Bold) over the role (Regular), no box, hard shadow, glitch-in 0.3 s, hold 3–6 s, glitch-out 0.2 s. 9:16: one person left above the caption line; 16:9: one person left or two (guest left, host right-aligned on the right). Not in the hook.",
+  "profiles": [
+    "vertical",
+    "landscape"
+  ],
+  "scene": "lib/lower-third-scene.mjs",
+  "logo": [],
+  "output": {
+    "alpha": true,
+    "duration": "limits"
+  },
+  "parameters": {
+    "people": "[{ \"name\": \"Mark Tremonti\", \"role\": \"tremonti\" }] – 1 person (9:16) or 1–2 (16:9); names up to 28, roles up to 40 characters"
+  }
+}

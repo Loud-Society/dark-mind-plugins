@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 1,
+  "kind": "darkmind-brand-pack",
+  "id": "loud-society",
+  "version": "0.6.0",
+  "description": "Brand tokens of the Loud Society brand pack (Phase 6). Positions and sizes are fractions of the frame height (H) or width (W) of the output profile; text sizes are cap heights (height of a capital letter, as measured on the reference frames) – the scenes derive the font size from the measured cap height of Neuborn; brand-layer parameters may only change within the limits given here (T6). Values come from doc/mvp/BRAND_LOUD_SOCIETY.md and the reference frames; final approval by Loud Society (T11).",
+  "colors": {
+    "black": "#0A0A0A",
+    "pureBlack": "#000000",
+    "white": "#F2F2F2",
+    "pureWhite": "#FFFFFF",
+    "grey": "#AEB8B2",
+    "shadow": "#000000",
+    "glitchRed": "#FF2A2A",
+    "glitchCyan": "#00E5FF",
+    "fringeOrange": "#FF8A2A",
+    "fringeBlue": "#2A6CFF",
+    "translation": "#ECA51A"
+  },
+  "fonts": {
+    "family": "Neuborn",
+    "faces": {
+      "regular": { "weight": 400, "file": "Neuborn-Regular.ttf", "source": "fonts/neuborn/ttf/Neuborn Regular.ttf" },
+      "medium": { "weight": 500, "file": "Neuborn-Medium.ttf", "source": "fonts/neuborn/ttf/Neuborn Medium.ttf" },
+      "bold": { "weight": 700, "file": "Neuborn-Bold.ttf", "source": "fonts/neuborn/ttf/Neuborn Bold.ttf" }
+    },
+    "requiredGlyphs": "ÄÖÜäöüß"
+  },
+  "logo": {
+    "wordmark": { "file": "wordmark-white.svg", "source": "logo/wordmark-white.svg", "width": 433.47, "height": 74.31, "baseline": 60.31, "xHeight": 51.62 },
+    "chevron": { "file": "chevron-white.svg", "source": "logo/chevron-white.svg", "width": 87.12, "height": 100, "innerApex": 50.17, "inset": 29.14 },
+    "suffixes": {
+      "description": "Localised wordmarks loud>society>suffix (brand-assets/logo/wordmark-<suffix>.svg inline for 16:9, -stacked.svg for 9:16; further suffixes with brand-assets/tools/build-logo.mjs --suffix <name>)",
+      "available": ["brazil", "indonesia", "colombia"],
+      "inlineSuffixLeft": 446.81,
+      "stackedSplitY": 77.4
+    }
+  },
+  "assets": {
+    "description": "AI/library assets of brand-assets/ (manifests audio/assets.json and images/assets.json, T13). Blocks pick them by id; the defaults are the documented candidates until Loud Society selects (status \"selected\"). add-block vendors the chosen files to extensions/brand-pack/assets/audio/<id>.wav and assets/images/<id>.jpg.",
+    "audioManifest": "audio/assets.json",
+    "imageManifest": "images/assets.json",
+    "defaults": {
+      "voiceShout": "voice-shout-guy",
+      "voiceSpoken": "voice-spoken-guy",
+      "noiseHit": "noise-hit-c",
+      "animal": { "peacock": "animal-peacock-1", "rooster": "animal-rooster-1", "stag": "animal-stag-1" },
+      "loudSounds": ["loud-jackhammer-1", "loud-helicopter-1", "animal-peacock-1"],
+      "endcard": "endcard-angled-gpt-image-2-1"
+    }
+  },
+  "profiles": {
+    "vertical": {
+      "width": 1080,
+      "height": 1920,
+      "fps": "30/1",
+      "textSafe": { "left": 0.08, "right": 0.92, "top": 0.15, "bottom": 0.8 },
+      "zones": [
+        { "id": "platform-top", "top": 0, "bottom": 0.15, "use": "free (platform UI)" },
+        { "id": "faces", "top": 0.15, "bottom": 0.4, "use": "faces, eye line at 25–35 % H" },
+        { "id": "titles", "top": 0.4, "bottom": 0.54, "use": "title words, sting/endcard centred at 50 % H" },
+        { "id": "lower-third-word-captions", "top": 0.54, "bottom": 0.7, "use": "lower third (left), word captions" },
+        { "id": "phrase-captions", "top": 0.7, "bottom": 0.8, "use": "phrase captions" },
+        { "id": "platform-bottom", "top": 0.8, "bottom": 1, "use": "free (platform UI, action bar at x > 85 % W)" }
+      ]
+    },
+    "landscape": {
+      "width": 1920,
+      "height": 1080,
+      "fps": "25/1",
+      "textSafe": { "left": 0.05, "right": 0.95, "top": 0.05, "bottom": 0.95 },
+      "zones": [{ "id": "title-safe", "top": 0.05, "bottom": 0.95, "use": "all text (90 % title safe area)" }]
+    }
+  },
+  "loudness": {
+    "integratedLufs": -14,
+    "toleranceLu": 1,
+    "truePeakDbtp": -1,
+    "musicBedBelowDialogDb": { "min": 18, "max": 22 }
+  },
+  "blocks": {
+    "caption_word": {
+      "profile": "vertical",
+      "captionStyle": "brand-word",
+      "face": "bold",
+      "capHeight": 0.05,
+      "centerY": 0.66,
+      "maxWidth": 0.82,
+      "maxWords": 3,
+      "maxChars": 16,
+      "pauseSeconds": 0.25,
+      "emphasisScale": 1.18,
+      "popScale": 1.4,
+      "popFrames": 8,
+      "wordSpacing": 0.3,
+      "shadowOffset": 0.0025,
+      "shadowAlpha": 0.85,
+      "color": "pureWhite"
+    },
+    "caption_phrase": {
+      "profile": "vertical",
+      "captionStyle": "brand-phrase",
+      "face": "medium",
+      "capHeight": 0.027,
+      "minCapHeight": 0.023,
+      "bottom": 0.78,
+      "maxWidth": 0.82,
+      "maxLines": 2,
+      "maxCharsPerLine": 32,
+      "lineHeight": 1.25,
+      "shadowOffset": 0.0025,
+      "shadowAlpha": 0.85,
+      "color": "pureWhite"
+    },
+    "subtitles_16x9": {
+      "profile": "landscape",
+      "captionStyle": "brand-16x9",
+      "face": "medium",
+      "capHeight": 0.04,
+      "minCapHeight": 0.034,
+      "bottom": 0.88,
+      "maxWidth": 0.86,
+      "maxLines": 2,
+      "maxCharsPerLine": 48,
+      "lineHeight": 1.25,
+      "shadowOffset": 0.0025,
+      "shadowAlpha": 0.85,
+      "color": "pureWhite"
+    },
+    "lower_third": {
+      "profiles": {
+        "vertical": { "left": 0.1, "nameTop": 0.545, "nameCap": 0.029, "roleCap": 0.017, "maxWidth": 0.6 },
+        "landscape": { "left": 0.08, "right": 0.92, "nameTop": 0.775, "nameCap": 0.052, "roleCap": 0.03, "maxWidth": 0.4 }
+      },
+      "nameFace": "bold",
+      "roleFace": "regular",
+      "roleGap": 0.15,
+      "nameMaxChars": 28,
+      "roleMaxChars": 40,
+      "maxPeople": { "vertical": 1, "landscape": 2 },
+      "glitchInSeconds": 0.3,
+      "glitchOutSeconds": 0.2,
+      "holdSeconds": { "min": 3, "max": 6, "default": 4 },
+      "rgbSplit": 0.0019,
+      "shadowOffset": 0.002,
+      "shadowAlpha": 0.6,
+      "nameColor": "pureWhite",
+      "roleColor": "white"
+    },
+    "wordmark_flash": {
+      "profile": "vertical",
+      "width": 0.56,
+      "gapAboveCaption": 0.075,
+      "seconds": { "min": 0.3, "max": 3, "default": 1.5 },
+      "glitchFrames": 3,
+      "glowRadius": 0.006,
+      "glowAlpha": 0.75,
+      "rgbSplit": 0.0019
+    },
+    "title_card": {
+      "profile": "landscape",
+      "face": "medium",
+      "capHeight": 0.07,
+      "minCapHeight": 0.04,
+      "centerY": 0.5,
+      "maxWidth": 0.8,
+      "titleMaxChars": 40,
+      "presentsText": "LOUD SOCIETY PRESENTS",
+      "presentsFace": "regular",
+      "presentsCap": 0.022,
+      "presentsGap": 0.6,
+      "seconds": { "min": 1.5, "max": 8, "default": 3 },
+      "glitchInSeconds": 0.4,
+      "glitchOutSeconds": 0.2,
+      "rgbSplit": 0.0019,
+      "background": "black"
+    },
+    "logo_sting": {
+      "profiles": {
+        "landscape": { "wordmarkWidth": 0.406, "centerY": 0.5 },
+        "vertical": { "wordmarkWidth": 0.585, "centerY": 0.5 }
+      },
+      "seconds": { "min": 2, "max": 5, "default": 2.5 },
+      "flashFrames": 3,
+      "glitchSeconds": 0.45,
+      "suffixRevealSeconds": { "from": 0.7, "to": 1.0, "steps": 6 },
+      "microGlitchAt": 0.55,
+      "glowRadius": 0.012,
+      "glowAlpha": 0.35,
+      "rgbSplit": 0.0019,
+      "audio": { "noiseHitAtSeconds": 0, "noiseHitGainDb": -4, "voiceAtSeconds": 0.1, "voiceGainDb": 0 }
+    },
+    "chevron_wipe": {
+      "seconds": { "min": 0.4, "max": 0.6, "default": 0.5 },
+      "direction": "ltr",
+      "color": "white",
+      "heightOfFrame": 2.4,
+      "shutterFrames": 0.15,
+      "motionSamples": 40,
+      "fringe": 0.006,
+      "fringeAlpha": 0.9
+    },
+    "glitch_flash": {
+      "frames": { "min": 1, "max": 3, "default": 2 },
+      "intensity": { "min": 0.2, "max": 1, "default": 0.8 },
+      "bands": 7
+    },
+    "logo_end": {
+      "profiles": {
+        "landscape": { "wordmarkWidth": 0.406, "centerY": 0.5 },
+        "vertical": { "wordmarkWidth": 0.585, "centerY": 0.5 }
+      },
+      "seconds": { "min": 1.5, "max": 2, "default": 1.8 },
+      "glitchFrames": 3,
+      "glowRadius": 0.008,
+      "glowAlpha": 0.25,
+      "audio": { "voiceAtSeconds": 0.2, "voiceGainDb": 0 }
+    },
+    "endcard": {
+      "profile": "landscape",
+      "seconds": { "min": 10, "max": 11, "default": 10 },
+      "face": "medium",
+      "labels": [
+        { "kind": "wordmark", "x": 0.06, "y": 0.21, "height": 0.19, "angle": -3.5, "appearSeconds": 0.2 },
+        { "kind": "text", "text": "subscribe.", "x": 0.287, "y": 0.42, "height": 0.15, "cap": 0.42, "angle": 2.5, "appearSeconds": 0.45 },
+        { "kind": "text", "text": "thank you!", "x": 0.38, "y": 0.625, "height": 0.135, "cap": 0.4, "angle": -9, "appearSeconds": 0.7 }
+      ],
+      "labelPadding": 0.17,
+      "labelCap": 0.4,
+      "labelWordmarkHeight": 0.5,
+      "labelColor": "pureBlack",
+      "inkColor": "white",
+      "glitchFrames": 3,
+      "endScreenZone": { "left": 0.58, "right": 0.97, "top": 0.05, "bottom": 0.95 },
+      "description": "Labels are black stickers (x, y = top left as fractions of W/H, height of the sticker as fraction of H, cap = cap height of the text as fraction of the sticker height, default labelCap; rotation in degrees), measured on doc/mvp/brand/frames/yt-long/09; YouTube end-screen elements go into endScreenZone, which stays free of labels"
+    },
+    "animal_scream": {
+      "animals": ["peacock", "rooster", "stag"],
+      "seconds": { "min": 0.5, "max": 3 },
+      "gainDb": 0,
+      "fadeOutSeconds": 0.04
+    },
+    "loud_sounds": {
+      "profile": "landscape",
+      "sounds": { "min": 1, "max": 5 },
+      "secondsEach": { "min": 0.5, "max": 3, "default": 1.2 },
+      "gainDb": 0,
+      "fadeOutSeconds": 0.04,
+      "kinds": ["loud-sound", "animal-scream"]
+    },
+    "audio_master": {
+      "ducking": { "underDialogDb": 12, "rampSeconds": 0.25 },
+      "description": "Not an extension: add-block audio_master writes project.json audioMaster (loudness from \"loudness\", music ducking under dialog); the renderer normalises the whole mix (two-pass loudnorm) and checks the encoded output"
+    },
+    "thumbnail": {
+      "profile": "landscape",
+      "still": { "width": 1280, "height": 720, "maxBytes": 2097152 },
+      "textSafe": { "left": 0.05, "right": 0.95, "top": 0.13, "bottom": 0.87 },
+      "face": "medium",
+      "color": "pureWhite",
+      "headline": {
+        "right": 0.94,
+        "centerY": 0.5,
+        "capHeight": 0.204,
+        "minCapHeight": 0.11,
+        "maxWidth": 0.56,
+        "lineGap": 0.23,
+        "words": { "min": 2, "max": 5 },
+        "autoLines": 3,
+        "maxLines": 4,
+        "maxCharsPerLine": 14,
+        "shadowBlur": 0.012,
+        "shadowAlpha": 0.35
+      },
+      "chevron": { "height": 0.472, "left": 0, "centerY": 0.5, "color": "pureWhite" },
+      "grade": { "contrast": { "min": 1, "max": 1.6, "default": 1.2 }, "brightness": -0.03 },
+      "candidates": { "min": 2, "max": 4, "labelCap": 0.04 },
+      "description": "YouTube thumbnail (1280 × 720 PNG, 8-bit grey, ≤ maxBytes = YouTube's 2 MB limit), measured on doc/mvp/brand/frames/yt-long/10 and 11: the frame in black and white (Rec. 709 luma, contrast around mid grey), the white chevron at the left edge (height 47 % H, apex at 23 % W, centred), the headline in Neuborn Medium capitals right-aligned at 94 % W, cap height up to 20.4 % H (smaller when the longest line would exceed maxWidth, never below minCapHeight), line gap 0.23 cap heights, block centred; a soft dark halo keeps it readable on bright frames. The text stays inside textSafe (top/bottom keep clear of YouTube's duration badge). With candidates, 2–4 complete thumbnails (A–D) as a 2 × 2 contact sheet for the editor's choice"
+    },
+    "format_card": {
+      "profile": "landscape",
+      "titleFace": "medium",
+      "textFace": "regular",
+      "titleCap": 0.06,
+      "textCap": 0.032,
+      "minTextCap": 0.024,
+      "centerY": 0.5,
+      "maxWidth": 0.76,
+      "titleGap": 1.1,
+      "lineHeight": 1.9,
+      "titleMaxChars": 32,
+      "sentences": { "min": 0, "max": 3 },
+      "maxCharsPerLine": 52,
+      "maxLines": 5,
+      "seconds": { "min": 3, "max": 6, "default": 5 },
+      "glitchInSeconds": 0.3,
+      "glitchOutSeconds": 0.2,
+      "rgbSplit": 0.0019,
+      "description": "Text card on black (NEI explainer, measured on the series reference b7IxT-OI2fQ 00:11–00:20): optional title in capitals with a steady RGB split, then up to three short sentences, centred; the transition variant is one sentence (\"Our starting question comes from none other than…\")"
+    },
+    "band_card": {
+      "profiles": {
+        "landscape": { "textLeft": 0.08, "centerY": 0.45, "capHeight": 0.094, "minCapHeight": 0.05, "maxWidth": 0.4, "image": { "left": 0.4, "top": 0, "right": 1, "bottom": 1, "fade": 0.1 } },
+        "vertical": { "textLeft": 0.08, "centerY": 0.65, "capHeight": 0.038, "minCapHeight": 0.024, "maxWidth": 0.84, "image": { "left": 0, "top": 0, "right": 1, "bottom": 0.56, "fade": 0.06 } }
+      },
+      "face": "medium",
+      "lineGap": 0.62,
+      "maxLines": 2,
+      "maxCharsPerLine": 24,
+      "seconds": { "min": 1, "max": 2.5, "default": 1.5 },
+      "glitchFrames": 3,
+      "rgbSplit": 0.0019,
+      "description": "NEI band card (yt-long/07 \"EVIL JARED x KROGI\", b7IxT-OI2fQ 06:08 \"MYLES KENNEDY / alter bridge\"): one or two lines as written (names in capitals, band or \"x NAME\" below) left on black with a steady RGB split, a still of the interview in the image box (cover, soft fade into black on the text side); revealed and left by chevron wipes (band_card as an extension input of a wipe)"
+    },
+    "cliffhanger_card": {
+      "profile": "landscape",
+      "right": 0.92,
+      "top": 0.1,
+      "headline": "SUBSCRIBE",
+      "headlineFace": "bold",
+      "textFace": "regular",
+      "questionFace": "medium",
+      "headlineCap": 0.075,
+      "textCap": 0.034,
+      "questionCap": 0.034,
+      "lineHeight": 1.75,
+      "maxWidth": 0.6,
+      "nextMaxChars": 28,
+      "questionMaxChars": 100,
+      "questionMaxCharsPerLine": 40,
+      "questionMaxLines": 3,
+      "imageBrightness": 0.5,
+      "textWithNext": ["to find out if the question", "goes to {next}", "and if they will answer…"],
+      "textWithoutNext": ["to find out who answers", "the next question…"],
+      "seconds": { "min": 4, "max": 6, "default": 5 },
+      "glitchInSeconds": 0.3,
+      "glitchOutSeconds": 0.2,
+      "rgbSplit": 0.0019,
+      "description": "NEI cliffhanger CTA (b7IxT-OI2fQ 21:35, ~5 s): \"SUBSCRIBE to find out if the question goes to NEXT and if they will answer…\" top right over a darkened still, optionally the open question quoted below"
+    },
+    "vertical_in_16x9": {
+      "profile": "landscape",
+      "aspect": "9/16",
+      "background": { "blur": 0.05, "brightness": 0.45, "scale": 0.125 },
+      "seconds": { "min": 0.5, "max": 180 },
+      "description": "Vertical footage (selfie questions) in a 16:9 episode: the clip fitted to the frame height in the middle, the same picture blurred and darkened as background (cover). Picture only – the clip's sound stays the dialog clip of the statement; the block lies on a graphics track over the statement's video clip"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "block": "animal_scream",
+  "description": "Animal scream right before the logo end (peacock, rooster, stag; library sound, CC0) as audio-only output; length = the sound.",
+  "profiles": [
+    "landscape",
+    "vertical"
+  ],
+  "scene": null,
+  "logo": [],
+  "output": {
+    "video": false,
+    "alpha": false,
+    "audio": true,
+    "duration": "the sound"
+  },
+  "parameters": {
+    "animal": "peacock | rooster | stag (default peacock)",
+    "asset": "Asset id of that animal (default from brand.json)",
+    "gainDb": "Relative level -24–6 dB (default 0; the final loudness comes from audio_master)"
+  }
+}

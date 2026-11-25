@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "title-card",
+  "version": "1.0.0",
+  "description": "Opening title card: white text on black, 2 s, no audio. Plain example, not a brand block (Phase 6).",
+  "sceneId": "sc01",
+  "inputs": [{ "kind": "file", "path": "extensions/title-card/render.mjs" }],
+  "parameters": { "text": "What was your first concert?", "fontSize": 72 },
+  "command": {
+    "program": "node",
+    "args": ["extensions/title-card/render.mjs", "extensions/title-card/extension.json", "renders/extensions/title-card.mp4"]
+  },
+  "tools": [{ "name": "node", "version": ">=20" }, { "name": "ffmpeg" }],
+  "output": {
+    "path": "renders/extensions/title-card.mp4",
+    "durationFrames": 60,
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "audio": false,
+    "alpha": false
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "block": "logo_end",
+  "description": "Wordmark loud>society white on black with soft glow, glitch-in, then still; sound: spoken voice tag (1.5–2 s). Usually revealed by a chevron_wipe with this output as B.",
+  "profiles": [
+    "landscape",
+    "vertical"
+  ],
+  "scene": "lib/logo-end-scene.mjs",
+  "logo": [
+    "wordmark"
+  ],
+  "output": {
+    "alpha": false,
+    "audio": true,
+    "duration": "limits"
+  },
+  "parameters": {
+    "voiceTag": "Voice tag asset id (default voice-spoken-guy) or null for none"
+  }
+}

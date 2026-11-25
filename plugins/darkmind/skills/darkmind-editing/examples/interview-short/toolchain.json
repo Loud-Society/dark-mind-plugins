@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "pipeline": { "name": "darkmind-agent", "version": "0.1.0" },
+  "skill": null,
+  "brandPack": null,
+  "tools": [
+    { "name": "node", "version": "v26.13.0" },
+    { "name": "ffmpeg", "version": "9.0.1-essentials_build-www.gyan.dev", "features": ["libx264", "aac", "prores_ks", "pcm_s16le", "subtitles"] }
+  ]
+}

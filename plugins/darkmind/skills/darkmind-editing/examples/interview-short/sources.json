@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "int-a",
+      "kind": "darkmind-video",
+      "videoId": "3F2B6A10-8C4E-4E1A-9B7D-2C5E8F1A0B11",
+      "fileName": "Festival_Interview_BandA.mp4",
+      "label": "Interview Band A (camera A)",
+      "media": {
+        "durationSeconds": "312.4",
+        "video": {
+          "width": 1920,
+          "height": 1080,
+          "rotation": 0,
+          "frameRate": "25/1",
+          "vfr": false,
+          "sampleAspectRatio": "1:1",
+          "colorTransfer": "bt709",
+          "colorPrimaries": "bt709",
+          "codec": "h264",
+          "pixelFormat": "yuv420p"
+        },
+        "audio": { "sampleRate": 48000, "channels": 2, "codec": "aac" },
+        "probedFrom": "original"
+      }
+    },
+    {
+      "id": "int-b",
+      "kind": "darkmind-video",
+      "videoId": "7C9D2E44-1B3A-4F6E-8D2C-5A7B9E0F1C22",
+      "fileName": "Festival_Interview_BandB.mp4",
+      "label": "Interview Band B",
+      "media": {
+        "durationSeconds": "188.04",
+        "video": {
+          "width": 1920,
+          "height": 1080,
+          "rotation": 0,
+          "frameRate": "25/1",
+          "vfr": false,
+          "sampleAspectRatio": "1:1",
+          "colorTransfer": "bt709",
+          "colorPrimaries": "bt709",
+          "codec": "h264",
+          "pixelFormat": "yuv420p"
+        },
+        "audio": { "sampleRate": 48000, "channels": 2, "codec": "aac" },
+        "probedFrom": "original"
+      }
+    },
+    {
+      "id": "br-crowd",
+      "kind": "darkmind-video",
+      "videoId": "A1B2C3D4-5E6F-4A7B-8C9D-0E1F2A3B4C55",
+      "fileName": "IMG_4711.MOV",
+      "label": "Phone clip of the crowd (portrait, rotation matrix, variable frame rate)",
+      "media": {
+        "durationSeconds": "24.531",
+        "video": {
+          "width": 1080,
+          "height": 1920,
+          "rotation": -90,
+          "frameRate": "30/1",
+          "vfr": true,
+          "sampleAspectRatio": "1:1",
+          "colorTransfer": "bt709",
+          "colorPrimaries": "bt709",
+          "codec": "hevc",
+          "pixelFormat": "yuv420p"
+        },
+        "audio": { "sampleRate": 44100, "channels": 2, "codec": "aac" },
+        "probedFrom": "original"
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "block": "format_card",
+  "description": "Text card on black for the Never Ending Interview (16:9): the format explainer – title in capitals with RGB split and up to three short sentences, centred – or the transition sentence (\"Our starting question comes from none other than…\"). Glitch-in 0.3 s, glitch-out 0.2 s, 3–6 s, opaque H.264.",
+  "profiles": [
+    "landscape"
+  ],
+  "scene": "lib/format-card-scene.mjs",
+  "logo": [],
+  "output": {
+    "alpha": false,
+    "audio": false,
+    "duration": "limits"
+  },
+  "parameters": {
+    "title": "Title (drawn in capitals), up to 32 characters; optional",
+    "text": "One sentence or a list of up to 3 sentences, at most 5 lines of 52 characters together"
+  }
+}

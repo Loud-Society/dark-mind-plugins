@@ -1,0 +1,18 @@
+{
+  "block": "wordmark_flash",
+  "description": "Wordmark loud>society (SVG, not the font) with glow and RGB split, briefly above the first caption line at the start of a short (0.3–3 s), glitch-in, hard cut out.",
+  "profiles": [
+    "vertical"
+  ],
+  "scene": "lib/wordmark-flash-scene.mjs",
+  "logo": [
+    "wordmark"
+  ],
+  "output": {
+    "alpha": true,
+    "duration": "limits"
+  },
+  "parameters": {
+    "centerY": "Vertical centre as a fraction of H (default: 7.5 % H above the word caption line = 58.5 % H)"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "block": "audio_master",
+  "description": "Execution step, not an extension: writes project.json audioMaster (-14 LUFS, -1 dBTP, ±1 LU from brand.json loudness; music ducked under dialog). The renderer normalises the whole mix with two-pass loudnorm and checks the encoded output.",
+  "profiles": [
+    "landscape",
+    "vertical"
+  ],
+  "scene": null,
+  "logo": [],
+  "output": null,
+  "parameters": {
+    "ducking": "{ underDialogDb, rampSeconds } or null (default from brand.json)"
+  }
+}

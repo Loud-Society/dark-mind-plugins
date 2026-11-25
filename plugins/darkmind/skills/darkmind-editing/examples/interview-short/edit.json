@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "sequence": [
+    {
+      "kind": "scene",
+      "id": "sc01",
+      "description": "Opening title card with the question",
+      "text": "What was your first concert?",
+      "extensionId": "title-card",
+      "unresolved": []
+    },
+    {
+      "kind": "statement",
+      "id": "s01",
+      "sourceId": "int-a",
+      "range": { "in": "12.48", "out": "22" },
+      "quote": "My first concert was in a tiny club in Hamburg. I was fifteen and I didn't know any of the songs.",
+      "context": "Answer to the interviewer's first question; sets up the story.",
+      "speaker": { "name": "Alex", "role": "Singer, Band A" },
+      "unresolved": []
+    },
+    {
+      "kind": "statement",
+      "id": "s02",
+      "sourceId": "int-a",
+      "range": { "in": "47.2", "out": "58.6" },
+      "quote": "Everybody was jumping, the floor was shaking. That night I knew I wanted to be on that stage.",
+      "context": "Same answer, after a digression about the club (cut); the turning point of the story.",
+      "speaker": { "name": "Alex", "role": "Singer, Band A" },
+      "unresolved": []
+    },
+    {
+      "kind": "statement",
+      "id": "s03",
+      "sourceId": "int-b",
+      "range": { "in": "5", "out": "17.04" },
+      "quote": "Mine was a stadium show with my dad. Honestly, I was bored. Small clubs are where it happens.",
+      "context": "Contrasting answer from Band B to the same question; closes the short.",
+      "speaker": { "name": "Sam", "role": "Drummer, Band B" },
+      "unresolved": []
+    }
+  ],
+  "broll": [
+    {
+      "id": "b01",
+      "sourceId": "br-crowd",
+      "range": { "in": "3", "out": "6" },
+      "description": "Jumping crowd, illustrates \"the floor was shaking\"",
+      "afterId": "s02",
+      "unresolved": []
+    }
+  ]
+}

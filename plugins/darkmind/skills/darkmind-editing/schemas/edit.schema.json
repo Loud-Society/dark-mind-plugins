@@ -1,0 +1,893 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://darkmind.cloud/schemas/editing-pipeline/v1/edit.schema.json",
+  "title": "Dark Mind editing pipeline: edit.json (reviewable cut draft)",
+  "description": "Format contract v1 of the Dark Mind editing pipeline (doc/AI_EDITING_PIPELINE.md). Structure only; run \"darkmind-agent validate\" for references, frame arithmetic, overlaps, gaps and path rules.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Optional JSON Schema reference for editors; ignored by the validator."
+    },
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "sequence": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "statement"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+              },
+              "sourceId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "range": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "in": {
+                        "type": "string",
+                        "pattern": "^(?:(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,12})?|(?:0|[1-9][0-9]{0,17})\\/[1-9][0-9]{0,17})$",
+                        "description": "Source in-point in seconds from the start of the original (inclusive)"
+                      },
+                      "out": {
+                        "type": "string",
+                        "pattern": "^(?:(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,12})?|(?:0|[1-9][0-9]{0,17})\\/[1-9][0-9]{0,17})$",
+                        "description": "Source out-point in seconds from the start of the original (exclusive)"
+                      }
+                    },
+                    "required": [
+                      "in",
+                      "out"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "quote": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 5000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "What is said in the range, verbatim; never invented"
+              },
+              "context": {
+                "type": "string",
+                "maxLength": 5000,
+                "description": "Why the statement is used and what surrounds it in the original"
+              },
+              "speaker": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 200
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "role": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 200
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "role"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "notes": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 5000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "unresolved": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "tc-approximate",
+                    "quote-unverified",
+                    "source-unconfirmed",
+                    "placeholder",
+                    "other"
+                  ]
+                },
+                "maxItems": 10,
+                "default": [],
+                "description": "Open points the agent resolves at the material before the editorial review"
+              },
+              "origin": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "explore-cutlist"
+                      },
+                      "clipNumber": {
+                        "type": [
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "type": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 100
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "sourceFile": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 1000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "sourceVideoId": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 200
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "segmentId": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 400
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "tcIn": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 40
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "tcOut": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 40
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "durationSeconds": {
+                        "type": [
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "tcApproximate": {
+                        "type": "boolean"
+                      },
+                      "transcriptQuote": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 20000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "contentDescription": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 20000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "overlayText": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 20000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "editorialNotes": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 20000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "speakerName": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 400
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "speakerRole": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 400
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "clipNumber",
+                      "type",
+                      "sourceFile",
+                      "sourceVideoId",
+                      "segmentId",
+                      "tcIn",
+                      "tcOut",
+                      "durationSeconds",
+                      "tcApproximate",
+                      "transcriptQuote",
+                      "contentDescription",
+                      "overlayText",
+                      "editorialNotes",
+                      "speakerName",
+                      "speakerRole"
+                    ],
+                    "additionalProperties": false,
+                    "description": "Unchanged values of the Explore cutlist clip this item was imported from (research values, not cut points)"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Unchanged values of the Explore cutlist clip this item was imported from (research values, not cut points)"
+              }
+            },
+            "required": [
+              "kind",
+              "id",
+              "sourceId",
+              "range",
+              "quote",
+              "context"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "scene"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "text": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 5000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Text shown or spoken in the scene; part of the editorial review"
+              },
+              "extensionId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "unresolved": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "tc-approximate",
+                    "quote-unverified",
+                    "source-unconfirmed",
+                    "placeholder",
+                    "other"
+                  ]
+                },
+                "maxItems": 10,
+                "default": [],
+                "description": "Open points the agent resolves at the material before the editorial review"
+              },
+              "origin": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "explore-cutlist"
+                      },
+                      "clipNumber": {
+                        "type": [
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "type": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 100
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "sourceFile": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 1000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "sourceVideoId": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 200
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "segmentId": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 400
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "tcIn": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 40
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "tcOut": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 40
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "durationSeconds": {
+                        "type": [
+                          "number",
+                          "null"
+                        ]
+                      },
+                      "tcApproximate": {
+                        "type": "boolean"
+                      },
+                      "transcriptQuote": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 20000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "contentDescription": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 20000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "overlayText": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 20000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "editorialNotes": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 20000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "speakerName": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 400
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "speakerRole": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 400
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "clipNumber",
+                      "type",
+                      "sourceFile",
+                      "sourceVideoId",
+                      "segmentId",
+                      "tcIn",
+                      "tcOut",
+                      "durationSeconds",
+                      "tcApproximate",
+                      "transcriptQuote",
+                      "contentDescription",
+                      "overlayText",
+                      "editorialNotes",
+                      "speakerName",
+                      "speakerRole"
+                    ],
+                    "additionalProperties": false,
+                    "description": "Unchanged values of the Explore cutlist clip this item was imported from (research values, not cut points)"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Unchanged values of the Explore cutlist clip this item was imported from (research values, not cut points)"
+              }
+            },
+            "required": [
+              "kind",
+              "id",
+              "description",
+              "text",
+              "extensionId"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "maxItems": 2000,
+      "description": "Statements and free scenes in the proposed order"
+    },
+    "broll": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+          },
+          "sourceId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "range": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "in": {
+                    "type": "string",
+                    "pattern": "^(?:(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,12})?|(?:0|[1-9][0-9]{0,17})\\/[1-9][0-9]{0,17})$",
+                    "description": "Source in-point in seconds from the start of the original (inclusive)"
+                  },
+                  "out": {
+                    "type": "string",
+                    "pattern": "^(?:(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,12})?|(?:0|[1-9][0-9]{0,17})\\/[1-9][0-9]{0,17})$",
+                    "description": "Source out-point in seconds from the start of the original (exclusive)"
+                  }
+                },
+                "required": [
+                  "in",
+                  "out"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "afterId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Sequence item the B-roll illustrates or follows"
+          },
+          "unresolved": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "tc-approximate",
+                "quote-unverified",
+                "source-unconfirmed",
+                "placeholder",
+                "other"
+              ]
+            },
+            "maxItems": 10,
+            "default": [],
+            "description": "Open points the agent resolves at the material before the editorial review"
+          },
+          "origin": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "explore-cutlist"
+                  },
+                  "clipNumber": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "type": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "sourceFile": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 1000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "sourceVideoId": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 200
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "segmentId": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 400
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tcIn": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 40
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tcOut": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 40
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "durationSeconds": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "tcApproximate": {
+                    "type": "boolean"
+                  },
+                  "transcriptQuote": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 20000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "contentDescription": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 20000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "overlayText": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 20000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "editorialNotes": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 20000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "speakerName": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 400
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "speakerRole": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 400
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "kind",
+                  "clipNumber",
+                  "type",
+                  "sourceFile",
+                  "sourceVideoId",
+                  "segmentId",
+                  "tcIn",
+                  "tcOut",
+                  "durationSeconds",
+                  "tcApproximate",
+                  "transcriptQuote",
+                  "contentDescription",
+                  "overlayText",
+                  "editorialNotes",
+                  "speakerName",
+                  "speakerRole"
+                ],
+                "additionalProperties": false,
+                "description": "Unchanged values of the Explore cutlist clip this item was imported from (research values, not cut points)"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Unchanged values of the Explore cutlist clip this item was imported from (research values, not cut points)"
+          }
+        },
+        "required": [
+          "id",
+          "sourceId",
+          "range",
+          "description"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 2000,
+      "default": []
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 20000
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "sequence"
+  ],
+  "additionalProperties": false
+}

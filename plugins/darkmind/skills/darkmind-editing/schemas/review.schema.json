@@ -1,0 +1,203 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://darkmind.cloud/schemas/editing-pipeline/v1/review.schema.json",
+  "title": "Dark Mind editing pipeline: reviews/<record>.json (review record, written by darkmind-agent review)",
+  "description": "Format contract v1 of the Dark Mind editing pipeline (doc/AI_EDITING_PIPELINE.md). Structure only; run \"darkmind-agent validate\" for references, frame arithmetic, overlaps, gaps and path rules.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "kind": {
+      "type": "string",
+      "const": "darkmind-review"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+    },
+    "subject": {
+      "type": "string",
+      "enum": [
+        "editorial",
+        "captions-text",
+        "preview",
+        "duration-exception",
+        "final",
+        "thumbnail"
+      ]
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "changes-requested"
+      ]
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the canonical JSON of snapshot; binds the decision to exactly this state"
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": {},
+      "description": "Reviewed projection (subject content); basis of the change analysis"
+    },
+    "render": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "report": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 400,
+              "pattern": "^(?!\\/)(?!.*\\/\\/)(?!.*\\/$)(?!(?:.*\\/)?\\.{1,2}(?:\\/|$))[^\\\\<>:\"|?*\\u0000-\\u001f\\u007f]+$"
+            },
+            "output": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 400,
+              "pattern": "^(?!\\/)(?!.*\\/\\/)(?!.*\\/$)(?!(?:.*\\/)?\\.{1,2}(?:\\/|$))[^\\\\<>:\"|?*\\u0000-\\u001f\\u007f]+$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "proxy",
+                "original"
+              ]
+            },
+            "renderKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "frames": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "report",
+            "output",
+            "sha256",
+            "mode",
+            "renderKey",
+            "frames"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Rendered file the editor viewed (preview, final)"
+    },
+    "reviewer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "confirmation": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "terminal",
+            "relayed"
+          ]
+        },
+        "statement": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 5000
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Verbatim confirmation of the editor (relayed)"
+        }
+      },
+      "required": [
+        "method",
+        "statement"
+      ],
+      "additionalProperties": false,
+      "description": "Origin of the explicit confirmation of the editor; never an autonomous decision of the agent"
+    },
+    "comment": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 5000
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "tool": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "id",
+    "subject",
+    "decision",
+    "hash",
+    "snapshot",
+    "render",
+    "reviewer",
+    "confirmation",
+    "comment",
+    "createdAt",
+    "tool"
+  ],
+  "additionalProperties": false
+}
