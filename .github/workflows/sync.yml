@@ -1,0 +1,57 @@
+# Workflow of the public plugin marketplace repository (prod: Loud-Society/dark-mind-plugins), kept here as the source:
+# copy it to .github/workflows/sync.yml of that repository. GitHub Copilot installs plugins only from git; this workflow
+# fills the repository with exactly what the deployed Dark Mind serves as /downloads/darkmind-plugin.zip (marketplace
+# folder: README, .claude-plugin/marketplace.json, plugins/darkmind with skill, script and MCP entry). No secret: it
+# downloads a public file and pushes with the repository's own GITHUB_TOKEN. Started by
+# main-app/deploy-to-appservice.ps1 after each deployment, by hand, and every six hours as a fallback.
+# Docs: agents/darkmind-plugin/README.md in Loud-Society/dark-mind.
+name: Sync from Dark Mind
+
+on:
+  workflow_dispatch:
+    inputs:
+      origin:
+        description: Main App URL of the Dark Mind environment
+        default: https://darkmind.cloud
+        required: true
+  schedule:
+    - cron: '17 */6 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download the plugin marketplace of Dark Mind
+        env:
+          ORIGIN: ${{ inputs.origin || 'https://darkmind.cloud' }}
+        run: |
+          [[ "$ORIGIN" =~ ^https://[A-Za-z0-9.-]+$ ]] || { echo "::error::invalid origin $ORIGIN"; exit 1; }
+          curl -fsSL --retry 3 "$ORIGIN/downloads/darkmind-plugin.zip" -o "$RUNNER_TEMP/plugin.zip"
+          unzip -q "$RUNNER_TEMP/plugin.zip" -d "$RUNNER_TEMP/plugin"
+          test -f "$RUNNER_TEMP/plugin/.claude-plugin/marketplace.json"
+          test -f "$RUNNER_TEMP/plugin/plugins/darkmind/.claude-plugin/plugin.json"
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name .github -exec rm -rf {} +
+          cp -a "$RUNNER_TEMP/plugin/." .
+
+      - name: Commit and push
+        run: |
+          version=$(jq -r .version plugins/darkmind/.claude-plugin/plugin.json)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "marketplace unchanged ($version)"
+          else
+            git commit -q -m "darkmind ${version}"
+            git push
+            echo "published darkmind ${version}" >> "$GITHUB_STEP_SUMMARY"
+          fi
