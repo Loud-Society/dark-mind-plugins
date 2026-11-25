@@ -2,7 +2,7 @@
   "name": "darkmind",
   "description": "Dark Mind (Loud Society): video editing with AI agents – editing skill, local script and the Dark Mind MCP server of https://darkmind.cloud",
   "owner": { "name": "Loud Society" },
-  "metadata": { "description": "Dark Mind plugin for GitHub Copilot and Claude Code", "version": "0.14.0+caa75c1aac83" },
+  "metadata": { "description": "Dark Mind plugin for GitHub Copilot and Claude Code", "version": "0.16.0+5a995ba9d262" },
   "plugins": [
     {
       "name": "darkmind",

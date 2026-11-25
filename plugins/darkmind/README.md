@@ -1,7 +1,7 @@
 # Dark Mind plugin (`darkmind`)
 
 Edit videos with Dark Mind from **GitHub Copilot** (CLI and Copilot app) and **Claude Code** (CLI and the *Code* tab of
-the Claude desktop app). Built for https://darkmind.cloud, version 0.14.0+caa75c1aac83.
+the Claude desktop app). Built for https://darkmind.cloud, version 0.16.0+5a995ba9d262.
 
 | Part | What it does |
 |------|--------------|

@@ -1,6 +1,6 @@
 # Never Ending Interview – reconstructing the chain
 
-Guide for the recipes [`nei-episode`](nei-episode.md) and [`nei-short`](nei-short.md). Tool: `brand/tools/nei-chain.mjs`
+Guide of the brand pack capability `nei-chain`, used by the recipes `nei-episode` and `nei-short` (Dark Mind recipe catalog; `darkmind-agent recipe show`). Tool: `brand/tools/nei-chain.mjs`
 (logic `brand/lib/nei-chain.mjs`, test cases `brand/test/nei-chain.test.mjs` with synthetic transcripts in
 `brand/test/nei-fixtures/`). Background: `doc/mvp/NEI_REFERENCE_MATERIAL.md` (real chains are graphs).
 

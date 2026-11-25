@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "kind": "darkmind-format-recipe",
+  "meta": {
+    "id": "short-statement",
+    "title": "Short \"Statement with cold open\" (9:16)",
+    "summary": "An attitude sentence as cold open, the logo sting full screen, who speaks, and the argument or story with B-roll and captions.",
+    "tags": ["short"]
+  },
+  "brand": { "pack": "loud-society", "versions": ">=0.7.0 <2.0.0" },
+  "concept": {
+    "idea": "A vertical short around one statement: the attitude sentence (2–4 s) opens cold, the logo sting follows full screen, a lower third names who speaks, then the argument or story with B-roll and captions; it ends with the animal scream and the logo end.",
+    "platforms": [],
+    "references": [{ "note": "Analysis of the Loud Society shorts (yt-shorts/04 and 05: sting with >brazil, lower third name + handle, phrase captions): doc/mvp/brand/ANALYSIS_YOUTUBE_SHORTS.md" }]
+  },
+  "briefing": [
+    { "id": "speaker", "question": "Who speaks (name and handle for the lower third)?", "required": true },
+    { "id": "captions", "question": "Word captions (brand-word) or phrase captions (brand-phrase)? Word captions need word timings.", "required": false },
+    { "id": "suffix", "question": "Sting suffix (e.g. brazil) or none?", "required": false }
+  ],
+  "material": [
+    { "id": "statement", "label": "The attitude sentence and the argument or story", "kind": "interview", "level": "hard", "min": 1 },
+    { "id": "broll", "label": "B-roll for the argument or story", "kind": "b-roll", "level": "recommended", "min": 1 }
+  ],
+  "structure": {
+    "sections": [
+      {
+        "id": "cold-open",
+        "title": "Cold open",
+        "purpose": "The attitude sentence with captions; no lower third.",
+        "duration": { "minSeconds": 2, "maxSeconds": 4 },
+        "blocks": ["caption_word", "caption_phrase"],
+        "material": ["statement"],
+        "notes": ["One caption overlay for the whole short: caption_word (style brand-word) or caption_phrase (style brand-phrase)."]
+      },
+      {
+        "id": "sting",
+        "title": "Sting",
+        "purpose": "logo_sting full screen (suffix optional, e.g. brazil), video and audio clip.",
+        "blocks": ["logo_sting"]
+      },
+      {
+        "id": "speaker",
+        "title": "Who speaks",
+        "purpose": "lower_third with name and handle.",
+        "blocks": ["lower_third"],
+        "notes": ["Parameters: { \"people\": [{ \"name\": \"Gustavo Hill\", \"role\": \"@gustahill\" }] }"]
+      },
+      {
+        "id": "argument",
+        "title": "Argument / story",
+        "purpose": "Footage and B-roll with the captions; optional wordmark flash.",
+        "blocks": ["wordmark_flash", "chevron_wipe", "glitch_flash"],
+        "material": ["statement", "broll"]
+      },
+      { "id": "end", "title": "End", "purpose": "animal_scream → logo_end.", "blocks": ["animal_scream", "logo_end"] }
+    ],
+    "blocks": {
+      "logo_sting": { "use": "required", "min": 1, "max": 1, "role": "full screen after the statement sentence; suffix optional" },
+      "lower_third": { "use": "required", "min": 1, "max": 1 },
+      "caption_word": { "use": "optional", "max": 1 },
+      "caption_phrase": { "use": "optional", "max": 1 },
+      "animal_scream": { "use": "required", "min": 1, "max": 1 },
+      "logo_end": { "use": "required", "min": 1, "max": 1 },
+      "wordmark_flash": { "use": "optional" },
+      "chevron_wipe": { "use": "optional" },
+      "glitch_flash": { "use": "optional" }
+    },
+    "groups": [{ "id": "captions", "oneOf": ["caption_word", "caption_phrase"], "note": "one caption overlay matching captions.json style" }],
+    "order": ["logo_sting", "lower_third", "animal_scream", "logo_end"],
+    "hook": { "untilBlock": "logo_sting", "forbidden": ["lower_third"], "note": "statement sentence 2–4 s before the sting" },
+    "endsWith": "logo_end"
+  },
+  "technical": {
+    "profile": "vertical",
+    "duration": { "minSeconds": 30, "maxSeconds": 65 },
+    "captions": { "styles": ["brand-word", "brand-phrase"], "required": true, "default": "brand-word" },
+    "music": { "slot": "optional", "note": "the brand pack ships no music (T14)" },
+    "deliverables": { "thumbnail": false, "chapters": null }
+  },
+  "rules": [
+    { "id": "one-caption-style", "text": "One caption style per short: mixed word and phrase captions are not supported yet (one style per captions.json).", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "phrase-without-timings", "text": "Without word timings (word-timings-unavailable) use brand-phrase.", "level": "recommended", "check": { "kind": "editorial" } }
+  ],
+  "review": { "done": ["editorial", "captions-text", "preview", "final"], "report": [] },
+  "capabilities": [],
+  "provenance": { "origin": "migration", "testProjects": [] }
+}

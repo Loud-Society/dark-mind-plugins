@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// darkmind-agent 0.14.0+caa75c1aac83 (built 2026-11-25T09:07:01.196Z)
+// darkmind-agent 0.16.0+5a995ba9d262 (built 2026-11-25T11:19:04.425Z)
 // Local helper for AI agents working on Dark Mind cut projects. Requires Node >= 20 and ffmpeg in PATH.
 // Usage: node darkmind-agent.mjs --help
 var __defProp = Object.defineProperty;
@@ -9,7 +9,7 @@ var __export = (target, all) => {
 };
 
 // src/cli.ts
-import path31 from "node:path";
+import path32 from "node:path";
 import { parseArgs } from "node:util";
 
 // src/commands/brand-assets.ts
@@ -46,14 +46,14 @@ async function exists(file) {
   }
 }
 async function readJsonFile(file) {
-  let text2;
+  let text3;
   try {
-    text2 = await fs.readFile(file, "utf8");
+    text3 = await fs.readFile(file, "utf8");
   } catch (error) {
     if (error.code === "ENOENT") return null;
     throw error;
   }
-  return JSON.parse(text2);
+  return JSON.parse(text3);
 }
 async function writeFileAtomic(file, content) {
   await fs.mkdir(path.dirname(file), { recursive: true });
@@ -386,8 +386,8 @@ var ZodIssueCode = util.arrayToEnum([
   "not_finite"
 ]);
 var quotelessJson = (obj) => {
-  const json = JSON.stringify(obj, null, 2);
-  return json.replace(/"([^"]+)":/g, "$1:");
+  const json2 = JSON.stringify(obj, null, 2);
+  return json2.replace(/"([^"]+)":/g, "$1:");
 };
 var ZodError = class _ZodError extends Error {
   get errors() {
@@ -598,8 +598,8 @@ function getErrorMap() {
 
 // ../shared/node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
-  const { data, path: path32, errorMaps, issueData } = params;
-  const fullPath = [...path32, ...issueData.path || []];
+  const { data, path: path33, errorMaps, issueData } = params;
+  const fullPath = [...path33, ...issueData.path || []];
   const fullIssue = {
     ...issueData,
     path: fullPath
@@ -654,18 +654,18 @@ var ParseStatus = class _ParseStatus {
     if (this.value !== "aborted")
       this.value = "aborted";
   }
-  static mergeArray(status, results) {
+  static mergeArray(status2, results) {
     const arrayValue = [];
     for (const s of results) {
       if (s.status === "aborted")
         return INVALID;
       if (s.status === "dirty")
-        status.dirty();
+        status2.dirty();
       arrayValue.push(s.value);
     }
-    return { status: status.value, value: arrayValue };
+    return { status: status2.value, value: arrayValue };
   }
-  static async mergeObjectAsync(status, pairs) {
+  static async mergeObjectAsync(status2, pairs) {
     const syncPairs = [];
     for (const pair of pairs) {
       const key = await pair.key;
@@ -675,9 +675,9 @@ var ParseStatus = class _ParseStatus {
         value: value2
       });
     }
-    return _ParseStatus.mergeObjectSync(status, syncPairs);
+    return _ParseStatus.mergeObjectSync(status2, syncPairs);
   }
-  static mergeObjectSync(status, pairs) {
+  static mergeObjectSync(status2, pairs) {
     const finalObject = {};
     for (const pair of pairs) {
       const { key, value: value2 } = pair;
@@ -686,14 +686,14 @@ var ParseStatus = class _ParseStatus {
       if (value2.status === "aborted")
         return INVALID;
       if (key.status === "dirty")
-        status.dirty();
+        status2.dirty();
       if (value2.status === "dirty")
-        status.dirty();
+        status2.dirty();
       if (key.value !== "__proto__" && (typeof value2.value !== "undefined" || pair.alwaysSet)) {
         finalObject[key.value] = value2.value;
       }
     }
-    return { status: status.value, value: finalObject };
+    return { status: status2.value, value: finalObject };
   }
 };
 var INVALID = Object.freeze({
@@ -715,11 +715,11 @@ var errorUtil;
 
 // ../shared/node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
-  constructor(parent, value2, path32, key) {
+  constructor(parent, value2, path33, key) {
     this._cachedPath = [];
     this.parent = parent;
     this.data = value2;
-    this._path = path32;
+    this._path = path33;
     this._key = key;
   }
   get path() {
@@ -897,7 +897,7 @@ var ZodType = class {
     const result = await (isAsync(maybeAsyncResult) ? maybeAsyncResult : Promise.resolve(maybeAsyncResult));
     return handleResult(ctx, result);
   }
-  refine(check, message) {
+  refine(check2, message) {
     const getIssueProperties = (val) => {
       if (typeof message === "string" || typeof message === "undefined") {
         return { message };
@@ -908,7 +908,7 @@ var ZodType = class {
       }
     };
     return this._refinement((val, ctx) => {
-      const result = check(val);
+      const result = check2(val);
       const setError = () => ctx.addIssue({
         code: ZodIssueCode.custom,
         ...getIssueProperties(val)
@@ -931,9 +931,9 @@ var ZodType = class {
       }
     });
   }
-  refinement(check, refinementData) {
+  refinement(check2, refinementData) {
     return this._refinement((val, ctx) => {
-      if (!check(val)) {
+      if (!check2(val)) {
         ctx.addIssue(typeof refinementData === "function" ? refinementData(val, ctx) : refinementData);
         return false;
       } else {
@@ -1153,72 +1153,72 @@ var ZodString = class _ZodString extends ZodType {
       });
       return INVALID;
     }
-    const status = new ParseStatus();
+    const status2 = new ParseStatus();
     let ctx = void 0;
-    for (const check of this._def.checks) {
-      if (check.kind === "min") {
-        if (input.data.length < check.value) {
+    for (const check2 of this._def.checks) {
+      if (check2.kind === "min") {
+        if (input.data.length < check2.value) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.too_small,
-            minimum: check.value,
+            minimum: check2.value,
             type: "string",
             inclusive: true,
             exact: false,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "max") {
-        if (input.data.length > check.value) {
+      } else if (check2.kind === "max") {
+        if (input.data.length > check2.value) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.too_big,
-            maximum: check.value,
+            maximum: check2.value,
             type: "string",
             inclusive: true,
             exact: false,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "length") {
-        const tooBig = input.data.length > check.value;
-        const tooSmall = input.data.length < check.value;
+      } else if (check2.kind === "length") {
+        const tooBig = input.data.length > check2.value;
+        const tooSmall = input.data.length < check2.value;
         if (tooBig || tooSmall) {
           ctx = this._getOrReturnCtx(input, ctx);
           if (tooBig) {
             addIssueToContext(ctx, {
               code: ZodIssueCode.too_big,
-              maximum: check.value,
+              maximum: check2.value,
               type: "string",
               inclusive: true,
               exact: true,
-              message: check.message
+              message: check2.message
             });
           } else if (tooSmall) {
             addIssueToContext(ctx, {
               code: ZodIssueCode.too_small,
-              minimum: check.value,
+              minimum: check2.value,
               type: "string",
               inclusive: true,
               exact: true,
-              message: check.message
+              message: check2.message
             });
           }
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "email") {
+      } else if (check2.kind === "email") {
         if (!emailRegex.test(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "email",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "emoji") {
+      } else if (check2.kind === "emoji") {
         if (!emojiRegex) {
           emojiRegex = new RegExp(_emojiRegex, "u");
         }
@@ -1227,61 +1227,61 @@ var ZodString = class _ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "emoji",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "uuid") {
+      } else if (check2.kind === "uuid") {
         if (!uuidRegex.test(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "uuid",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "nanoid") {
+      } else if (check2.kind === "nanoid") {
         if (!nanoidRegex.test(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "nanoid",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "cuid") {
+      } else if (check2.kind === "cuid") {
         if (!cuidRegex.test(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "cuid",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "cuid2") {
+      } else if (check2.kind === "cuid2") {
         if (!cuid2Regex.test(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "cuid2",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "ulid") {
+      } else if (check2.kind === "ulid") {
         if (!ulidRegex.test(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "ulid",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "url") {
+      } else if (check2.kind === "url") {
         try {
           new URL(input.data);
         } catch {
@@ -1289,156 +1289,156 @@ var ZodString = class _ZodString extends ZodType {
           addIssueToContext(ctx, {
             validation: "url",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "regex") {
-        check.regex.lastIndex = 0;
-        const testResult = check.regex.test(input.data);
+      } else if (check2.kind === "regex") {
+        check2.regex.lastIndex = 0;
+        const testResult = check2.regex.test(input.data);
         if (!testResult) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "regex",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "trim") {
+      } else if (check2.kind === "trim") {
         input.data = input.data.trim();
-      } else if (check.kind === "includes") {
-        if (!input.data.includes(check.value, check.position)) {
+      } else if (check2.kind === "includes") {
+        if (!input.data.includes(check2.value, check2.position)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_string,
-            validation: { includes: check.value, position: check.position },
-            message: check.message
+            validation: { includes: check2.value, position: check2.position },
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "toLowerCase") {
+      } else if (check2.kind === "toLowerCase") {
         input.data = input.data.toLowerCase();
-      } else if (check.kind === "toUpperCase") {
+      } else if (check2.kind === "toUpperCase") {
         input.data = input.data.toUpperCase();
-      } else if (check.kind === "startsWith") {
-        if (!input.data.startsWith(check.value)) {
+      } else if (check2.kind === "startsWith") {
+        if (!input.data.startsWith(check2.value)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_string,
-            validation: { startsWith: check.value },
-            message: check.message
+            validation: { startsWith: check2.value },
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "endsWith") {
-        if (!input.data.endsWith(check.value)) {
+      } else if (check2.kind === "endsWith") {
+        if (!input.data.endsWith(check2.value)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_string,
-            validation: { endsWith: check.value },
-            message: check.message
+            validation: { endsWith: check2.value },
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "datetime") {
-        const regex = datetimeRegex(check);
+      } else if (check2.kind === "datetime") {
+        const regex = datetimeRegex(check2);
         if (!regex.test(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_string,
             validation: "datetime",
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "date") {
+      } else if (check2.kind === "date") {
         const regex = dateRegex;
         if (!regex.test(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_string,
             validation: "date",
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "time") {
-        const regex = timeRegex(check);
+      } else if (check2.kind === "time") {
+        const regex = timeRegex(check2);
         if (!regex.test(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_string,
             validation: "time",
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "duration") {
+      } else if (check2.kind === "duration") {
         if (!durationRegex.test(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "duration",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "ip") {
-        if (!isValidIP(input.data, check.version)) {
+      } else if (check2.kind === "ip") {
+        if (!isValidIP(input.data, check2.version)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "ip",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "jwt") {
-        if (!isValidJWT(input.data, check.alg)) {
+      } else if (check2.kind === "jwt") {
+        if (!isValidJWT(input.data, check2.alg)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "jwt",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "cidr") {
-        if (!isValidCidr(input.data, check.version)) {
+      } else if (check2.kind === "cidr") {
+        if (!isValidCidr(input.data, check2.version)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "cidr",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "base64") {
+      } else if (check2.kind === "base64") {
         if (!base64Regex.test(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "base64",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "base64url") {
+      } else if (check2.kind === "base64url") {
         if (!base64urlRegex.test(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             validation: "base64url",
             code: ZodIssueCode.invalid_string,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
       } else {
-        util.assertNever(check);
+        util.assertNever(check2);
       }
     }
-    return { status: status.value, value: input.data };
+    return { status: status2.value, value: input.data };
   }
   _regex(regex, validation, message) {
     return this.refinement((data) => regex.test(data), {
@@ -1447,10 +1447,10 @@ var ZodString = class _ZodString extends ZodType {
       ...errorUtil.errToObj(message)
     });
   }
-  _addCheck(check) {
+  _addCheck(check2) {
     return new _ZodString({
       ...this._def,
-      checks: [...this._def.checks, check]
+      checks: [...this._def.checks, check2]
     });
   }
   email(message) {
@@ -1714,71 +1714,71 @@ var ZodNumber = class _ZodNumber extends ZodType {
       return INVALID;
     }
     let ctx = void 0;
-    const status = new ParseStatus();
-    for (const check of this._def.checks) {
-      if (check.kind === "int") {
+    const status2 = new ParseStatus();
+    for (const check2 of this._def.checks) {
+      if (check2.kind === "int") {
         if (!util.isInteger(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.invalid_type,
             expected: "integer",
             received: "float",
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "min") {
-        const tooSmall = check.inclusive ? input.data < check.value : input.data <= check.value;
+      } else if (check2.kind === "min") {
+        const tooSmall = check2.inclusive ? input.data < check2.value : input.data <= check2.value;
         if (tooSmall) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.too_small,
-            minimum: check.value,
+            minimum: check2.value,
             type: "number",
-            inclusive: check.inclusive,
+            inclusive: check2.inclusive,
             exact: false,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "max") {
-        const tooBig = check.inclusive ? input.data > check.value : input.data >= check.value;
+      } else if (check2.kind === "max") {
+        const tooBig = check2.inclusive ? input.data > check2.value : input.data >= check2.value;
         if (tooBig) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.too_big,
-            maximum: check.value,
+            maximum: check2.value,
             type: "number",
-            inclusive: check.inclusive,
+            inclusive: check2.inclusive,
             exact: false,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "multipleOf") {
-        if (floatSafeRemainder(input.data, check.value) !== 0) {
+      } else if (check2.kind === "multipleOf") {
+        if (floatSafeRemainder(input.data, check2.value) !== 0) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.not_multiple_of,
-            multipleOf: check.value,
-            message: check.message
+            multipleOf: check2.value,
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "finite") {
+      } else if (check2.kind === "finite") {
         if (!Number.isFinite(input.data)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.not_finite,
-            message: check.message
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
       } else {
-        util.assertNever(check);
+        util.assertNever(check2);
       }
     }
-    return { status: status.value, value: input.data };
+    return { status: status2.value, value: input.data };
   }
   gte(value2, message) {
     return this.setLimit("min", value2, true, errorUtil.toString(message));
@@ -1806,10 +1806,10 @@ var ZodNumber = class _ZodNumber extends ZodType {
       ]
     });
   }
-  _addCheck(check) {
+  _addCheck(check2) {
     return new _ZodNumber({
       ...this._def,
-      checks: [...this._def.checks, check]
+      checks: [...this._def.checks, check2]
     });
   }
   int(message) {
@@ -1943,49 +1943,49 @@ var ZodBigInt = class _ZodBigInt extends ZodType {
       return this._getInvalidInput(input);
     }
     let ctx = void 0;
-    const status = new ParseStatus();
-    for (const check of this._def.checks) {
-      if (check.kind === "min") {
-        const tooSmall = check.inclusive ? input.data < check.value : input.data <= check.value;
+    const status2 = new ParseStatus();
+    for (const check2 of this._def.checks) {
+      if (check2.kind === "min") {
+        const tooSmall = check2.inclusive ? input.data < check2.value : input.data <= check2.value;
         if (tooSmall) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.too_small,
             type: "bigint",
-            minimum: check.value,
-            inclusive: check.inclusive,
-            message: check.message
+            minimum: check2.value,
+            inclusive: check2.inclusive,
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "max") {
-        const tooBig = check.inclusive ? input.data > check.value : input.data >= check.value;
+      } else if (check2.kind === "max") {
+        const tooBig = check2.inclusive ? input.data > check2.value : input.data >= check2.value;
         if (tooBig) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.too_big,
             type: "bigint",
-            maximum: check.value,
-            inclusive: check.inclusive,
-            message: check.message
+            maximum: check2.value,
+            inclusive: check2.inclusive,
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "multipleOf") {
-        if (input.data % check.value !== BigInt(0)) {
+      } else if (check2.kind === "multipleOf") {
+        if (input.data % check2.value !== BigInt(0)) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.not_multiple_of,
-            multipleOf: check.value,
-            message: check.message
+            multipleOf: check2.value,
+            message: check2.message
           });
-          status.dirty();
+          status2.dirty();
         }
       } else {
-        util.assertNever(check);
+        util.assertNever(check2);
       }
     }
-    return { status: status.value, value: input.data };
+    return { status: status2.value, value: input.data };
   }
   _getInvalidInput(input) {
     const ctx = this._getOrReturnCtx(input);
@@ -2022,10 +2022,10 @@ var ZodBigInt = class _ZodBigInt extends ZodType {
       ]
     });
   }
-  _addCheck(check) {
+  _addCheck(check2) {
     return new _ZodBigInt({
       ...this._def,
-      checks: [...this._def.checks, check]
+      checks: [...this._def.checks, check2]
     });
   }
   positive(message) {
@@ -2143,48 +2143,48 @@ var ZodDate = class _ZodDate extends ZodType {
       });
       return INVALID;
     }
-    const status = new ParseStatus();
+    const status2 = new ParseStatus();
     let ctx = void 0;
-    for (const check of this._def.checks) {
-      if (check.kind === "min") {
-        if (input.data.getTime() < check.value) {
+    for (const check2 of this._def.checks) {
+      if (check2.kind === "min") {
+        if (input.data.getTime() < check2.value) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.too_small,
-            message: check.message,
+            message: check2.message,
             inclusive: true,
             exact: false,
-            minimum: check.value,
+            minimum: check2.value,
             type: "date"
           });
-          status.dirty();
+          status2.dirty();
         }
-      } else if (check.kind === "max") {
-        if (input.data.getTime() > check.value) {
+      } else if (check2.kind === "max") {
+        if (input.data.getTime() > check2.value) {
           ctx = this._getOrReturnCtx(input, ctx);
           addIssueToContext(ctx, {
             code: ZodIssueCode.too_big,
-            message: check.message,
+            message: check2.message,
             inclusive: true,
             exact: false,
-            maximum: check.value,
+            maximum: check2.value,
             type: "date"
           });
-          status.dirty();
+          status2.dirty();
         }
       } else {
-        util.assertNever(check);
+        util.assertNever(check2);
       }
     }
     return {
-      status: status.value,
+      status: status2.value,
       value: new Date(input.data.getTime())
     };
   }
-  _addCheck(check) {
+  _addCheck(check2) {
     return new _ZodDate({
       ...this._def,
-      checks: [...this._def.checks, check]
+      checks: [...this._def.checks, check2]
     });
   }
   min(minDate, message) {
@@ -2363,7 +2363,7 @@ ZodVoid.create = (params) => {
 };
 var ZodArray = class _ZodArray extends ZodType {
   _parse(input) {
-    const { ctx, status } = this._processInputParams(input);
+    const { ctx, status: status2 } = this._processInputParams(input);
     const def = this._def;
     if (ctx.parsedType !== ZodParsedType.array) {
       addIssueToContext(ctx, {
@@ -2386,7 +2386,7 @@ var ZodArray = class _ZodArray extends ZodType {
           exact: true,
           message: def.exactLength.message
         });
-        status.dirty();
+        status2.dirty();
       }
     }
     if (def.minLength !== null) {
@@ -2399,7 +2399,7 @@ var ZodArray = class _ZodArray extends ZodType {
           exact: false,
           message: def.minLength.message
         });
-        status.dirty();
+        status2.dirty();
       }
     }
     if (def.maxLength !== null) {
@@ -2412,20 +2412,20 @@ var ZodArray = class _ZodArray extends ZodType {
           exact: false,
           message: def.maxLength.message
         });
-        status.dirty();
+        status2.dirty();
       }
     }
     if (ctx.common.async) {
       return Promise.all([...ctx.data].map((item, i) => {
         return def.type._parseAsync(new ParseInputLazyPath(ctx, item, ctx.path, i));
       })).then((result2) => {
-        return ParseStatus.mergeArray(status, result2);
+        return ParseStatus.mergeArray(status2, result2);
       });
     }
     const result = [...ctx.data].map((item, i) => {
       return def.type._parseSync(new ParseInputLazyPath(ctx, item, ctx.path, i));
     });
-    return ParseStatus.mergeArray(status, result);
+    return ParseStatus.mergeArray(status2, result);
   }
   get element() {
     return this._def.type;
@@ -2514,7 +2514,7 @@ var ZodObject = class _ZodObject extends ZodType {
       });
       return INVALID;
     }
-    const { status, ctx } = this._processInputParams(input);
+    const { status: status2, ctx } = this._processInputParams(input);
     const { shape, keys: shapeKeys } = this._getCached();
     const extraKeys = [];
     if (!(this._def.catchall instanceof ZodNever && this._def.unknownKeys === "strip")) {
@@ -2549,7 +2549,7 @@ var ZodObject = class _ZodObject extends ZodType {
             code: ZodIssueCode.unrecognized_keys,
             keys: extraKeys
           });
-          status.dirty();
+          status2.dirty();
         }
       } else if (unknownKeys === "strip") {
       } else {
@@ -2583,10 +2583,10 @@ var ZodObject = class _ZodObject extends ZodType {
         }
         return syncPairs;
       }).then((syncPairs) => {
-        return ParseStatus.mergeObjectSync(status, syncPairs);
+        return ParseStatus.mergeObjectSync(status2, syncPairs);
       });
     } else {
-      return ParseStatus.mergeObjectSync(status, pairs);
+      return ParseStatus.mergeObjectSync(status2, pairs);
     }
   }
   get shape() {
@@ -3064,7 +3064,7 @@ function mergeValues(a, b) {
 }
 var ZodIntersection = class extends ZodType {
   _parse(input) {
-    const { status, ctx } = this._processInputParams(input);
+    const { status: status2, ctx } = this._processInputParams(input);
     const handleParsed = (parsedLeft, parsedRight) => {
       if (isAborted(parsedLeft) || isAborted(parsedRight)) {
         return INVALID;
@@ -3077,9 +3077,9 @@ var ZodIntersection = class extends ZodType {
         return INVALID;
       }
       if (isDirty(parsedLeft) || isDirty(parsedRight)) {
-        status.dirty();
+        status2.dirty();
       }
-      return { status: status.value, value: merged.data };
+      return { status: status2.value, value: merged.data };
     };
     if (ctx.common.async) {
       return Promise.all([
@@ -3117,7 +3117,7 @@ ZodIntersection.create = (left, right, params) => {
 };
 var ZodTuple = class _ZodTuple extends ZodType {
   _parse(input) {
-    const { status, ctx } = this._processInputParams(input);
+    const { status: status2, ctx } = this._processInputParams(input);
     if (ctx.parsedType !== ZodParsedType.array) {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
@@ -3145,7 +3145,7 @@ var ZodTuple = class _ZodTuple extends ZodType {
         exact: false,
         type: "array"
       });
-      status.dirty();
+      status2.dirty();
     }
     const items = [...ctx.data].map((item, itemIndex) => {
       const schema = this._def.items[itemIndex] || this._def.rest;
@@ -3155,10 +3155,10 @@ var ZodTuple = class _ZodTuple extends ZodType {
     }).filter((x) => !!x);
     if (ctx.common.async) {
       return Promise.all(items).then((results) => {
-        return ParseStatus.mergeArray(status, results);
+        return ParseStatus.mergeArray(status2, results);
       });
     } else {
-      return ParseStatus.mergeArray(status, items);
+      return ParseStatus.mergeArray(status2, items);
     }
   }
   get items() {
@@ -3190,7 +3190,7 @@ var ZodRecord = class _ZodRecord extends ZodType {
     return this._def.valueType;
   }
   _parse(input) {
-    const { status, ctx } = this._processInputParams(input);
+    const { status: status2, ctx } = this._processInputParams(input);
     if (ctx.parsedType !== ZodParsedType.object) {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
@@ -3210,9 +3210,9 @@ var ZodRecord = class _ZodRecord extends ZodType {
       });
     }
     if (ctx.common.async) {
-      return ParseStatus.mergeObjectAsync(status, pairs);
+      return ParseStatus.mergeObjectAsync(status2, pairs);
     } else {
-      return ParseStatus.mergeObjectSync(status, pairs);
+      return ParseStatus.mergeObjectSync(status2, pairs);
     }
   }
   get element() {
@@ -3243,7 +3243,7 @@ var ZodMap = class extends ZodType {
     return this._def.valueType;
   }
   _parse(input) {
-    const { status, ctx } = this._processInputParams(input);
+    const { status: status2, ctx } = this._processInputParams(input);
     if (ctx.parsedType !== ZodParsedType.map) {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
@@ -3270,11 +3270,11 @@ var ZodMap = class extends ZodType {
             return INVALID;
           }
           if (key.status === "dirty" || value2.status === "dirty") {
-            status.dirty();
+            status2.dirty();
           }
           finalMap.set(key.value, value2.value);
         }
-        return { status: status.value, value: finalMap };
+        return { status: status2.value, value: finalMap };
       });
     } else {
       const finalMap = /* @__PURE__ */ new Map();
@@ -3285,11 +3285,11 @@ var ZodMap = class extends ZodType {
           return INVALID;
         }
         if (key.status === "dirty" || value2.status === "dirty") {
-          status.dirty();
+          status2.dirty();
         }
         finalMap.set(key.value, value2.value);
       }
-      return { status: status.value, value: finalMap };
+      return { status: status2.value, value: finalMap };
     }
   }
 };
@@ -3303,7 +3303,7 @@ ZodMap.create = (keyType, valueType, params) => {
 };
 var ZodSet = class _ZodSet extends ZodType {
   _parse(input) {
-    const { status, ctx } = this._processInputParams(input);
+    const { status: status2, ctx } = this._processInputParams(input);
     if (ctx.parsedType !== ZodParsedType.set) {
       addIssueToContext(ctx, {
         code: ZodIssueCode.invalid_type,
@@ -3323,7 +3323,7 @@ var ZodSet = class _ZodSet extends ZodType {
           exact: false,
           message: def.minSize.message
         });
-        status.dirty();
+        status2.dirty();
       }
     }
     if (def.maxSize !== null) {
@@ -3336,7 +3336,7 @@ var ZodSet = class _ZodSet extends ZodType {
           exact: false,
           message: def.maxSize.message
         });
-        status.dirty();
+        status2.dirty();
       }
     }
     const valueType = this._def.valueType;
@@ -3346,10 +3346,10 @@ var ZodSet = class _ZodSet extends ZodType {
         if (element.status === "aborted")
           return INVALID;
         if (element.status === "dirty")
-          status.dirty();
+          status2.dirty();
         parsedSet.add(element.value);
       }
-      return { status: status.value, value: parsedSet };
+      return { status: status2.value, value: parsedSet };
     }
     const elements = [...ctx.data.values()].map((item, i) => valueType._parse(new ParseInputLazyPath(ctx, item, ctx.path, i)));
     if (ctx.common.async) {
@@ -3680,15 +3680,15 @@ var ZodEffects = class extends ZodType {
     return this._def.schema._def.typeName === ZodFirstPartyTypeKind.ZodEffects ? this._def.schema.sourceType() : this._def.schema;
   }
   _parse(input) {
-    const { status, ctx } = this._processInputParams(input);
+    const { status: status2, ctx } = this._processInputParams(input);
     const effect = this._def.effect || null;
     const checkCtx = {
       addIssue: (arg) => {
         addIssueToContext(ctx, arg);
         if (arg.fatal) {
-          status.abort();
+          status2.abort();
         } else {
-          status.dirty();
+          status2.dirty();
         }
       },
       get path() {
@@ -3700,7 +3700,7 @@ var ZodEffects = class extends ZodType {
       const processed = effect.transform(ctx.data, checkCtx);
       if (ctx.common.async) {
         return Promise.resolve(processed).then(async (processed2) => {
-          if (status.value === "aborted")
+          if (status2.value === "aborted")
             return INVALID;
           const result = await this._def.schema._parseAsync({
             data: processed2,
@@ -3711,12 +3711,12 @@ var ZodEffects = class extends ZodType {
             return INVALID;
           if (result.status === "dirty")
             return DIRTY(result.value);
-          if (status.value === "dirty")
+          if (status2.value === "dirty")
             return DIRTY(result.value);
           return result;
         });
       } else {
-        if (status.value === "aborted")
+        if (status2.value === "aborted")
           return INVALID;
         const result = this._def.schema._parseSync({
           data: processed,
@@ -3727,7 +3727,7 @@ var ZodEffects = class extends ZodType {
           return INVALID;
         if (result.status === "dirty")
           return DIRTY(result.value);
-        if (status.value === "dirty")
+        if (status2.value === "dirty")
           return DIRTY(result.value);
         return result;
       }
@@ -3752,17 +3752,17 @@ var ZodEffects = class extends ZodType {
         if (inner.status === "aborted")
           return INVALID;
         if (inner.status === "dirty")
-          status.dirty();
+          status2.dirty();
         executeRefinement(inner.value);
-        return { status: status.value, value: inner.value };
+        return { status: status2.value, value: inner.value };
       } else {
         return this._def.schema._parseAsync({ data: ctx.data, path: ctx.path, parent: ctx }).then((inner) => {
           if (inner.status === "aborted")
             return INVALID;
           if (inner.status === "dirty")
-            status.dirty();
+            status2.dirty();
           return executeRefinement(inner.value).then(() => {
-            return { status: status.value, value: inner.value };
+            return { status: status2.value, value: inner.value };
           });
         });
       }
@@ -3780,13 +3780,13 @@ var ZodEffects = class extends ZodType {
         if (result instanceof Promise) {
           throw new Error(`Asynchronous transform encountered during synchronous parse operation. Use .parseAsync instead.`);
         }
-        return { status: status.value, value: result };
+        return { status: status2.value, value: result };
       } else {
         return this._def.schema._parseAsync({ data: ctx.data, path: ctx.path, parent: ctx }).then((base) => {
           if (!isValid(base))
             return INVALID;
           return Promise.resolve(effect.transform(base.value, checkCtx)).then((result) => ({
-            status: status.value,
+            status: status2.value,
             value: result
           }));
         });
@@ -3965,7 +3965,7 @@ var ZodBranded = class extends ZodType {
 };
 var ZodPipeline = class _ZodPipeline extends ZodType {
   _parse(input) {
-    const { status, ctx } = this._processInputParams(input);
+    const { status: status2, ctx } = this._processInputParams(input);
     if (ctx.common.async) {
       const handleAsync = async () => {
         const inResult = await this._def.in._parseAsync({
@@ -3976,7 +3976,7 @@ var ZodPipeline = class _ZodPipeline extends ZodType {
         if (inResult.status === "aborted")
           return INVALID;
         if (inResult.status === "dirty") {
-          status.dirty();
+          status2.dirty();
           return DIRTY(inResult.value);
         } else {
           return this._def.out._parseAsync({
@@ -3996,7 +3996,7 @@ var ZodPipeline = class _ZodPipeline extends ZodType {
       if (inResult.status === "aborted")
         return INVALID;
       if (inResult.status === "dirty") {
-        status.dirty();
+        status2.dirty();
         return {
           status: "dirty",
           value: inResult.value
@@ -4045,10 +4045,10 @@ function cleanParams(params, data) {
   const p2 = typeof p === "string" ? { message: p } : p;
   return p2;
 }
-function custom(check, _params = {}, fatal) {
-  if (check)
+function custom(check2, _params = {}, fatal) {
+  if (check2)
     return ZodAny.create().superRefine((data, ctx) => {
-      const r = check(data);
+      const r = check2(data);
       if (r instanceof Promise) {
         return r.then((r2) => {
           if (!r2) {
@@ -4167,19 +4167,19 @@ var SHA256_PATTERN = "^[0-9a-f]{64}$";
 var PATH_PATTERN = '^(?!/)(?!.*//)(?!.*/$)(?!(?:.*/)?\\.{1,2}(?:/|$))[^\\\\<>:"|?*\\u0000-\\u001f\\u007f]+$';
 var INVALID_SEGMENT_CHARS = /[\\<>:"|?*\u0000-\u001f\u007f]/;
 var RESERVED_NAMES = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])$/i;
-function getCutProjectPathError(path32) {
-  if (typeof path32 !== "string" || path32.length === 0)
+function getCutProjectPathError(path33) {
+  if (typeof path33 !== "string" || path33.length === 0)
     return "path is empty";
-  if (path32.length > CUT_PROJECT_MANIFEST_LIMITS.maxPathLength) {
+  if (path33.length > CUT_PROJECT_MANIFEST_LIMITS.maxPathLength) {
     return `path is longer than ${CUT_PROJECT_MANIFEST_LIMITS.maxPathLength} characters`;
   }
-  if (path32.normalize("NFC") !== path32)
+  if (path33.normalize("NFC") !== path33)
     return "path is not Unicode NFC normalized";
-  if (path32.includes("\\"))
+  if (path33.includes("\\"))
     return 'path must use "/" as separator';
-  if (path32.startsWith("/"))
+  if (path33.startsWith("/"))
     return "path must be relative";
-  const segments = path32.split("/");
+  const segments = path33.split("/");
   for (const segment of segments) {
     if (segment.length === 0)
       return "path contains an empty segment";
@@ -4263,7 +4263,7 @@ function validateCutProjectManifest(value2) {
   return {
     success: false,
     errors: result.error.issues.map((issue) => {
-      const location = issue.path.reduce((text2, part) => typeof part === "number" ? `${text2}[${part}]` : text2 ? `${text2}.${part}` : String(part), "");
+      const location = issue.path.reduce((text3, part) => typeof part === "number" ? `${text3}[${part}]` : text3 ? `${text3}.${part}` : String(part), "");
       return location ? `${location}: ${issue.message}` : issue.message;
     })
   };
@@ -4391,6 +4391,12 @@ function isBrandCaptionStyle(style) {
 var EDIT_CAPTION_MAX_WORDS = 200;
 var EDIT_GAIN_LIMITS = { minDb: -96, maxDb: 36 };
 var EXPLORE_CUTLIST_CONVERTER_VERSION = 1;
+var EDIT_RECIPE_KIND = "darkmind-format-recipe";
+var EDIT_RECIPE_LOCK_KIND = "darkmind-recipe-lock";
+var EDIT_RECIPE_FILES = { lock: "recipe.lock.json", draft: "recipe.draft.json", material: "material.json" };
+var EDIT_RECIPE_SOURCES = ["catalog", "draft"];
+var EDIT_RECIPE_ID_PATTERN = "^[a-z0-9](?:[a-z0-9-]{0,38}[a-z0-9])?$";
+var EDIT_RECIPE_MAX_BYTES = 256 * 1024;
 
 // ../shared/dist/editing-pipeline/time.js
 var RATIONAL_STRING_PATTERN = "^(?:(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,12})?|(?:0|[1-9][0-9]{0,17})/[1-9][0-9]{0,17})$";
@@ -4531,7 +4537,12 @@ var editProjectSchema = external_exports.object({
   title: external_exports.string().min(1).max(200),
   output: editOutputSchema,
   duration: external_exports.object({ minSeconds: external_exports.number().min(0).max(86400), maxSeconds: external_exports.number().min(0).max(86400) }).strict().nullable().optional().describe("Duration frame; outside it the validator warns (F8, explicit exception in the review, no truncation)"),
-  recipe: external_exports.object({ id, version: external_exports.string().min(1).max(40) }).strict().nullable().optional().describe("Format recipe (Phase 6), e.g. nei-short; sets output profile and duration frame"),
+  recipe: external_exports.object({
+    id: external_exports.string().regex(new RegExp(EDIT_RECIPE_ID_PATTERN), 'must be a recipe slug (lowercase letters, digits, "-")'),
+    version: external_exports.number().int().min(1).nullable().describe('Published catalog version; null for a local draft (source "draft")'),
+    sha256: sha256.describe("SHA-256 of the canonical recipe in recipe.lock.json"),
+    source: external_exports.enum(EDIT_RECIPE_SOURCES)
+  }).strict().nullable().optional().describe("Format recipe the project is built with (frozen in recipe.lock.json, written by darkmind-agent recipe)"),
   audioMaster: external_exports.object({
     integratedLufs: external_exports.number().min(-40).max(-5).describe("Target integrated loudness of the whole program (EBU R128), e.g. -14"),
     toleranceLu: external_exports.number().min(0.1).max(3).describe("Allowed deviation of the measured result (the render check fails outside)"),
@@ -4862,31 +4873,878 @@ function getCropAspectError(crop, srcWidth, srcHeight, outWidth, outHeight) {
   return `rectangle is ${geometry.derivedWidth.toFixed(1)} instead of ${outWidth} output pixels wide (aspect of ${srcWidth}x${srcHeight} source does not match ${outWidth}:${outHeight}); for h = ${crop.h.n}/${crop.h.d} use w = "${exact2.n}/${exact2.d}"`;
 }
 
+// ../shared/dist/editing-pipeline/review.js
+var EDIT_REVIEW_SUBJECTS = ["editorial", "captions-text", "preview", "duration-exception", "final", "thumbnail"];
+var EDIT_REVIEW_DECISIONS = ["approved", "changes-requested"];
+var EDIT_REVIEW_CONFIRMATIONS = ["terminal", "relayed"];
+var EDIT_REVIEW_RECORD_KIND = "darkmind-review";
+var EDIT_REVIEW_PROJECTION_VERSION = 1;
+function canonicalize(value2) {
+  if (Array.isArray(value2))
+    return value2.map((item) => item === void 0 ? null : canonicalize(item));
+  if (value2 !== null && typeof value2 === "object") {
+    const result = {};
+    for (const key of Object.keys(value2).sort()) {
+      const item = value2[key];
+      if (item !== void 0)
+        result[key] = canonicalize(item);
+    }
+    return result;
+  }
+  return value2;
+}
+function canonicalJson(value2) {
+  return JSON.stringify(canonicalize(value2));
+}
+var exact = (value2) => formatRational(parseRational(value2));
+function toolchainBinding(document) {
+  if (!document?.tools)
+    return null;
+  const version = (name) => document.tools.find((tool) => tool.name === name)?.version ?? null;
+  return { ffmpeg: version("ffmpeg"), captionFont: version("caption-font") };
+}
+function sourceIdentity(documents, sourceId) {
+  if (sourceId === null)
+    return null;
+  const source = documents.sources?.sources.find((entry) => entry.id === sourceId);
+  if (!source)
+    return { kind: "unknown" };
+  return source.kind === "darkmind-video" ? { kind: "darkmind-video", videoId: normalizeCutProjectVideoId(source.videoId) } : { kind: "asset", sha256: source.sha256 };
+}
+function editorialProjection(documents) {
+  const edit = documents.edit;
+  if (!edit)
+    return null;
+  return {
+    kind: "editorial",
+    version: EDIT_REVIEW_PROJECTION_VERSION,
+    sequence: edit.sequence.map((item) => item.kind === "statement" ? {
+      kind: "statement",
+      id: item.id,
+      sourceId: item.sourceId,
+      source: sourceIdentity(documents, item.sourceId),
+      range: item.range ? { in: exact(item.range.in), out: exact(item.range.out) } : null,
+      quote: item.quote,
+      context: item.context,
+      speaker: item.speaker ? { name: item.speaker.name, role: item.speaker.role } : null
+    } : { kind: "scene", id: item.id, description: item.description, text: item.text }),
+    broll: Object.fromEntries(edit.broll.map((item) => [item.id, { sourceId: item.sourceId, source: sourceIdentity(documents, item.sourceId), description: item.description, afterId: item.afterId ?? null }]))
+  };
+}
+var byTimelineOrder = (a, b) => a.start - b.start || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+function captionsTextProjection(documents) {
+  const captions = documents.captions;
+  if (!captions || captions.captions.length === 0)
+    return null;
+  return {
+    kind: "captions-text",
+    version: EDIT_REVIEW_PROJECTION_VERSION,
+    language: captions.language,
+    captions: [...captions.captions].sort(byTimelineOrder).map((c) => {
+      const emphasis = (c.words ?? []).filter((word) => word.emphasis).map((word) => word.text);
+      return { id: c.id, text: c.text, statementId: c.statementId ?? null, sceneId: c.sceneId ?? null, ...emphasis.length ? { emphasis } : {} };
+    })
+  };
+}
+function normalizeClip(clip) {
+  const result = { ...clip, in: exact(String(clip.in)), out: exact(String(clip.out)) };
+  const crop = clip.crop;
+  if (crop)
+    result.crop = { x: exact(crop.x), y: exact(crop.y), w: exact(crop.w), h: exact(crop.h) };
+  return result;
+}
+function usedSourceIds(timeline, extensions) {
+  const ids = /* @__PURE__ */ new Set();
+  for (const track of [...timeline?.video ?? [], ...timeline?.audio ?? []])
+    for (const clip of track.clips)
+      if (clip.sourceId)
+        ids.add(clip.sourceId);
+  for (const extension of extensions)
+    for (const input of extension.inputs)
+      if (input.kind === "source")
+        ids.add(input.sourceId);
+  return ids;
+}
+function previewProjection(documents, input) {
+  const { project, timeline } = documents;
+  if (!timeline)
+    return null;
+  const videoExtensions = documents.extensions.filter((extension) => extension.output.image !== true);
+  const used = usedSourceIds(timeline, videoExtensions);
+  const sources = {};
+  for (const source of documents.sources?.sources ?? []) {
+    if (!used.has(source.id))
+      continue;
+    const media = source.media ? { ...source.media, probedAt: void 0 } : null;
+    sources[source.id] = source.kind === "darkmind-video" ? { kind: source.kind, videoId: normalizeCutProjectVideoId(source.videoId), media } : { kind: source.kind, path: source.path, sha256: source.sha256, size: source.size, media };
+  }
+  const clips = {};
+  const tracks = { video: [], audio: [] };
+  for (const kind of ["video", "audio"]) {
+    for (const track of timeline[kind]) {
+      tracks[kind].push({ id: track.id, role: track.role, clips: track.clips.map((clip) => clip.id) });
+      for (const clip of track.clips)
+        clips[clip.id] = { track: track.id, ...normalizeClip(clip) };
+    }
+  }
+  const captions = documents.captions;
+  const extensions = {};
+  for (const extension of videoExtensions) {
+    const files = {};
+    for (const item of extension.inputs)
+      if (item.kind === "file")
+        files[item.path] = input.files[item.path] ?? null;
+    extensions[extension.id] = { definition: { ...extension, $schema: void 0 }, files };
+  }
+  return {
+    kind: "preview",
+    version: EDIT_REVIEW_PROJECTION_VERSION,
+    output: project.output,
+    recipe: project.recipe ?? null,
+    editorial: input.editorial,
+    captionsText: input.captionsText,
+    sources,
+    tracks,
+    clips,
+    gaps: [...timeline.gaps].sort((a, b) => a.start - b.start),
+    captions: captions ? {
+      style: captions.style,
+      timing: Object.fromEntries(captions.captions.map((c) => [c.id, { start: c.start, end: c.end, words: c.words ?? null }]))
+    } : null,
+    extensions,
+    toolchain: input.toolchain
+  };
+}
+function durationOutOfRange(documents, totalFrames) {
+  const frame2 = documents.project.duration;
+  if (!frame2)
+    return false;
+  const seconds2 = toNumberQ(framesToSeconds(totalFrames, parseRational(documents.project.output.fps)));
+  return seconds2 < frame2.minSeconds || seconds2 > frame2.maxSeconds;
+}
+function durationExceptionProjection(documents, totalFrames, previewHash) {
+  const frame2 = documents.project.duration;
+  if (!frame2 || totalFrames === null || previewHash === null || !durationOutOfRange(documents, totalFrames))
+    return null;
+  const fps = parseRational(documents.project.output.fps);
+  return {
+    kind: "duration-exception",
+    version: EDIT_REVIEW_PROJECTION_VERSION,
+    frames: totalFrames,
+    fps: formatRational(fps),
+    seconds: formatRational(framesToSeconds(totalFrames, fps)),
+    minSeconds: frame2.minSeconds,
+    maxSeconds: frame2.maxSeconds,
+    preview: previewHash
+  };
+}
+function finalProjection(render, bindings) {
+  return {
+    kind: "final",
+    version: EDIT_REVIEW_PROJECTION_VERSION,
+    output: render.output,
+    sha256: render.sha256,
+    size: render.size,
+    frames: render.frames,
+    renderKey: render.renderKey,
+    preview: bindings.preview,
+    editorial: bindings.editorial,
+    captionsText: bindings.captionsText
+  };
+}
+function stillImageExtensions(extensions) {
+  return extensions.filter((extension) => extension.output.image === true);
+}
+function thumbnailProjection(documents, input) {
+  const stills = stillImageExtensions(documents.extensions);
+  if (!stills.length)
+    return null;
+  const result = {};
+  for (const extension of stills) {
+    const files = {};
+    const sources = {};
+    for (const item of extension.inputs) {
+      if (item.kind === "file")
+        files[item.path] = input.files[item.path] ?? null;
+      if (item.kind === "source")
+        sources[item.sourceId] = sourceIdentity(documents, item.sourceId);
+    }
+    result[extension.id] = { definition: { ...extension, $schema: void 0 }, files, sources };
+  }
+  return { kind: "thumbnail", version: EDIT_REVIEW_PROJECTION_VERSION, stills: result };
+}
+function timelineDraftMismatches(documents) {
+  const { edit, timeline } = documents;
+  if (!edit || !timeline)
+    return [];
+  const mismatches = [];
+  const statements = edit.sequence.filter((item) => item.kind === "statement");
+  const byId = new Map(statements.map((item) => [item.id, item]));
+  const dialog = timeline.audio.filter((track) => track.role === "dialog").flatMap((track) => track.clips);
+  const used = /* @__PURE__ */ new Map();
+  const order = [];
+  for (const clip of [...dialog].sort(byTimelineOrder)) {
+    if (!clip.statementId) {
+      mismatches.push({ code: "dialog-without-statement", ref: clip.id, message: `dialog clip "${clip.id}" references no statement of edit.json` });
+      continue;
+    }
+    const statement = byId.get(clip.statementId);
+    if (!statement) {
+      mismatches.push({ code: "unknown-statement", ref: clip.id, message: `dialog clip "${clip.id}" references "${clip.statementId}", which is not a statement of edit.json` });
+      continue;
+    }
+    if (used.has(statement.id)) {
+      mismatches.push({ code: "statement-reused", ref: clip.id, message: `statement "${statement.id}" is used by dialog clips "${used.get(statement.id)}" and "${clip.id}"` });
+      continue;
+    }
+    used.set(statement.id, clip.id);
+    order.push(statement.id);
+    const range2 = statement.range;
+    if (clip.sourceId !== statement.sourceId || !range2 || compareQ(parseRational(clip.in), parseRational(range2.in)) !== 0 || compareQ(parseRational(clip.out), parseRational(range2.out)) !== 0) {
+      mismatches.push({
+        code: "statement-binding",
+        ref: clip.id,
+        message: `dialog clip "${clip.id}" plays ${clip.sourceId ?? "?"} ${clip.in}\u2013${clip.out} s, statement "${statement.id}" is ${statement.sourceId ?? "?"} ${range2 ? `${range2.in}\u2013${range2.out} s` : "(no range)"}`
+      });
+    }
+  }
+  for (const statement of statements) {
+    if (!used.has(statement.id))
+      mismatches.push({ code: "statement-missing", ref: statement.id, message: `statement "${statement.id}" has no dialog clip in the timeline` });
+  }
+  const expected = statements.map((item) => item.id).filter((id2) => used.has(id2));
+  if (expected.join("\0") !== order.join("\0")) {
+    mismatches.push({ code: "statement-order", message: `dialog order ${order.join(", ")} differs from the draft order ${expected.join(", ")}` });
+  }
+  return mismatches;
+}
+function diffProjections(before, after, max = 200) {
+  const changes = [];
+  const walk2 = (a, b, path33) => {
+    if (changes.length >= max)
+      return;
+    const objectA = a !== null && typeof a === "object" && !Array.isArray(a);
+    const objectB = b !== null && typeof b === "object" && !Array.isArray(b);
+    if (objectA && objectB) {
+      const keys = [.../* @__PURE__ */ new Set([...Object.keys(a), ...Object.keys(b)])].sort();
+      for (const key of keys)
+        walk2(a[key], b[key], path33 ? `${path33}.${key}` : key);
+      return;
+    }
+    if (canonicalJson(a ?? null) !== canonicalJson(b ?? null))
+      changes.push({ path: path33, before: a ?? null, after: b ?? null });
+  };
+  walk2(before, after, "");
+  return changes;
+}
+function wordDiff(before, after) {
+  const a = before.split(/\s+/).filter(Boolean);
+  const b = after.split(/\s+/).filter(Boolean);
+  const table = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+  for (let i2 = a.length - 1; i2 >= 0; i2--)
+    for (let j2 = b.length - 1; j2 >= 0; j2--)
+      table[i2][j2] = a[i2] === b[j2] ? table[i2 + 1][j2 + 1] + 1 : Math.max(table[i2 + 1][j2], table[i2][j2 + 1]);
+  const parts = [];
+  const removed = [];
+  const added = [];
+  const flush = () => {
+    if (removed.length)
+      parts.push(`[-${removed.splice(0).join(" ")}-]`);
+    if (added.length)
+      parts.push(`{+${added.splice(0).join(" ")}+}`);
+  };
+  let i = 0;
+  let j = 0;
+  while (i < a.length || j < b.length) {
+    if (i < a.length && j < b.length && a[i] === b[j]) {
+      flush();
+      parts.push(a[i]);
+      i++;
+      j++;
+    } else if (j < b.length && (i >= a.length || table[i][j + 1] >= table[i + 1][j]))
+      added.push(b[j++]);
+    else
+      removed.push(a[i++]);
+  }
+  flush();
+  return parts.join(" ");
+}
+function itemChanges(kind, before, after, text3) {
+  const changes = [];
+  for (const [id2, item] of before)
+    if (!after.has(id2))
+      changes.push({ change: "removed", id: id2, kind, before: item });
+  for (const [id2, item] of after) {
+    if (!before.has(id2)) {
+      changes.push({ change: "added", id: id2, kind, after: item });
+      continue;
+    }
+    const fields = diffProjections(before.get(id2), item);
+    if (!fields.length)
+      continue;
+    const oldText = text3?.(before.get(id2)) ?? null;
+    const newText = text3?.(item) ?? null;
+    changes.push({ change: "changed", id: id2, kind, fields, ...oldText !== null && newText !== null && oldText !== newText ? { textDiff: wordDiff(oldText, newText) } : {} });
+  }
+  return changes;
+}
+function orderChange(before, after) {
+  const common = new Set(before.filter((id2) => after.includes(id2)));
+  const a = before.filter((id2) => common.has(id2));
+  const b = after.filter((id2) => common.has(id2));
+  return a.join("\0") === b.join("\0") ? null : { change: "order", before, after };
+}
+function diffEditorial(before, after) {
+  const textOf = (item) => {
+    const value2 = item;
+    return (value2.kind === "statement" ? value2.quote : value2.text) ?? null;
+  };
+  const changes = [
+    ...itemChanges("statement", new Map(before.sequence.filter((i) => i.kind === "statement").map((i) => [i.id, i])), new Map(after.sequence.filter((i) => i.kind === "statement").map((i) => [i.id, i])), textOf),
+    ...itemChanges("scene", new Map(before.sequence.filter((i) => i.kind === "scene").map((i) => [i.id, i])), new Map(after.sequence.filter((i) => i.kind === "scene").map((i) => [i.id, i])), textOf),
+    ...itemChanges("broll", new Map(Object.entries(before.broll)), new Map(Object.entries(after.broll)))
+  ];
+  const order = orderChange(before.sequence.map((i) => i.id), after.sequence.map((i) => i.id));
+  return order ? [...changes, order] : changes;
+}
+function diffCaptionsText(before, after) {
+  const changes = itemChanges("caption", new Map(before.captions.map((c) => [c.id, c])), new Map(after.captions.map((c) => [c.id, c])), (item) => item.text);
+  if (before.language !== after.language)
+    changes.push({ change: "changed", kind: "language", before: before.language, after: after.language });
+  const order = orderChange(before.captions.map((c) => c.id), after.captions.map((c) => c.id));
+  return order ? [...changes, order] : changes;
+}
+var sha2562 = external_exports.string().regex(/^[0-9a-f]{64}$/, "must be a lowercase hex SHA-256");
+var editReviewRecordSchema = external_exports.object({
+  $schema: external_exports.string().max(500).optional(),
+  schemaVersion: external_exports.literal(EDIT_SCHEMA_VERSION),
+  kind: external_exports.literal(EDIT_REVIEW_RECORD_KIND),
+  id: external_exports.string().regex(new RegExp(EDIT_ID_PATTERN)),
+  subject: external_exports.enum(EDIT_REVIEW_SUBJECTS),
+  decision: external_exports.enum(EDIT_REVIEW_DECISIONS),
+  hash: sha2562.describe("SHA-256 of the canonical JSON of snapshot; binds the decision to exactly this state"),
+  snapshot: external_exports.record(external_exports.unknown()).describe("Reviewed projection (subject content); basis of the change analysis"),
+  render: external_exports.object({
+    report: editPathSchema,
+    output: editPathSchema,
+    sha256: sha2562,
+    mode: external_exports.enum(["proxy", "original"]),
+    renderKey: external_exports.string().min(1).max(200),
+    frames: external_exports.number().int().min(0)
+  }).strict().nullable().describe("Rendered file the editor viewed (preview, final)"),
+  reviewer: external_exports.object({ name: external_exports.string().min(1).max(200) }).strict(),
+  confirmation: external_exports.object({
+    method: external_exports.enum(EDIT_REVIEW_CONFIRMATIONS),
+    statement: external_exports.string().min(1).max(5e3).nullable().describe("Verbatim confirmation of the editor (relayed)")
+  }).strict().describe("Origin of the explicit confirmation of the editor; never an autonomous decision of the agent"),
+  comment: external_exports.string().max(5e3).nullable(),
+  createdAt: external_exports.string().max(40),
+  tool: external_exports.object({ name: external_exports.string().min(1).max(100), version: external_exports.string().min(1).max(100) }).strict()
+}).strict().superRefine((record, ctx) => {
+  if (record.confirmation.method === "relayed" && !record.confirmation.statement) {
+    ctx.addIssue({ code: external_exports.ZodIssueCode.custom, path: ["confirmation", "statement"], message: "a relayed confirmation needs the verbatim statement of the editor" });
+  }
+  if ((record.subject === "preview" || record.subject === "final") && record.decision === "approved" && !record.render) {
+    ctx.addIssue({ code: external_exports.ZodIssueCode.custom, path: ["render"], message: `an approved ${record.subject} review names the rendered file` });
+  }
+  if (record.snapshot.kind !== record.subject) {
+    ctx.addIssue({ code: external_exports.ZodIssueCode.custom, path: ["snapshot", "kind"], message: `must be "${record.subject}"` });
+  }
+});
+
+// ../shared/dist/editing-pipeline/recipe.js
+var EDIT_RECIPE_MATERIAL_KINDS = ["interview", "question", "answer", "b-roll", "selfie", "still", "music", "other"];
+var EDIT_RECIPE_LEVELS = ["hard", "recommended"];
+var EDIT_RECIPE_ORIGINS = ["concept", "project", "migration"];
+var BLOCK_PATTERN = "^[a-z0-9_]{1,40}$";
+var ITEM_PATTERN = "^[a-z0-9][a-z0-9-]{0,39}$";
+var GUID_PATTERN2 = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
+var slug = external_exports.string().regex(new RegExp(EDIT_RECIPE_ID_PATTERN), 'must be a recipe slug (lowercase letters, digits, "-", max. 40)');
+var block = external_exports.string().regex(new RegExp(BLOCK_PATTERN), 'must be a block name (lowercase letters, digits, "_")');
+var itemId = external_exports.string().regex(new RegExp(ITEM_PATTERN), 'must be an ID of lowercase letters, digits and "-" (max. 40)');
+var text2 = (max) => external_exports.string().min(1).max(max);
+var count = external_exports.number().int().min(0).max(1e3);
+var seconds = external_exports.number().min(0).max(86400);
+var editRecipeBlockSchema = external_exports.object({
+  use: external_exports.enum(["required", "optional"]),
+  min: count.optional().describe("Minimum uses in the whole video (default 1 for required blocks)"),
+  max: count.optional().describe("Maximum uses in the whole video"),
+  still: external_exports.boolean().optional().describe("Still image next to the video (thumbnail), never on a track"),
+  parameters: external_exports.object({ required: external_exports.array(external_exports.string().min(1).max(60)).max(30) }).strict().optional(),
+  role: text2(500).optional().describe("What the block does in this format")
+}).strict();
+var editRecipeSectionSchema = external_exports.object({
+  id: itemId,
+  title: text2(200),
+  purpose: text2(2e3),
+  duration: external_exports.object({ minSeconds: seconds.optional(), targetSeconds: seconds.optional(), maxSeconds: seconds.optional() }).strict().optional().describe("Guide values for the agent; the check counts the whole video only"),
+  blocks: external_exports.array(block).max(30).default([]),
+  material: external_exports.array(itemId).max(30).default([]),
+  notes: external_exports.array(text2(2e3)).max(30).default([])
+}).strict();
+var machineCheck = external_exports.object({
+  kind: external_exports.literal("machine"),
+  id: itemId.describe("Check of the brand pack catalog"),
+  params: external_exports.record(external_exports.union([external_exports.string().max(200), external_exports.number(), external_exports.boolean(), external_exports.array(external_exports.string().max(200)).max(30)])).default({})
+}).strict();
+var editorialCheck = external_exports.object({ kind: external_exports.literal("editorial") }).strict();
+var editRecipeSchema = external_exports.object({
+  $schema: external_exports.string().max(500).optional(),
+  schemaVersion: external_exports.literal(EDIT_SCHEMA_VERSION),
+  kind: external_exports.literal(EDIT_RECIPE_KIND),
+  meta: external_exports.object({
+    id: slug,
+    title: text2(200),
+    summary: text2(500).describe("One or two sentences for the catalog list and the recipe choice"),
+    tags: external_exports.array(external_exports.string().min(1).max(40)).max(20).default([])
+  }).strict(),
+  brand: external_exports.object({
+    pack: external_exports.string().regex(new RegExp(ITEM_PATTERN)).describe("Brand pack id, e.g. loud-society"),
+    versions: external_exports.string().min(1).max(100).describe('Compatible brand pack versions, e.g. ">=0.7.0 <1.0.0" or "^0.7.0"')
+  }).strict(),
+  concept: external_exports.object({
+    idea: text2(4e3),
+    audience: text2(1e3).optional(),
+    tone: text2(1e3).optional(),
+    platforms: external_exports.array(external_exports.string().min(1).max(60)).max(10).default([]),
+    references: external_exports.array(external_exports.object({ videoId: external_exports.string().regex(new RegExp(GUID_PATTERN2)).optional(), url: external_exports.string().url().max(500).optional(), note: text2(500) }).strict()).max(20).default([])
+  }).strict(),
+  briefing: external_exports.array(external_exports.object({ id: itemId, question: text2(500), required: external_exports.boolean() }).strict()).max(30).default([]).describe("Questions the agent asks when the recipe is chosen; the answers go into brief.md"),
+  material: external_exports.array(external_exports.object({
+    id: itemId,
+    label: text2(200),
+    kind: external_exports.enum(EDIT_RECIPE_MATERIAL_KINDS),
+    level: external_exports.enum(EDIT_RECIPE_LEVELS),
+    min: count.optional(),
+    max: count.optional(),
+    description: text2(2e3).optional(),
+    hints: text2(1e3).optional()
+  }).strict()).max(50).default([]),
+  structure: external_exports.object({
+    sections: external_exports.array(editRecipeSectionSchema).min(1).max(40),
+    blocks: external_exports.record(block, editRecipeBlockSchema),
+    groups: external_exports.array(external_exports.object({ id: itemId, oneOf: external_exports.array(block).min(2).max(10), note: text2(500).optional() }).strict()).max(10).default([]),
+    order: external_exports.array(block).max(30).default([]).describe("Order of the first appearance of these blocks"),
+    hook: external_exports.object({
+      untilBlock: block.optional().describe("The hook lasts until this block first appears"),
+      untilSeconds: external_exports.number().positive().max(600).optional().describe("\u2026or for this many seconds"),
+      forbidden: external_exports.array(block).max(20),
+      note: text2(500).optional()
+    }).strict().nullable().default(null),
+    endsWith: block.nullable().default(null)
+  }).strict(),
+  technical: external_exports.object({
+    profile: external_exports.string().regex(new RegExp(ITEM_PATTERN)).describe("Output profile of the brand pack (vertical, landscape)"),
+    duration: external_exports.object({
+      minSeconds: seconds,
+      maxSeconds: seconds,
+      reference: external_exports.object({ minSeconds: seconds, maxSeconds: seconds, note: text2(500) }).strict().optional()
+    }).strict(),
+    captions: external_exports.object({
+      styles: external_exports.array(external_exports.enum(EDIT_CAPTION_STYLES)).max(4),
+      required: external_exports.boolean(),
+      default: external_exports.union([external_exports.enum(EDIT_CAPTION_STYLES), external_exports.literal("none")]),
+      note: text2(1e3).optional()
+    }).strict(),
+    music: external_exports.object({ slot: external_exports.enum(["optional", "none"]), note: text2(1e3).optional() }).strict(),
+    deliverables: external_exports.object({
+      thumbnail: external_exports.boolean(),
+      chapters: external_exports.object({
+        required: external_exports.boolean(),
+        derive: block.nullable().describe("Block that starts a chapter (band_card) or null for chapters.json"),
+        introTitle: text2(100).optional(),
+        note: text2(1e3).optional()
+      }).strict().nullable(),
+      titleSuffix: external_exports.string().min(1).max(100).optional()
+    }).strict()
+  }).strict(),
+  rules: external_exports.array(external_exports.object({ id: itemId, text: text2(2e3), level: external_exports.enum(EDIT_RECIPE_LEVELS), check: external_exports.discriminatedUnion("kind", [machineCheck, editorialCheck]) }).strict()).max(60).default([]),
+  review: external_exports.object({
+    done: external_exports.array(external_exports.enum(EDIT_REVIEW_SUBJECTS)).min(1).max(EDIT_REVIEW_SUBJECTS.length).describe("Reviews the editor approves before the video is finished"),
+    report: external_exports.array(text2(1e3)).max(20).default([]).describe("What the review report of the agent must contain")
+  }).strict(),
+  capabilities: external_exports.array(itemId).max(10).default([]).describe("Capabilities of the brand pack, e.g. nei-chain"),
+  provenance: external_exports.object({
+    origin: external_exports.enum(EDIT_RECIPE_ORIGINS),
+    concept: external_exports.object({ title: text2(300) }).strict().optional(),
+    sourceProject: external_exports.object({ projectId: external_exports.string().regex(new RegExp(GUID_PATTERN2)), version: external_exports.number().int().min(1).nullable() }).strict().optional(),
+    testProjects: external_exports.array(external_exports.object({ projectId: external_exports.string().regex(new RegExp(GUID_PATTERN2)), version: external_exports.number().int().min(1).nullable(), note: text2(500).optional() }).strict()).max(20).default([])
+  }).strict().optional()
+}).strict();
+var editRecipeLockSchema = external_exports.object({
+  $schema: external_exports.string().max(500).optional(),
+  schemaVersion: external_exports.literal(EDIT_SCHEMA_VERSION),
+  kind: external_exports.literal(EDIT_RECIPE_LOCK_KIND),
+  slug,
+  version: external_exports.number().int().min(1).nullable().describe("Published catalog version; null for a draft"),
+  sha256: external_exports.string().regex(/^[0-9a-f]{64}$/),
+  source: external_exports.enum(EDIT_RECIPE_SOURCES),
+  publishedAt: external_exports.string().max(40).nullable(),
+  brandPack: external_exports.object({ id: external_exports.string().min(1).max(64), version: external_exports.string().min(1).max(40) }).strict().nullable().describe("Brand pack the recipe was applied with"),
+  lockedAt: external_exports.string().max(40),
+  recipe: editRecipeSchema
+}).strict();
+var EDIT_MATERIAL_KIND = "darkmind-material";
+var EDIT_MATERIAL_STATUSES = ["covered", "partial", "missing", "waived"];
+var editMaterialSchema = external_exports.object({
+  $schema: external_exports.string().max(500).optional(),
+  schemaVersion: external_exports.literal(EDIT_SCHEMA_VERSION),
+  kind: external_exports.literal(EDIT_MATERIAL_KIND),
+  needs: external_exports.array(external_exports.object({
+    needId: itemId.describe("ID of a material need of the recipe"),
+    status: external_exports.enum(EDIT_MATERIAL_STATUSES).describe("covered, partial, missing, or waived (the editor decided to go without)"),
+    sources: external_exports.array(external_exports.string().min(1).max(64)).max(200).default([]).describe("IDs of sources.json that cover the need"),
+    statements: external_exports.array(external_exports.string().min(1).max(64)).max(200).default([]).describe("IDs of edit.json statements that cover the need"),
+    note: external_exports.string().max(2e3).optional().describe("What is missing, or why the editor waived it")
+  }).strict()).max(100)
+}).strict();
+function canonicalRecipeJson(recipe) {
+  const { $schema: _schema, ...rest } = recipe;
+  return canonicalJson(rest);
+}
+function classifyRecipeChange(previous, next) {
+  const same = (a, b) => canonicalJson(a) === canonicalJson(b);
+  const kinds = [];
+  if (!same(previous.technical, next.technical) || !same(previous.brand, next.brand))
+    kinds.push("technical");
+  const machine = (s) => ({ blocks: s.blocks, groups: s.groups, order: s.order, hook: s.hook, endsWith: s.endsWith });
+  if (!same(machine(previous.structure), machine(next.structure)) || !same(previous.review.done, next.review.done))
+    kinds.push("structure");
+  const level = (recipe, wanted) => ({
+    rules: recipe.rules.filter((r) => r.level === wanted),
+    material: recipe.material.filter((m) => m.level === wanted)
+  });
+  if (!same(level(previous, "hard"), level(next, "hard")))
+    kinds.push("hard-rules");
+  if (!same(level(previous, "recommended"), level(next, "recommended")))
+    kinds.push("recommendations");
+  if (!kinds.length && canonicalRecipeJson(previous) !== canonicalRecipeJson(next))
+    kinds.push("text");
+  return kinds;
+}
+function parseVersion(value2) {
+  const match = /^v?(\d+)\.(\d+)\.(\d+)(?:[-+].*)?$/.exec(value2.trim());
+  return match ? [Number(match[1]), Number(match[2]), Number(match[3])] : null;
+}
+var compareVersions = (a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2];
+function parseRange(range2) {
+  const parts = range2.trim().split(/\s+/).filter(Boolean);
+  if (!parts.length)
+    return null;
+  const comparators = [];
+  for (const part of parts) {
+    const match = /^(\^|>=|<=|>|<|=)?(.+)$/.exec(part);
+    const version = match ? parseVersion(match[2]) : null;
+    if (!match || !version)
+      return null;
+    const op = match[1] ?? "=";
+    if (op === "^") {
+      const upper = version[0] > 0 ? [version[0] + 1, 0, 0] : version[1] > 0 ? [0, version[1] + 1, 0] : [0, 0, version[2] + 1];
+      comparators.push({ op: ">=", version }, { op: "<", version: upper });
+    } else
+      comparators.push({ op, version });
+  }
+  return comparators;
+}
+function isVersionRange(range2) {
+  return parseRange(range2) !== null;
+}
+function satisfiesVersionRange(version, range2) {
+  const v = parseVersion(version);
+  const comparators = parseRange(range2);
+  if (!v || !comparators)
+    return false;
+  return comparators.every(({ op, version: c }) => {
+    const d = compareVersions(v, c);
+    return op === ">=" ? d >= 0 : op === ">" ? d > 0 : op === "<=" ? d <= 0 : op === "<" ? d < 0 : d === 0;
+  });
+}
+function zodPath(path33) {
+  return path33.map((part, i) => typeof part === "number" ? `[${part}]` : i === 0 ? part : `.${part}`).join("");
+}
+function duplicates(values) {
+  const seen = /* @__PURE__ */ new Set();
+  return [...new Set(values.filter((value2) => seen.has(value2) || !seen.add(value2)))];
+}
+function validateRecipe(document, catalog) {
+  const parsed = editRecipeSchema.safeParse(document);
+  if (!parsed.success) {
+    return { valid: false, recipe: null, issues: parsed.error.issues.map((issue) => ({ path: zodPath(issue.path), code: "recipe-schema", message: issue.message })) };
+  }
+  const recipe = parsed.data;
+  const issues = [];
+  const add = (path33, code, message) => issues.push({ path: path33, code, message });
+  const { structure, technical } = recipe;
+  const blocks = structure.blocks;
+  const known = (name) => Object.prototype.hasOwnProperty.call(blocks, name);
+  if (new TextEncoder().encode(canonicalRecipeJson(recipe)).length > EDIT_RECIPE_MAX_BYTES)
+    add("", "recipe-too-large", `the recipe is larger than ${EDIT_RECIPE_MAX_BYTES / 1024} KB`);
+  if (!isVersionRange(recipe.brand.versions))
+    add("brand.versions", "recipe-brand-range", `"${recipe.brand.versions}" is no version range (e.g. ">=0.7.0 <1.0.0" or "^0.7.0")`);
+  for (const [list2, values] of [
+    ["structure.sections", structure.sections.map((s) => s.id)],
+    ["material", recipe.material.map((m) => m.id)],
+    ["briefing", recipe.briefing.map((b) => b.id)],
+    ["rules", recipe.rules.map((r) => r.id)],
+    ["structure.groups", structure.groups.map((g) => g.id)]
+  ]) {
+    for (const dup of duplicates([...values]))
+      add(list2, "recipe-duplicate-id", `ID "${dup}" is used more than once`);
+  }
+  for (const [name, spec] of Object.entries(blocks)) {
+    if (spec.min !== void 0 && spec.max !== void 0 && spec.min > spec.max)
+      add(`structure.blocks.${name}`, "recipe-block-count", "min is greater than max");
+    if (spec.use === "optional" && spec.min !== void 0 && spec.min > 0)
+      add(`structure.blocks.${name}`, "recipe-block-count", "an optional block has no minimum");
+  }
+  const materialIds = new Set(recipe.material.map((m) => m.id));
+  structure.sections.forEach((section, i) => {
+    for (const name of section.blocks)
+      if (!known(name))
+        add(`structure.sections[${i}].blocks`, "recipe-block-unlisted", `"${name}" is not in structure.blocks`);
+    for (const need of section.material)
+      if (!materialIds.has(need))
+        add(`structure.sections[${i}].material`, "recipe-material-unknown", `"${need}" is no material need of the recipe`);
+    const d = section.duration;
+    if (d?.minSeconds !== void 0 && d.maxSeconds !== void 0 && d.minSeconds > d.maxSeconds)
+      add(`structure.sections[${i}].duration`, "recipe-duration", "minSeconds is greater than maxSeconds");
+  });
+  for (const name of structure.order)
+    if (!known(name))
+      add("structure.order", "recipe-block-unlisted", `"${name}" is not in structure.blocks`);
+  for (const dup of duplicates(structure.order))
+    add("structure.order", "recipe-duplicate-id", `"${dup}" appears twice`);
+  if (structure.endsWith && !known(structure.endsWith))
+    add("structure.endsWith", "recipe-block-unlisted", `"${structure.endsWith}" is not in structure.blocks`);
+  structure.groups.forEach((group, i) => {
+    for (const name of group.oneOf)
+      if (!known(name))
+        add(`structure.groups[${i}].oneOf`, "recipe-block-unlisted", `"${name}" is not in structure.blocks`);
+  });
+  const hook = structure.hook;
+  if (hook) {
+    if (hook.untilBlock === void 0 === (hook.untilSeconds === void 0))
+      add("structure.hook", "recipe-hook", "the hook needs exactly one of untilBlock and untilSeconds");
+    if (hook.untilBlock && !known(hook.untilBlock))
+      add("structure.hook.untilBlock", "recipe-block-unlisted", `"${hook.untilBlock}" is not in structure.blocks`);
+  }
+  if (technical.duration.minSeconds >= technical.duration.maxSeconds)
+    add("technical.duration", "recipe-duration", "minSeconds must be smaller than maxSeconds");
+  const ref = technical.duration.reference;
+  if (ref && ref.minSeconds > ref.maxSeconds)
+    add("technical.duration.reference", "recipe-duration", "minSeconds is greater than maxSeconds");
+  const captions = technical.captions;
+  if (captions.required && !captions.styles.length)
+    add("technical.captions", "recipe-captions", "required captions need at least one style");
+  if (captions.default !== "none" && !captions.styles.includes(captions.default))
+    add("technical.captions.default", "recipe-captions", `"${captions.default}" is not one of the styles`);
+  const chapters2 = technical.deliverables.chapters;
+  if (chapters2?.derive && !known(chapters2.derive))
+    add("technical.deliverables.chapters.derive", "recipe-block-unlisted", `"${chapters2.derive}" is not in structure.blocks`);
+  const stillBlocks = Object.entries(blocks).filter(([, spec]) => spec.still).map(([name]) => name);
+  if (technical.deliverables.thumbnail !== stillBlocks.some((name) => blocks[name].use === "required")) {
+    add("technical.deliverables.thumbnail", "recipe-thumbnail", "deliverables.thumbnail must match a required still block (thumbnail) in structure.blocks");
+  }
+  recipe.material.forEach((need, i) => {
+    if (need.min !== void 0 && need.max !== void 0 && need.min > need.max)
+      add(`material[${i}]`, "recipe-material-count", "min is greater than max");
+  });
+  if (catalog) {
+    if (recipe.brand.pack !== catalog.brand.id)
+      add("brand.pack", "recipe-brand-pack", `the recipe is made for brand pack "${recipe.brand.pack}", this is "${catalog.brand.id}"`);
+    else if (isVersionRange(recipe.brand.versions) && !satisfiesVersionRange(catalog.brand.version, recipe.brand.versions)) {
+      add("brand.versions", "recipe-brand-incompatible", `brand pack ${catalog.brand.version} is outside the recipe's range "${recipe.brand.versions}"`);
+    }
+    const profile = catalog.profiles[technical.profile];
+    if (!profile)
+      add("technical.profile", "recipe-unknown-profile", `unknown profile "${technical.profile}" (brand pack: ${Object.keys(catalog.profiles).join(", ")})`);
+    for (const [name, spec] of Object.entries(blocks)) {
+      const entry = catalog.blocks[name];
+      if (!entry) {
+        add(`structure.blocks.${name}`, "recipe-unknown-block", `unknown block "${name}" (not in brand pack ${catalog.brand.version})`);
+        continue;
+      }
+      if (entry.still !== Boolean(spec.still))
+        add(`structure.blocks.${name}.still`, "recipe-block-still", `still must be ${entry.still} for ${name}`);
+      if (profile && entry.profiles && !entry.profiles.includes(technical.profile))
+        add(`structure.blocks.${name}`, "recipe-block-profile", `${name} is made for ${entry.profiles.join("/")}, the recipe renders ${technical.profile}`);
+    }
+    for (const style of captions.styles)
+      if (!catalog.captionStyles.includes(style))
+        add("technical.captions.styles", "recipe-captions", `caption style "${style}" is not offered by the brand pack`);
+    if (chapters2?.derive && !catalog.chapterDerivations.includes(chapters2.derive))
+      add("technical.deliverables.chapters.derive", "recipe-chapters", `chapters cannot be derived from "${chapters2.derive}" (brand pack: ${catalog.chapterDerivations.join(", ") || "none"})`);
+    recipe.rules.forEach((rule, i) => {
+      if (rule.check.kind !== "machine")
+        return;
+      const check2 = catalog.checks[rule.check.id];
+      if (!check2) {
+        add(`rules[${i}].check.id`, "recipe-unknown-check", `unknown check "${rule.check.id}" (brand pack: ${Object.keys(catalog.checks).join(", ") || "none"}); new checks come with a brand pack release`);
+        return;
+      }
+      for (const key of Object.keys(rule.check.params))
+        if (!Object.prototype.hasOwnProperty.call(check2.params, key))
+          add(`rules[${i}].check.params.${key}`, "recipe-check-params", `check ${rule.check.id} has no parameter "${key}"`);
+    });
+    for (const capability of recipe.capabilities)
+      if (!catalog.capabilities[capability])
+        add("capabilities", "recipe-unknown-capability", `unknown capability "${capability}" (brand pack: ${Object.keys(catalog.capabilities).join(", ") || "none"})`);
+  }
+  return { valid: issues.length === 0, recipe, issues };
+}
+var cell = (value2) => value2.replace(/\|/g, "\\|").replace(/\r?\n/g, " ");
+var list = (values) => values.map((v) => `\`${v}\``).join(", ");
+var range = (min, max) => min !== void 0 && max !== void 0 ? min === max ? `${min}` : `${min}\u2013${max}` : min !== void 0 ? `\u2265 ${min}` : max !== void 0 ? `\u2264 ${max}` : "\u2013";
+function formatSeconds(value2) {
+  if (value2 >= 120 && value2 % 60 === 0)
+    return `${value2 / 60} min`;
+  return `${value2} s`;
+}
+function renderRecipeMarkdown(recipe, meta = { version: null }, catalog) {
+  const out = [];
+  const { structure, technical } = recipe;
+  out.push(`# Recipe \`${recipe.meta.id}\` \u2013 ${recipe.meta.title}`, "", recipe.meta.summary, "");
+  const version = meta.version === null ? "local draft" : `version ${meta.version}${meta.publishedAt ? ` (published ${meta.publishedAt})` : ""}`;
+  out.push(`${version}${meta.sha256 ? ` \xB7 SHA-256 \`${meta.sha256.slice(0, 12)}\u2026\`` : ""} \xB7 brand pack \`${recipe.brand.pack}\` ${recipe.brand.versions}${recipe.meta.tags.length ? ` \xB7 tags: ${recipe.meta.tags.join(", ")}` : ""}`, "");
+  out.push("> The recipe is the base pattern of the format. Deviations the editor asks for are allowed and expected \u2013 the", "> recipe check reports them (`deviation`). The limits of the brand pack (brand layer, loudness) are never broken.", "");
+  out.push("## Concept", "", recipe.concept.idea, "");
+  if (recipe.concept.audience)
+    out.push(`- **Audience:** ${recipe.concept.audience}`);
+  if (recipe.concept.tone)
+    out.push(`- **Tone:** ${recipe.concept.tone}`);
+  if (recipe.concept.platforms.length)
+    out.push(`- **Platforms:** ${recipe.concept.platforms.join(", ")}`);
+  for (const ref of recipe.concept.references)
+    out.push(`- **Reference:** ${ref.note}${ref.videoId ? ` (Dark Mind video ${ref.videoId})` : ""}${ref.url ? ` \u2013 ${ref.url}` : ""}`);
+  if (recipe.concept.audience || recipe.concept.tone || recipe.concept.platforms.length || recipe.concept.references.length)
+    out.push("");
+  const profile = catalog?.profiles[technical.profile];
+  out.push("## Technical", "", "| | |", "|---|---|");
+  out.push(`| Profile | \`${technical.profile}\`${profile ? ` \u2013 ${profile.width} \xD7 ${profile.height}, ${profile.fps.replace(/\/1$/, "")} fps` : ""}; loudness from the brand pack (\`audio_master\`) |`);
+  const d = technical.duration;
+  out.push(`| Duration frame | ${formatSeconds(d.minSeconds)} \u2013 ${formatSeconds(d.maxSeconds)}${d.reference ? ` (reference ${formatSeconds(d.reference.minSeconds)} \u2013 ${formatSeconds(d.reference.maxSeconds)}: ${cell(d.reference.note)})` : ""} |`);
+  const c = technical.captions;
+  out.push(`| Captions | ${c.styles.length ? `${c.styles.map((s) => `\`${s}\``).join(" or ")}${c.required ? ", required" : ", optional"}; default ${c.default === "none" ? "none" : `\`${c.default}\``}` : "none"}${c.note ? ` \u2013 ${cell(c.note)}` : ""} |`);
+  out.push(`| Music | ${technical.music.slot === "optional" ? "optional slot (audio track with role `music`, rights documented in sources.json)" : "no music"}${technical.music.note ? ` \u2013 ${cell(technical.music.note)}` : ""} |`);
+  const deliverables = ["the video"];
+  if (technical.deliverables.thumbnail)
+    deliverables.push("the thumbnail");
+  const ch = technical.deliverables.chapters;
+  if (ch?.required)
+    deliverables.push(`the YouTube chapter list (${ch.derive ? `derived from \`${ch.derive}\`` : "from chapters.json"})`);
+  out.push(`| Deliverables | ${deliverables.join(", ")}${technical.deliverables.titleSuffix ? `; title ends with "${cell(technical.deliverables.titleSuffix)}"` : ""} |`);
+  out.push("");
+  if (ch?.note)
+    out.push(`Chapters: ${ch.note}`, "");
+  if (recipe.briefing.length) {
+    out.push("## Brief \u2013 ask the editor", "");
+    for (const q of recipe.briefing)
+      out.push(`- ${q.required ? "**(required)** " : ""}${q.question}`);
+    out.push("");
+  }
+  if (recipe.material.length) {
+    out.push("## Material", "", "| Need | Kind | Level | Count | Description |", "|------|------|-------|-------|-------------|");
+    for (const m of recipe.material)
+      out.push(`| \`${m.id}\` ${cell(m.label)} | ${m.kind} | ${m.level} | ${range(m.min, m.max)} | ${cell([m.description, m.hints ? `Hints: ${m.hints}` : void 0].filter(Boolean).join(" "))} |`);
+    out.push("");
+  }
+  out.push("## Structure", "");
+  structure.sections.forEach((s, i) => {
+    const sd = s.duration;
+    const length2 = sd ? [sd.targetSeconds !== void 0 ? `~${formatSeconds(sd.targetSeconds)}` : null, sd.minSeconds !== void 0 || sd.maxSeconds !== void 0 ? range(sd.minSeconds, sd.maxSeconds) + " s" : null].filter(Boolean).join(", ") : "";
+    out.push(`### ${i + 1}. ${s.title}${length2 ? ` (${length2})` : ""}`, "", s.purpose, "");
+    if (s.blocks.length)
+      out.push(`- Blocks: ${list(s.blocks)}`);
+    if (s.material.length)
+      out.push(`- Material: ${list(s.material)}`);
+    for (const note of s.notes)
+      out.push(`- ${note}`);
+    if (s.blocks.length || s.material.length || s.notes.length)
+      out.push("");
+  });
+  out.push("### Blocks", "", "| Block | Use | Count (whole video) | Required parameters | Role |", "|-------|-----|---------------------|---------------------|------|");
+  for (const [name, spec] of Object.entries(structure.blocks)) {
+    const n = spec.use === "required" ? range(spec.min ?? 1, spec.max) : range(void 0, spec.max);
+    out.push(`| \`${name}\`${spec.still ? " (still image, never on a track)" : ""} | ${spec.use} | ${n} | ${spec.parameters?.required.length ? list(spec.parameters.required) : "\u2013"} | ${spec.role ? cell(spec.role) : ""} |`);
+  }
+  out.push("");
+  const checks = [];
+  if (structure.order.length)
+    checks.push(`order of the first appearance: ${structure.order.map((b) => `\`${b}\``).join(" \u2192 ")}`);
+  if (structure.endsWith)
+    checks.push(`the video ends with \`${structure.endsWith}\``);
+  if (structure.hook) {
+    const until = structure.hook.untilBlock ? `until the first \`${structure.hook.untilBlock}\`` : `the first ${structure.hook.untilSeconds} s`;
+    checks.push(`hook (${until}): no ${list(structure.hook.forbidden)}${structure.hook.note ? ` \u2013 ${structure.hook.note}` : ""}`);
+  }
+  for (const g of structure.groups)
+    checks.push(`exactly one of ${list(g.oneOf)}${g.note ? ` (${g.note})` : ""}`);
+  if (checks.length) {
+    out.push("The recipe check reports deviations from:", "");
+    for (const line of checks)
+      out.push(`- ${line}`);
+    out.push("");
+  }
+  if (recipe.rules.length) {
+    out.push("## Rules", "");
+    for (const level of ["hard", "recommended"]) {
+      const rules = recipe.rules.filter((r) => r.level === level);
+      if (!rules.length)
+        continue;
+      out.push(level === "hard" ? "**Part of the format** (a miss is a deviation \u2013 only when the editor asks for it, and reported):" : "**Recommended:**", "");
+      for (const r of rules) {
+        const how = r.check.kind === "machine" ? ` _(checked: \`${r.check.id}\`${Object.keys(r.check.params).length ? ` ${JSON.stringify(r.check.params)}` : ""})_` : "";
+        out.push(`- \`${r.id}\` ${r.text}${how}`);
+      }
+      out.push("");
+    }
+  }
+  out.push("## Reviews and done", "");
+  out.push(`Done when the editor approved: ${list(recipe.review.done)} (outside the duration frame also \`duration-exception\`; \`captions-text\` counts as done without captions).`);
+  if (recipe.review.report.length) {
+    out.push("", "The review report names:", "");
+    for (const item of recipe.review.report)
+      out.push(`- ${item}`);
+  }
+  out.push("");
+  if (recipe.capabilities.length) {
+    out.push("## Capabilities of the brand pack", "");
+    for (const name of recipe.capabilities) {
+      const cap = catalog?.capabilities[name];
+      out.push(`- \`${name}\`${cap ? ` \u2013 ${cap.description}${cap.guide ? ` Guide: \`brand/${cap.guide}\`.` : ""}${cap.tool ? ` Tool: \`brand/${cap.tool}\`.` : ""}` : ""}`);
+    }
+    out.push("");
+  }
+  out.push("Placing the blocks on the timeline (sting and logo end with video and audio clip, wipes instead of cuts, still images): `brand/README.md` of the brand pack.", "");
+  return `${out.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd()}
+`;
+}
+
 // ../shared/dist/editing-pipeline/validate.js
 var Issues = class {
   constructor() {
     this.list = [];
   }
-  add(severity, code, file, path32, message, ref) {
-    this.list.push({ severity, code, file, path: path32, message, ...ref ? { ref } : {} });
+  add(severity, code, file, path33, message, ref) {
+    this.list.push({ severity, code, file, path: path33, message, ...ref ? { ref } : {} });
   }
-  error(code, file, path32, message, ref) {
-    this.add("error", code, file, path32, message, ref);
+  error(code, file, path33, message, ref) {
+    this.add("error", code, file, path33, message, ref);
   }
-  pending(code, file, path32, message, ref) {
-    this.add("pending", code, file, path32, message, ref);
+  pending(code, file, path33, message, ref) {
+    this.add("pending", code, file, path33, message, ref);
   }
-  warning(code, file, path32, message, ref) {
-    this.add("warning", code, file, path32, message, ref);
+  warning(code, file, path33, message, ref) {
+    this.add("warning", code, file, path33, message, ref);
   }
 };
-function formatIssuePath(path32) {
-  return path32.reduce((text2, part) => typeof part === "number" ? `${text2}[${part}]` : text2 ? `${text2}.${part}` : String(part), "");
+function formatIssuePath(path33) {
+  return path33.reduce((text3, part) => typeof part === "number" ? `${text3}[${part}]` : text3 ? `${text3}.${part}` : String(part), "");
 }
-function refAt(value2, path32) {
+function refAt(value2, path33) {
   let current = value2;
   let ref;
-  for (const part of path32) {
+  for (const part of path33) {
     if (current === null || typeof current !== "object")
       break;
     current = current[part];
@@ -4900,12 +5758,12 @@ function formatEditIssue(issue) {
   return `${issue.severity} ${where}${issue.ref ? ` (${issue.ref})` : ""}: ${issue.message} [${issue.code}]`;
 }
 async function loadArtifact(reader, issues, kind, file) {
-  const text2 = await reader.readText(file);
-  if (text2 === null)
+  const text3 = await reader.readText(file);
+  if (text3 === null)
     return { status: "missing" };
   let raw;
   try {
-    raw = JSON.parse(text2.charCodeAt(0) === 65279 ? text2.slice(1) : text2);
+    raw = JSON.parse(text3.charCodeAt(0) === 65279 ? text3.slice(1) : text3);
   } catch (error) {
     issues.error("invalid-json", file, "", `is not valid JSON: ${error instanceof Error ? error.message : String(error)}`);
     return { status: "invalid" };
@@ -4932,15 +5790,15 @@ async function loadArtifact(reader, issues, kind, file) {
   }
   return { status: "ok", value: result.data, raw };
 }
-function topFolder(path32) {
-  return path32.split("/")[0].toLowerCase();
+function topFolder(path33) {
+  return path33.split("/")[0].toLowerCase();
 }
-function unsyncedFolderError(path32) {
-  const top = topFolder(path32);
+function unsyncedFolderError(path33) {
+  const top = topFolder(path33);
   if (top === EDIT_FOLDERS.renders || top === EDIT_FOLDERS.media || top === EDIT_FOLDERS.localState) {
     return `must not be in ${top}/ (not part of the project sync)`;
   }
-  if (path32.toLowerCase() === "darkmind.json")
+  if (path33.toLowerCase() === "darkmind.json")
     return "darkmind.json is local sync state, not a pipeline artefact";
   return null;
 }
@@ -4967,6 +5825,72 @@ function rq(value2) {
 }
 function sameRange(aIn, aOut, bIn, bOut) {
   return compareQ(rq(aIn), rq(bIn)) === 0 && compareQ(rq(aOut), rq(bOut)) === 0;
+}
+async function validateMaterial(reader, issues, sources, statements) {
+  const file = EDIT_RECIPE_FILES.material;
+  const text3 = await reader.readText(file);
+  if (text3 === null)
+    return;
+  let raw;
+  try {
+    raw = JSON.parse(text3.charCodeAt(0) === 65279 ? text3.slice(1) : text3);
+  } catch (error) {
+    issues.error("invalid-json", file, "", `is not valid JSON: ${error instanceof Error ? error.message : String(error)}`);
+    return;
+  }
+  const parsed = editMaterialSchema.safeParse(raw);
+  if (!parsed.success) {
+    for (const issue of parsed.error.issues.slice(0, 20))
+      issues.error("schema", file, formatIssuePath(issue.path), issue.message);
+    return;
+  }
+  const seen = /* @__PURE__ */ new Set();
+  parsed.data.needs.forEach((need, index) => {
+    if (seen.has(need.needId))
+      issues.error("duplicate-id", file, `needs[${index}].needId`, `need "${need.needId}" is listed twice`, need.needId);
+    seen.add(need.needId);
+    need.sources.forEach((id2, i) => {
+      if (sources && !sources.has(id2))
+        issues.error("unknown-source", file, `needs[${index}].sources[${i}]`, `source "${id2}" is not in sources.json`, need.needId);
+    });
+    need.statements.forEach((id2, i) => {
+      if (statements && !statements.has(id2))
+        issues.error("unknown-statement", file, `needs[${index}].statements[${i}]`, `statement "${id2}" is not in edit.json`, need.needId);
+    });
+    if (need.status === "covered" && !need.sources.length && !need.statements.length)
+      issues.warning("material-unreferenced", file, `needs[${index}]`, "a covered need names no source or statement", need.needId);
+  });
+}
+async function validateRecipeLock(reader, issues, projectFile, recipe) {
+  const file = EDIT_RECIPE_FILES.lock;
+  const text3 = await reader.readText(file);
+  if (text3 === null) {
+    issues.error("recipe-lock-missing", file, "", `does not exist, but ${projectFile} names recipe "${recipe.id}"; apply the recipe again with darkmind-agent recipe (never write the lock by hand)`);
+    return;
+  }
+  let raw;
+  try {
+    raw = JSON.parse(text3.charCodeAt(0) === 65279 ? text3.slice(1) : text3);
+  } catch (error) {
+    issues.error("invalid-json", file, "", `is not valid JSON: ${error instanceof Error ? error.message : String(error)}`);
+    return;
+  }
+  const parsed = editRecipeLockSchema.safeParse(raw);
+  if (!parsed.success) {
+    for (const issue of parsed.error.issues.slice(0, 20))
+      issues.error("schema", file, formatIssuePath(issue.path), issue.message);
+    return;
+  }
+  const lock = parsed.data;
+  const mismatch = [
+    lock.slug !== recipe.id || lock.recipe.meta.id !== recipe.id ? `recipe "${lock.slug}"` : null,
+    lock.version !== recipe.version ? `version ${lock.version ?? "draft"}` : null,
+    lock.source !== recipe.source ? `source ${lock.source}` : null,
+    lock.sha256 !== recipe.sha256 ? "another SHA-256" : null
+  ].filter(Boolean);
+  if (mismatch.length) {
+    issues.error("recipe-lock-mismatch", file, "", `holds ${mismatch.join(", ")} than ${projectFile} recipe (${recipe.id} ${recipe.version ?? "draft"}); apply the recipe again with darkmind-agent recipe`);
+  }
 }
 async function validateEditProject(reader, options = {}) {
   const issues = new Issues();
@@ -5005,17 +5929,19 @@ async function validateEditProject(reader, options = {}) {
   if (project.duration && project.duration.minSeconds > project.duration.maxSeconds) {
     issues.error("duration-frame", projectFile, "duration", "minSeconds must not be greater than maxSeconds");
   }
+  if (project.recipe)
+    await validateRecipeLock(reader, issues, projectFile, project.recipe);
   const artifactEntries = Object.entries(project.artifacts);
   const seenArtifactPaths = /* @__PURE__ */ new Map();
-  for (const [key, path32] of artifactEntries) {
-    if (!path32)
+  for (const [key, path33] of artifactEntries) {
+    if (!path33)
       continue;
-    const folderError = unsyncedFolderError(path32);
+    const folderError = unsyncedFolderError(path33);
     if (folderError)
-      issues.error("path-not-synced", projectFile, `artifacts.${key}`, `"${path32}" ${folderError}`);
-    const lower = path32.toLowerCase();
+      issues.error("path-not-synced", projectFile, `artifacts.${key}`, `"${path33}" ${folderError}`);
+    const lower = path33.toLowerCase();
     if (seenArtifactPaths.has(lower))
-      issues.error("duplicate-path", projectFile, `artifacts.${key}`, `"${path32}" is also artifacts.${seenArtifactPaths.get(lower)}`);
+      issues.error("duplicate-path", projectFile, `artifacts.${key}`, `"${path33}" is also artifacts.${seenArtifactPaths.get(lower)}`);
     else
       seenArtifactPaths.set(lower, key);
   }
@@ -5062,15 +5988,15 @@ async function validateEditProject(reader, options = {}) {
   const brollIds = /* @__PURE__ */ new Set();
   const usedSourceIds2 = /* @__PURE__ */ new Set();
   const editIds = /* @__PURE__ */ new Map();
-  const claimEditId = (itemId, where) => {
-    if (editIds.has(itemId)) {
-      issues.error("duplicate-id", editFile, `${where}.id`, `duplicates ${editIds.get(itemId)}.id`, itemId);
+  const claimEditId = (itemId2, where) => {
+    if (editIds.has(itemId2)) {
+      issues.error("duplicate-id", editFile, `${where}.id`, `duplicates ${editIds.get(itemId2)}.id`, itemId2);
       return false;
     }
-    editIds.set(itemId, where);
+    editIds.set(itemId2, where);
     return true;
   };
-  const checkSourceRange = (file, where, ref, sourceId, range) => {
+  const checkSourceRange = (file, where, ref, sourceId, range2) => {
     if (sourceId !== null) {
       if (!sourceById.has(sourceId)) {
         if (sources)
@@ -5078,9 +6004,9 @@ async function validateEditProject(reader, options = {}) {
       } else
         usedSourceIds2.add(sourceId);
     }
-    if (range) {
-      const rIn = rq(range.in);
-      const rOut = rq(range.out);
+    if (range2) {
+      const rIn = rq(range2.in);
+      const rOut = rq(range2.out);
       if (compareQ(rOut, rIn) <= 0)
         issues.error("range-invalid", file, `${where}.range.out`, "must be after range.in", ref);
       const media = sourceId ? sourceMedia(sourceId) : null;
@@ -5135,55 +6061,55 @@ async function validateEditProject(reader, options = {}) {
   const extensionById = /* @__PURE__ */ new Map();
   const extensionPaths = /* @__PURE__ */ new Set();
   const outputPaths = /* @__PURE__ */ new Map();
-  for (const [index, path32] of project.extensions.entries()) {
+  for (const [index, path33] of project.extensions.entries()) {
     const where = `extensions[${index}]`;
-    if (topFolder(path32) !== EDIT_FOLDERS.extensions || !path32.toLowerCase().endsWith(".json")) {
-      issues.error("extension-path", projectFile, where, `"${path32}" must be a .json file under ${EDIT_FOLDERS.extensions}/`);
+    if (topFolder(path33) !== EDIT_FOLDERS.extensions || !path33.toLowerCase().endsWith(".json")) {
+      issues.error("extension-path", projectFile, where, `"${path33}" must be a .json file under ${EDIT_FOLDERS.extensions}/`);
       continue;
     }
-    if (extensionPaths.has(path32.toLowerCase())) {
-      issues.error("duplicate-path", projectFile, where, `"${path32}" is listed twice`);
+    if (extensionPaths.has(path33.toLowerCase())) {
+      issues.error("duplicate-path", projectFile, where, `"${path33}" is listed twice`);
       continue;
     }
-    extensionPaths.add(path32.toLowerCase());
-    const loaded = await loadArtifact(reader, issues, "extension", path32);
+    extensionPaths.add(path33.toLowerCase());
+    const loaded = await loadArtifact(reader, issues, "extension", path33);
     if (loaded.status === "missing")
-      issues.error("missing-file", projectFile, where, `"${path32}" does not exist`);
+      issues.error("missing-file", projectFile, where, `"${path33}" does not exist`);
     if (loaded.status !== "ok")
       continue;
     const extension = loaded.value;
     if (extensionById.has(extension.id)) {
-      issues.error("duplicate-id", path32, "id", `extension "${extension.id}" is also defined in ${extensionById.get(extension.id).file}`, extension.id);
+      issues.error("duplicate-id", path33, "id", `extension "${extension.id}" is also defined in ${extensionById.get(extension.id).file}`, extension.id);
       continue;
     }
-    extensionById.set(extension.id, { extension, file: path32 });
+    extensionById.set(extension.id, { extension, file: path33 });
     const out = extension.output;
     if (!out.path.toLowerCase().startsWith(`${EDIT_EXTENSION_OUTPUT_FOLDER}/`)) {
-      issues.error("extension-output-path", path32, "output.path", `"${out.path}" must be under ${EDIT_EXTENSION_OUTPUT_FOLDER}/ (reproducible, not synced, separate from the render outputs)`, extension.id);
+      issues.error("extension-output-path", path33, "output.path", `"${out.path}" must be under ${EDIT_EXTENSION_OUTPUT_FOLDER}/ (reproducible, not synced, separate from the render outputs)`, extension.id);
     } else if (outputPaths.has(out.path.toLowerCase())) {
-      issues.error("duplicate-path", path32, "output.path", `"${out.path}" is also the output of extension "${outputPaths.get(out.path.toLowerCase())}"`, extension.id);
+      issues.error("duplicate-path", path33, "output.path", `"${out.path}" is also the output of extension "${outputPaths.get(out.path.toLowerCase())}"`, extension.id);
     } else
       outputPaths.set(out.path.toLowerCase(), extension.id);
     const extFps = rq(out.fps);
     if (extFps.d !== 1n || extFps.n < 1n || extFps.n > BigInt(EDIT_MAX_FPS)) {
-      issues.error("unsupported-fps", path32, "output.fps", `must be a whole frame rate between 1 and ${EDIT_MAX_FPS}`, extension.id);
+      issues.error("unsupported-fps", path33, "output.fps", `must be a whole frame rate between 1 and ${EDIT_MAX_FPS}`, extension.id);
     }
     for (const [inputIndex, input] of extension.inputs.entries()) {
       const inputWhere = `inputs[${inputIndex}]`;
       if (input.kind === "file") {
         const folderError = unsyncedFolderError(input.path);
         if (folderError)
-          issues.error("undeclared-input-path", path32, `${inputWhere}.path`, `"${input.path}" ${folderError}; declare rendered inputs as kind "extension"`, extension.id);
+          issues.error("undeclared-input-path", path33, `${inputWhere}.path`, `"${input.path}" ${folderError}; declare rendered inputs as kind "extension"`, extension.id);
         else if (!await reader.exists(input.path)) {
-          issues.error("missing-file", path32, `${inputWhere}.path`, `"${input.path}" does not exist (restore it from the project archive; saved inputs such as AI media are never regenerated automatically)`, extension.id);
+          issues.error("missing-file", path33, `${inputWhere}.path`, `"${input.path}" does not exist (restore it from the project archive; saved inputs such as AI media are never regenerated automatically)`, extension.id);
         }
       } else if (input.kind === "source") {
         if (!sourceById.has(input.sourceId) && sources)
-          issues.error("unknown-source", path32, `${inputWhere}.sourceId`, `source "${input.sourceId}" is not in ${sourcesFile}`, extension.id);
+          issues.error("unknown-source", path33, `${inputWhere}.sourceId`, `source "${input.sourceId}" is not in ${sourcesFile}`, extension.id);
       }
     }
     if (extension.sceneId && !sceneById.has(extension.sceneId) && edit) {
-      issues.error("unknown-item", path32, "sceneId", `"${extension.sceneId}" is not a scene in ${editFile}`, extension.id);
+      issues.error("unknown-item", path33, "sceneId", `"${extension.sceneId}" is not a scene in ${editFile}`, extension.id);
     }
   }
   for (const { extension, file } of extensionById.values()) {
@@ -5203,6 +6129,7 @@ async function validateEditProject(reader, options = {}) {
       issues.error("unknown-extension", editFile, `sequence[${index}].extensionId`, `extension "${item.extensionId}" is not listed in project.json extensions`, sceneId);
     }
   }
+  await validateMaterial(reader, issues, sources ? sourceById : null, edit ? statementById : null);
   const timelineFile = project.artifacts.timeline;
   const timelineLoaded = await loadArtifact(reader, issues, "timeline", timelineFile);
   if (timelineLoaded.status === "missing")
@@ -5241,10 +6168,10 @@ async function validateEditProject(reader, options = {}) {
     if (captions.captions.length === 0 && statementById.size > 0)
       issues.warning("no-captions", captionsFile, "captions", "the project has statements but no captions");
     if (isBrandCaptionStyle(captions.style) && captions.captions.length > 0) {
-      const block = EDIT_BRAND_CAPTION_BLOCKS[captions.style];
+      const block2 = EDIT_BRAND_CAPTION_BLOCKS[captions.style];
       const readers = [...extensionInputClosure([...usedExtensionIds], extensionById).extensions].filter((id2) => extensionById.get(id2)?.extension.inputs.some((input) => input.kind === "file" && input.path.toLowerCase() === captionsFile.toLowerCase()));
       if (timeline && readers.length === 0) {
-        issues.warning("brand-captions-unrendered", captionsFile, "style", `style "${captions.style}" is rendered only by the brand block ${block} (an extension that declares ${captionsFile} as input, placed on an overlay track); no extension on the timeline reads the captions, so they would not appear`);
+        issues.warning("brand-captions-unrendered", captionsFile, "style", `style "${captions.style}" is rendered only by the brand block ${block2} (an extension that declares ${captionsFile} as input, placed on an overlay track); no extension on the timeline reads the captions, so they would not appear`);
       }
       if (captions.style === "brand-word") {
         captions.captions.forEach((caption, index) => {
@@ -5566,8 +6493,8 @@ function validateTimeline(ctx) {
       scenesOnMain.set(clip.sceneId, clip);
   }
   const placements = [
-    ...[...seen].map(([itemId, clip]) => ({ itemId, clip, index: ctx.statementById.get(itemId).index })),
-    ...[...scenesOnMain].map(([itemId, clip]) => ({ itemId, clip, index: ctx.sceneById.get(itemId).index }))
+    ...[...seen].map(([itemId2, clip]) => ({ itemId: itemId2, clip, index: ctx.statementById.get(itemId2).index })),
+    ...[...scenesOnMain].map(([itemId2, clip]) => ({ itemId: itemId2, clip, index: ctx.sceneById.get(itemId2).index }))
   ].sort((a, b) => a.clip.start - b.clip.start || a.index - b.index);
   let last = null;
   for (const placement of placements) {
@@ -5587,8 +6514,8 @@ function validateTimeline(ctx) {
   }
   const duration = project.duration;
   if (duration) {
-    const seconds = toNumberQ(framesToSeconds(total, fps));
-    if (seconds < duration.minSeconds || seconds > duration.maxSeconds) {
+    const seconds2 = toNumberQ(framesToSeconds(total, fps));
+    if (seconds2 < duration.minSeconds || seconds2 > duration.maxSeconds) {
       issues.warning("duration-out-of-range", file, "", `timeline is ${formatRationalReadable(framesToSeconds(total, fps), 3)} s (${total} frames), outside the frame ${duration.minSeconds}\u2013${duration.maxSeconds} s; needs an explicit exception by the editor (no automatic truncation)`);
     }
   }
@@ -5884,8 +6811,8 @@ function originOf(clip) {
     speakerRole: str(clip.speakerRole, 400)
   };
 }
-function pad(index, count) {
-  return String(index).padStart(Math.max(2, String(count).length), "0");
+function pad(index, count2) {
+  return String(index).padStart(Math.max(2, String(count2).length), "0");
 }
 function isGenerated(origin) {
   return origin.sourceVideoId?.trim().toUpperCase() === "GENERATED" || Boolean(origin.sourceFile?.trim().toUpperCase().startsWith("GENERATED_"));
@@ -6049,401 +6976,22 @@ function convertExploreCutlist(cutlist, options) {
   };
 }
 
-// ../shared/dist/editing-pipeline/review.js
-var EDIT_REVIEW_SUBJECTS = ["editorial", "captions-text", "preview", "duration-exception", "final", "thumbnail"];
-var EDIT_REVIEW_DECISIONS = ["approved", "changes-requested"];
-var EDIT_REVIEW_CONFIRMATIONS = ["terminal", "relayed"];
-var EDIT_REVIEW_RECORD_KIND = "darkmind-review";
-var EDIT_REVIEW_PROJECTION_VERSION = 1;
-function canonicalize(value2) {
-  if (Array.isArray(value2))
-    return value2.map((item) => item === void 0 ? null : canonicalize(item));
-  if (value2 !== null && typeof value2 === "object") {
-    const result = {};
-    for (const key of Object.keys(value2).sort()) {
-      const item = value2[key];
-      if (item !== void 0)
-        result[key] = canonicalize(item);
-    }
-    return result;
-  }
-  return value2;
-}
-function canonicalJson(value2) {
-  return JSON.stringify(canonicalize(value2));
-}
-var exact = (value2) => formatRational(parseRational(value2));
-function toolchainBinding(document) {
-  if (!document?.tools)
-    return null;
-  const version = (name) => document.tools.find((tool) => tool.name === name)?.version ?? null;
-  return { ffmpeg: version("ffmpeg"), captionFont: version("caption-font") };
-}
-function sourceIdentity(documents, sourceId) {
-  if (sourceId === null)
-    return null;
-  const source = documents.sources?.sources.find((entry) => entry.id === sourceId);
-  if (!source)
-    return { kind: "unknown" };
-  return source.kind === "darkmind-video" ? { kind: "darkmind-video", videoId: normalizeCutProjectVideoId(source.videoId) } : { kind: "asset", sha256: source.sha256 };
-}
-function editorialProjection(documents) {
-  const edit = documents.edit;
-  if (!edit)
-    return null;
-  return {
-    kind: "editorial",
-    version: EDIT_REVIEW_PROJECTION_VERSION,
-    sequence: edit.sequence.map((item) => item.kind === "statement" ? {
-      kind: "statement",
-      id: item.id,
-      sourceId: item.sourceId,
-      source: sourceIdentity(documents, item.sourceId),
-      range: item.range ? { in: exact(item.range.in), out: exact(item.range.out) } : null,
-      quote: item.quote,
-      context: item.context,
-      speaker: item.speaker ? { name: item.speaker.name, role: item.speaker.role } : null
-    } : { kind: "scene", id: item.id, description: item.description, text: item.text }),
-    broll: Object.fromEntries(edit.broll.map((item) => [item.id, { sourceId: item.sourceId, source: sourceIdentity(documents, item.sourceId), description: item.description, afterId: item.afterId ?? null }]))
-  };
-}
-var byTimelineOrder = (a, b) => a.start - b.start || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
-function captionsTextProjection(documents) {
-  const captions = documents.captions;
-  if (!captions || captions.captions.length === 0)
-    return null;
-  return {
-    kind: "captions-text",
-    version: EDIT_REVIEW_PROJECTION_VERSION,
-    language: captions.language,
-    captions: [...captions.captions].sort(byTimelineOrder).map((c) => {
-      const emphasis = (c.words ?? []).filter((word) => word.emphasis).map((word) => word.text);
-      return { id: c.id, text: c.text, statementId: c.statementId ?? null, sceneId: c.sceneId ?? null, ...emphasis.length ? { emphasis } : {} };
-    })
-  };
-}
-function normalizeClip(clip) {
-  const result = { ...clip, in: exact(String(clip.in)), out: exact(String(clip.out)) };
-  const crop = clip.crop;
-  if (crop)
-    result.crop = { x: exact(crop.x), y: exact(crop.y), w: exact(crop.w), h: exact(crop.h) };
-  return result;
-}
-function usedSourceIds(timeline, extensions) {
-  const ids = /* @__PURE__ */ new Set();
-  for (const track of [...timeline?.video ?? [], ...timeline?.audio ?? []])
-    for (const clip of track.clips)
-      if (clip.sourceId)
-        ids.add(clip.sourceId);
-  for (const extension of extensions)
-    for (const input of extension.inputs)
-      if (input.kind === "source")
-        ids.add(input.sourceId);
-  return ids;
-}
-function previewProjection(documents, input) {
-  const { project, timeline } = documents;
-  if (!timeline)
-    return null;
-  const videoExtensions = documents.extensions.filter((extension) => extension.output.image !== true);
-  const used = usedSourceIds(timeline, videoExtensions);
-  const sources = {};
-  for (const source of documents.sources?.sources ?? []) {
-    if (!used.has(source.id))
-      continue;
-    const media = source.media ? { ...source.media, probedAt: void 0 } : null;
-    sources[source.id] = source.kind === "darkmind-video" ? { kind: source.kind, videoId: normalizeCutProjectVideoId(source.videoId), media } : { kind: source.kind, path: source.path, sha256: source.sha256, size: source.size, media };
-  }
-  const clips = {};
-  const tracks = { video: [], audio: [] };
-  for (const kind of ["video", "audio"]) {
-    for (const track of timeline[kind]) {
-      tracks[kind].push({ id: track.id, role: track.role, clips: track.clips.map((clip) => clip.id) });
-      for (const clip of track.clips)
-        clips[clip.id] = { track: track.id, ...normalizeClip(clip) };
-    }
-  }
-  const captions = documents.captions;
-  const extensions = {};
-  for (const extension of videoExtensions) {
-    const files = {};
-    for (const item of extension.inputs)
-      if (item.kind === "file")
-        files[item.path] = input.files[item.path] ?? null;
-    extensions[extension.id] = { definition: { ...extension, $schema: void 0 }, files };
-  }
-  return {
-    kind: "preview",
-    version: EDIT_REVIEW_PROJECTION_VERSION,
-    output: project.output,
-    recipe: project.recipe ?? null,
-    editorial: input.editorial,
-    captionsText: input.captionsText,
-    sources,
-    tracks,
-    clips,
-    gaps: [...timeline.gaps].sort((a, b) => a.start - b.start),
-    captions: captions ? {
-      style: captions.style,
-      timing: Object.fromEntries(captions.captions.map((c) => [c.id, { start: c.start, end: c.end, words: c.words ?? null }]))
-    } : null,
-    extensions,
-    toolchain: input.toolchain
-  };
-}
-function durationOutOfRange(documents, totalFrames) {
-  const frame2 = documents.project.duration;
-  if (!frame2)
-    return false;
-  const seconds = toNumberQ(framesToSeconds(totalFrames, parseRational(documents.project.output.fps)));
-  return seconds < frame2.minSeconds || seconds > frame2.maxSeconds;
-}
-function durationExceptionProjection(documents, totalFrames, previewHash) {
-  const frame2 = documents.project.duration;
-  if (!frame2 || totalFrames === null || previewHash === null || !durationOutOfRange(documents, totalFrames))
-    return null;
-  const fps = parseRational(documents.project.output.fps);
-  return {
-    kind: "duration-exception",
-    version: EDIT_REVIEW_PROJECTION_VERSION,
-    frames: totalFrames,
-    fps: formatRational(fps),
-    seconds: formatRational(framesToSeconds(totalFrames, fps)),
-    minSeconds: frame2.minSeconds,
-    maxSeconds: frame2.maxSeconds,
-    preview: previewHash
-  };
-}
-function finalProjection(render, bindings) {
-  return {
-    kind: "final",
-    version: EDIT_REVIEW_PROJECTION_VERSION,
-    output: render.output,
-    sha256: render.sha256,
-    size: render.size,
-    frames: render.frames,
-    renderKey: render.renderKey,
-    preview: bindings.preview,
-    editorial: bindings.editorial,
-    captionsText: bindings.captionsText
-  };
-}
-function stillImageExtensions(extensions) {
-  return extensions.filter((extension) => extension.output.image === true);
-}
-function thumbnailProjection(documents, input) {
-  const stills = stillImageExtensions(documents.extensions);
-  if (!stills.length)
-    return null;
-  const result = {};
-  for (const extension of stills) {
-    const files = {};
-    const sources = {};
-    for (const item of extension.inputs) {
-      if (item.kind === "file")
-        files[item.path] = input.files[item.path] ?? null;
-      if (item.kind === "source")
-        sources[item.sourceId] = sourceIdentity(documents, item.sourceId);
-    }
-    result[extension.id] = { definition: { ...extension, $schema: void 0 }, files, sources };
-  }
-  return { kind: "thumbnail", version: EDIT_REVIEW_PROJECTION_VERSION, stills: result };
-}
-function timelineDraftMismatches(documents) {
-  const { edit, timeline } = documents;
-  if (!edit || !timeline)
-    return [];
-  const mismatches = [];
-  const statements = edit.sequence.filter((item) => item.kind === "statement");
-  const byId = new Map(statements.map((item) => [item.id, item]));
-  const dialog = timeline.audio.filter((track) => track.role === "dialog").flatMap((track) => track.clips);
-  const used = /* @__PURE__ */ new Map();
-  const order = [];
-  for (const clip of [...dialog].sort(byTimelineOrder)) {
-    if (!clip.statementId) {
-      mismatches.push({ code: "dialog-without-statement", ref: clip.id, message: `dialog clip "${clip.id}" references no statement of edit.json` });
-      continue;
-    }
-    const statement = byId.get(clip.statementId);
-    if (!statement) {
-      mismatches.push({ code: "unknown-statement", ref: clip.id, message: `dialog clip "${clip.id}" references "${clip.statementId}", which is not a statement of edit.json` });
-      continue;
-    }
-    if (used.has(statement.id)) {
-      mismatches.push({ code: "statement-reused", ref: clip.id, message: `statement "${statement.id}" is used by dialog clips "${used.get(statement.id)}" and "${clip.id}"` });
-      continue;
-    }
-    used.set(statement.id, clip.id);
-    order.push(statement.id);
-    const range = statement.range;
-    if (clip.sourceId !== statement.sourceId || !range || compareQ(parseRational(clip.in), parseRational(range.in)) !== 0 || compareQ(parseRational(clip.out), parseRational(range.out)) !== 0) {
-      mismatches.push({
-        code: "statement-binding",
-        ref: clip.id,
-        message: `dialog clip "${clip.id}" plays ${clip.sourceId ?? "?"} ${clip.in}\u2013${clip.out} s, statement "${statement.id}" is ${statement.sourceId ?? "?"} ${range ? `${range.in}\u2013${range.out} s` : "(no range)"}`
-      });
-    }
-  }
-  for (const statement of statements) {
-    if (!used.has(statement.id))
-      mismatches.push({ code: "statement-missing", ref: statement.id, message: `statement "${statement.id}" has no dialog clip in the timeline` });
-  }
-  const expected = statements.map((item) => item.id).filter((id2) => used.has(id2));
-  if (expected.join("\0") !== order.join("\0")) {
-    mismatches.push({ code: "statement-order", message: `dialog order ${order.join(", ")} differs from the draft order ${expected.join(", ")}` });
-  }
-  return mismatches;
-}
-function diffProjections(before, after, max = 200) {
-  const changes = [];
-  const walk2 = (a, b, path32) => {
-    if (changes.length >= max)
-      return;
-    const objectA = a !== null && typeof a === "object" && !Array.isArray(a);
-    const objectB = b !== null && typeof b === "object" && !Array.isArray(b);
-    if (objectA && objectB) {
-      const keys = [.../* @__PURE__ */ new Set([...Object.keys(a), ...Object.keys(b)])].sort();
-      for (const key of keys)
-        walk2(a[key], b[key], path32 ? `${path32}.${key}` : key);
-      return;
-    }
-    if (canonicalJson(a ?? null) !== canonicalJson(b ?? null))
-      changes.push({ path: path32, before: a ?? null, after: b ?? null });
-  };
-  walk2(before, after, "");
-  return changes;
-}
-function wordDiff(before, after) {
-  const a = before.split(/\s+/).filter(Boolean);
-  const b = after.split(/\s+/).filter(Boolean);
-  const table = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
-  for (let i2 = a.length - 1; i2 >= 0; i2--)
-    for (let j2 = b.length - 1; j2 >= 0; j2--)
-      table[i2][j2] = a[i2] === b[j2] ? table[i2 + 1][j2 + 1] + 1 : Math.max(table[i2 + 1][j2], table[i2][j2 + 1]);
-  const parts = [];
-  const removed = [];
-  const added = [];
-  const flush = () => {
-    if (removed.length)
-      parts.push(`[-${removed.splice(0).join(" ")}-]`);
-    if (added.length)
-      parts.push(`{+${added.splice(0).join(" ")}+}`);
-  };
-  let i = 0;
-  let j = 0;
-  while (i < a.length || j < b.length) {
-    if (i < a.length && j < b.length && a[i] === b[j]) {
-      flush();
-      parts.push(a[i]);
-      i++;
-      j++;
-    } else if (j < b.length && (i >= a.length || table[i][j + 1] >= table[i + 1][j]))
-      added.push(b[j++]);
-    else
-      removed.push(a[i++]);
-  }
-  flush();
-  return parts.join(" ");
-}
-function itemChanges(kind, before, after, text2) {
-  const changes = [];
-  for (const [id2, item] of before)
-    if (!after.has(id2))
-      changes.push({ change: "removed", id: id2, kind, before: item });
-  for (const [id2, item] of after) {
-    if (!before.has(id2)) {
-      changes.push({ change: "added", id: id2, kind, after: item });
-      continue;
-    }
-    const fields = diffProjections(before.get(id2), item);
-    if (!fields.length)
-      continue;
-    const oldText = text2?.(before.get(id2)) ?? null;
-    const newText = text2?.(item) ?? null;
-    changes.push({ change: "changed", id: id2, kind, fields, ...oldText !== null && newText !== null && oldText !== newText ? { textDiff: wordDiff(oldText, newText) } : {} });
-  }
-  return changes;
-}
-function orderChange(before, after) {
-  const common = new Set(before.filter((id2) => after.includes(id2)));
-  const a = before.filter((id2) => common.has(id2));
-  const b = after.filter((id2) => common.has(id2));
-  return a.join("\0") === b.join("\0") ? null : { change: "order", before, after };
-}
-function diffEditorial(before, after) {
-  const textOf = (item) => {
-    const value2 = item;
-    return (value2.kind === "statement" ? value2.quote : value2.text) ?? null;
-  };
-  const changes = [
-    ...itemChanges("statement", new Map(before.sequence.filter((i) => i.kind === "statement").map((i) => [i.id, i])), new Map(after.sequence.filter((i) => i.kind === "statement").map((i) => [i.id, i])), textOf),
-    ...itemChanges("scene", new Map(before.sequence.filter((i) => i.kind === "scene").map((i) => [i.id, i])), new Map(after.sequence.filter((i) => i.kind === "scene").map((i) => [i.id, i])), textOf),
-    ...itemChanges("broll", new Map(Object.entries(before.broll)), new Map(Object.entries(after.broll)))
-  ];
-  const order = orderChange(before.sequence.map((i) => i.id), after.sequence.map((i) => i.id));
-  return order ? [...changes, order] : changes;
-}
-function diffCaptionsText(before, after) {
-  const changes = itemChanges("caption", new Map(before.captions.map((c) => [c.id, c])), new Map(after.captions.map((c) => [c.id, c])), (item) => item.text);
-  if (before.language !== after.language)
-    changes.push({ change: "changed", kind: "language", before: before.language, after: after.language });
-  const order = orderChange(before.captions.map((c) => c.id), after.captions.map((c) => c.id));
-  return order ? [...changes, order] : changes;
-}
-var sha2562 = external_exports.string().regex(/^[0-9a-f]{64}$/, "must be a lowercase hex SHA-256");
-var editReviewRecordSchema = external_exports.object({
-  $schema: external_exports.string().max(500).optional(),
-  schemaVersion: external_exports.literal(EDIT_SCHEMA_VERSION),
-  kind: external_exports.literal(EDIT_REVIEW_RECORD_KIND),
-  id: external_exports.string().regex(new RegExp(EDIT_ID_PATTERN)),
-  subject: external_exports.enum(EDIT_REVIEW_SUBJECTS),
-  decision: external_exports.enum(EDIT_REVIEW_DECISIONS),
-  hash: sha2562.describe("SHA-256 of the canonical JSON of snapshot; binds the decision to exactly this state"),
-  snapshot: external_exports.record(external_exports.unknown()).describe("Reviewed projection (subject content); basis of the change analysis"),
-  render: external_exports.object({
-    report: editPathSchema,
-    output: editPathSchema,
-    sha256: sha2562,
-    mode: external_exports.enum(["proxy", "original"]),
-    renderKey: external_exports.string().min(1).max(200),
-    frames: external_exports.number().int().min(0)
-  }).strict().nullable().describe("Rendered file the editor viewed (preview, final)"),
-  reviewer: external_exports.object({ name: external_exports.string().min(1).max(200) }).strict(),
-  confirmation: external_exports.object({
-    method: external_exports.enum(EDIT_REVIEW_CONFIRMATIONS),
-    statement: external_exports.string().min(1).max(5e3).nullable().describe("Verbatim confirmation of the editor (relayed)")
-  }).strict().describe("Origin of the explicit confirmation of the editor; never an autonomous decision of the agent"),
-  comment: external_exports.string().max(5e3).nullable(),
-  createdAt: external_exports.string().max(40),
-  tool: external_exports.object({ name: external_exports.string().min(1).max(100), version: external_exports.string().min(1).max(100) }).strict()
-}).strict().superRefine((record, ctx) => {
-  if (record.confirmation.method === "relayed" && !record.confirmation.statement) {
-    ctx.addIssue({ code: external_exports.ZodIssueCode.custom, path: ["confirmation", "statement"], message: "a relayed confirmation needs the verbatim statement of the editor" });
-  }
-  if ((record.subject === "preview" || record.subject === "final") && record.decision === "approved" && !record.render) {
-    ctx.addIssue({ code: external_exports.ZodIssueCode.custom, path: ["render"], message: `an approved ${record.subject} review names the rendered file` });
-  }
-  if (record.snapshot.kind !== record.subject) {
-    ctx.addIssue({ code: external_exports.ZodIssueCode.custom, path: ["snapshot", "kind"], message: `must be "${record.subject}"` });
-  }
-});
-
 // ../shared/dist/editing-pipeline/srt.js
 function captionsToSrt(captions, fps) {
   const sorted = [...captions].sort((a, b) => a.start - b.start || a.end - b.end);
   const blocks = sorted.map((caption, index) => {
-    const text2 = caption.text.replace(/\r\n?/g, "\n").trim().split("\n").join("\r\n");
+    const text3 = caption.text.replace(/\r\n?/g, "\n").trim().split("\n").join("\r\n");
     return `${index + 1}\r
 ${srtTimestamp(srtMillis(caption.start, fps))} --> ${srtTimestamp(srtMillis(caption.end, fps))}\r
-${text2}\r
+${text3}\r
 `;
   });
   return blocks.join("\r\n");
 }
 
 // ../shared/dist/editing-pipeline/caption-words.js
-function normalizeWordText(text2) {
-  return text2.normalize("NFKC").toLowerCase().replace(/[\u2018\u2019\u02bc]/g, "'").replace(/[^\p{L}\p{N}']/gu, "");
+function normalizeWordText(text3) {
+  return text3.normalize("NFKC").toLowerCase().replace(/[\u2018\u2019\u02bc]/g, "'").replace(/[^\p{L}\p{N}']/gu, "");
 }
 function alignTokens(a, b) {
   const n = a.length;
@@ -6587,9 +7135,9 @@ function assignCaptionWords(documents, timings, options = {}) {
     const inExec = executedIn(parseRational(clip.in), fps);
     const srcIn = parseRational(clip.in);
     const srcOut = parseRational(clip.out);
-    const frameOf = (seconds) => clip.start + Number(roundHalfUpQ(mulQ(subQ(secondsQ(seconds), inExec), fps)));
-    const inside = (seconds) => {
-      const q = secondsQ(seconds);
+    const frameOf = (seconds2) => clip.start + Number(roundHalfUpQ(mulQ(subQ(secondsQ(seconds2), inExec), fps)));
+    const inside = (seconds2) => {
+      const q = secondsQ(seconds2);
       return q.n * srcIn.d >= srcIn.n * q.d && q.n * srcOut.d <= srcOut.n * q.d;
     };
     const recognised = words.filter((w) => Number.isFinite(w.start) && Number.isFinite(w.end) && w.end > w.start && (inside(w.start) || inside(w.end))).map((w) => ({ text: w.text, start: frameOf(w.start), end: frameOf(w.end) })).filter((w) => w.end > caption.start - tolerance && w.start < caption.end + tolerance).sort((a, b) => a.start - b.start || a.end - b.end);
@@ -6603,7 +7151,7 @@ function assignCaptionWords(documents, timings, options = {}) {
     report.push({ id: caption.id, status: "assigned", tokens, matched: timed.matched, interpolated: timed.interpolated, ...timed.spread ? { spread: true } : {} });
     return {
       ...caption,
-      words: timed.tokens.map((text2, i) => ({ text: text2, start: timed.times[i][0], end: timed.times[i][1], ...emphasised.has(i) ? { emphasis: true } : {} }))
+      words: timed.tokens.map((text3, i) => ({ text: text3, start: timed.times[i][0], end: timed.times[i][1], ...emphasised.has(i) ? { emphasis: true } : {} }))
     };
   });
   return { captions: { ...documents.captions, captions }, report };
@@ -6711,7 +7259,7 @@ import http from "node:http";
 import https from "node:https";
 
 // src/version.ts
-var AGENT_VERSION = true ? "0.14.0+caa75c1aac83" : "0.0.0-dev";
+var AGENT_VERSION = true ? "0.16.0+5a995ba9d262" : "0.0.0-dev";
 var MIN_NODE_MAJOR = 20;
 function nodeMajor(version = process.versions.node) {
   return Number.parseInt(version.split(".")[0], 10);
@@ -6719,9 +7267,9 @@ function nodeMajor(version = process.versions.node) {
 
 // src/http.ts
 var HttpError = class extends Error {
-  constructor(status, code, message, body) {
+  constructor(status2, code, message, body) {
     super(message);
-    this.status = status;
+    this.status = status2;
     this.code = code;
     this.body = body;
     this.name = "HttpError";
@@ -6766,23 +7314,23 @@ async function readBody(response, limit = 64 * 1024 * 1024) {
   return Buffer.concat(chunks);
 }
 async function toHttpError(response, context) {
-  let text2 = "";
+  let text3 = "";
   try {
-    text2 = (await readBody(response, 256 * 1024)).toString("utf8");
+    text3 = (await readBody(response, 256 * 1024)).toString("utf8");
   } catch {
   }
   const azureCode = response.headers["x-ms-error-code"];
-  let json;
+  let json2;
   try {
-    json = text2 ? JSON.parse(text2) : void 0;
+    json2 = text3 ? JSON.parse(text3) : void 0;
   } catch {
-    json = void 0;
+    json2 = void 0;
   }
-  const body = json;
+  const body = json2;
   const code = (typeof azureCode === "string" ? azureCode : void 0) ?? body?.code;
-  const azureMessage = /<Message>([^<]*)<\/Message>/.exec(text2)?.[1]?.split("\n")[0];
-  const detail = body?.message ?? azureMessage ?? (text2.length < 300 ? text2.trim() : "");
-  return new HttpError(response.statusCode ?? 0, code, `${context}: HTTP ${response.statusCode}${code ? ` ${code}` : ""}${detail ? ` \u2013 ${detail}` : ""}`, json);
+  const azureMessage = /<Message>([^<]*)<\/Message>/.exec(text3)?.[1]?.split("\n")[0];
+  const detail = body?.message ?? azureMessage ?? (text3.length < 300 ? text3.trim() : "");
+  return new HttpError(response.statusCode ?? 0, code, `${context}: HTTP ${response.statusCode}${code ? ` ${code}` : ""}${detail ? ` \u2013 ${detail}` : ""}`, json2);
 }
 var RETRYABLE_STATUS = /* @__PURE__ */ new Set([408, 429, 500, 502, 503, 504]);
 var RETRYABLE_ERRNO = /* @__PURE__ */ new Set(["ECONNRESET", "ETIMEDOUT", "EPIPE", "ECONNREFUSED", "EAI_AGAIN", "ENETUNREACH", "ENOTFOUND", "UND_ERR_SOCKET", "ECONNABORTED"]);
@@ -6843,9 +7391,9 @@ var TICKET_HINTS = {
 async function redeemTicket(server, ticket) {
   const value2 = checkTicket(ticket);
   const url = `${server}/api/agent-transfer`;
-  let text2;
+  let text3;
   try {
-    text2 = await withRetry(
+    text3 = await withRetry(
       async () => {
         const response = await httpRequest(url, {
           method: "POST",
@@ -6872,7 +7420,7 @@ async function redeemTicket(server, ticket) {
   }
   let parsed;
   try {
-    parsed = JSON.parse(text2);
+    parsed = JSON.parse(text3);
   } catch {
     parsed = void 0;
   }
@@ -6909,10 +7457,10 @@ function readZip(buffer, label2 = "brand assets archive") {
     }
   }
   if (eocd < 0) fail("no end of central directory");
-  const count = buffer.readUInt16LE(eocd + 10);
+  const count2 = buffer.readUInt16LE(eocd + 10);
   let offset = buffer.readUInt32LE(eocd + 16);
   const entries = [];
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < count2; i++) {
     if (offset + 46 > buffer.length || buffer.readUInt32LE(offset) !== CENTRAL) fail("bad central directory entry");
     const method = buffer.readUInt16LE(offset + 10);
     const compressed = buffer.readUInt32LE(offset + 20);
@@ -7185,26 +7733,26 @@ var HashCache = class _HashCache {
     return new _HashCache(file, entries);
   }
   /** Cached SHA-256, or null if the file may have changed since it was hashed. */
-  lookup(path32, size, mtimeMs) {
-    const entry = this.entries.get(path32);
+  lookup(path33, size, mtimeMs) {
+    const entry = this.entries.get(path33);
     if (!entry || entry.size !== size || entry.mtimeMs !== mtimeMs) return null;
     if (entry.hashedAt - mtimeMs < RACY_WINDOW_MS) return null;
-    this.used.set(path32, entry);
+    this.used.set(path33, entry);
     return entry.sha256;
   }
-  record(path32, size, mtimeMs, sha2563, hashedAt) {
+  record(path33, size, mtimeMs, sha2563, hashedAt) {
     const entry = { size, mtimeMs, sha256: sha2563, hashedAt };
-    this.entries.set(path32, entry);
-    this.used.set(path32, entry);
+    this.entries.set(path33, entry);
+    this.used.set(path33, entry);
     this.dirty = true;
   }
   /** Hash of a file via the cache; hashes and records it on a miss. */
-  async hash(path32, absolutePath, size, mtimeMs) {
-    const cached = this.lookup(path32, size, mtimeMs);
+  async hash(path33, absolutePath, size, mtimeMs) {
+    const cached = this.lookup(path33, size, mtimeMs);
     if (cached) return cached;
     const hashedAt = Date.now();
     const result = await hashFile(absolutePath);
-    if (result.size === size) this.record(path32, size, mtimeMs, result.sha256, hashedAt);
+    if (result.size === size) this.record(path33, size, mtimeMs, result.sha256, hashedAt);
     return result.sha256;
   }
   /** Writes the cache; `prune` (after a full scan) keeps only the entries used in this run. */
@@ -7216,7 +7764,7 @@ var HashCache = class _HashCache {
     }
     const source = options.prune ? this.used : this.entries;
     const entries = {};
-    for (const [path32, entry] of [...source].sort(([a], [b]) => a < b ? -1 : 1)) entries[path32] = entry;
+    for (const [path33, entry] of [...source].sort(([a], [b]) => a < b ? -1 : 1)) entries[path33] = entry;
     await writeJsonFile(this.file, { version: 1, entries });
   }
 };
@@ -7298,9 +7846,9 @@ function brandBlockOfCommand(extension) {
   return ENTRY.exec(args[1])?.[1] ?? null;
 }
 async function brandBlockTrust(pack, root, extension, execution) {
-  const block = brandBlockOfCommand(extension);
-  if (!block) return { trusted: false, block: null, reason: null };
-  const no = (reason) => ({ trusted: false, block, reason });
+  const block2 = brandBlockOfCommand(extension);
+  if (!block2) return { trusted: false, block: null, reason: null };
+  const no = (reason) => ({ trusted: false, block: block2, reason });
   if (!pack) return no("the script does not run from an editing skill with a brand pack, so the brand block cannot be compared");
   const label2 = `brand pack ${pack.version ?? "?"} of the installed skill`;
   for (const arg of extension.command.args) if (!execution.code[arg]) return no(`${arg} is not a declared input of the extension`);
@@ -7324,7 +7872,7 @@ async function brandBlockTrust(pack, root, extension, execution) {
     if (!expected) return no(`${file} is not part of the ${label2}`);
     if (expected !== hash) return no(`${file} differs from the ${label2} (vendor the block again with add-block --force)`);
   }
-  return { trusted: true, block, reason: null };
+  return { trusted: true, block: block2, reason: null };
 }
 async function npmCli(env) {
   const nodeDir = path6.dirname(process.execPath);
@@ -7502,8 +8050,8 @@ var DEFAULT_BLOCK_BYTES = 32 * 1024 * 1024;
 function withQuery(url, query) {
   return `${url}${url.includes("?") ? "&" : "?"}${query}`;
 }
-function fileChanged(path32) {
-  return new CliError("file-changed", `${path32} changed since "darkmind-agent manifest"; run manifest and project_push_begin again.`);
+function fileChanged(path33) {
+  return new CliError("file-changed", `${path33} changed since "darkmind-agent manifest"; run manifest and project_push_begin again.`);
 }
 function isAlreadyThere(error) {
   return error instanceof HttpError && (error.status === 409 || error.status === 403 && error.code === "AuthorizationPermissionMismatch");
@@ -7616,9 +8164,9 @@ async function downloadFile(url, target, expected, options = {}) {
           headers: offset > 0 ? { Range: `bytes=${offset}-` } : {},
           timeoutMs: 12e4
         });
-        const status = response.statusCode ?? 0;
-        if (status !== 200 && status !== 206) throw await toHttpError(response, `Download of ${expected.label}`);
-        const append = offset > 0 && status === 206;
+        const status2 = response.statusCode ?? 0;
+        if (status2 !== 200 && status2 !== 206) throw await toHttpError(response, `Download of ${expected.label}`);
+        const append = offset > 0 && status2 === 206;
         await pipeline(response, createWriteStream(part, { flags: append ? "a" : "w" }));
         const size2 = (await fs6.stat(part)).size;
         if (size2 < expected.size) throw incomplete(`Download of ${expected.label} stopped at ${size2} of ${expected.size} bytes`);
@@ -7731,9 +8279,9 @@ function globToRegex(glob) {
   }
   return out;
 }
-function parseIgnoreRules(text2) {
+function parseIgnoreRules(text3) {
   const rules = [];
-  for (const rawLine of text2.split(/\r?\n/)) {
+  for (const rawLine of text3.split(/\r?\n/)) {
     let line = rawLine.replace(/(?<!\\)\s+$/, "");
     if (!line || line.startsWith("#")) continue;
     let negate = false;
@@ -7761,9 +8309,9 @@ function parseIgnoreRules(text2) {
   }
   return rules;
 }
-function createIgnoreMatcher(text2) {
+function createIgnoreMatcher(text3) {
   const always = parseIgnoreRules(ALWAYS_EXCLUDED_TEXT);
-  const rules = parseIgnoreRules(text2);
+  const rules = parseIgnoreRules(text3);
   return {
     rules: [...always, ...rules].map((rule) => rule.source),
     ignores(relativePath, isDirectory) {
@@ -7779,8 +8327,8 @@ function createIgnoreMatcher(text2) {
 }
 async function loadIgnoreMatcher(root) {
   try {
-    const text2 = await fs7.readFile(path8.join(root, IGNORE_FILE), "utf8");
-    return { matcher: createIgnoreMatcher(text2), source: "file" };
+    const text3 = await fs7.readFile(path8.join(root, IGNORE_FILE), "utf8");
+    return { matcher: createIgnoreMatcher(text3), source: "file" };
   } catch (error) {
     if (error.code !== "ENOENT") throw error;
     return { matcher: createIgnoreMatcher(DEFAULT_IGNORE_TEXT), source: "default" };
@@ -8082,11 +8630,11 @@ async function importCutlistCommand(ctx, options) {
     if (error instanceof ExploreCutlistError) throw new CliError("invalid-cutlist", `${from}: ${error.message}`);
     throw error;
   }
-  const json = (value2) => `${JSON.stringify(value2, null, 2)}
+  const json2 = (value2) => `${JSON.stringify(value2, null, 2)}
 `;
-  await writeFileAtomic(path10.join(ctx.root, EDIT_DEFAULT_FILES.project), json(converted.files.project));
-  await writeFileAtomic(path10.join(ctx.root, EDIT_DEFAULT_FILES.sources), json(converted.files.sources));
-  await writeFileAtomic(path10.join(ctx.root, EDIT_DEFAULT_FILES.edit), json(converted.files.edit));
+  await writeFileAtomic(path10.join(ctx.root, EDIT_DEFAULT_FILES.project), json2(converted.files.project));
+  await writeFileAtomic(path10.join(ctx.root, EDIT_DEFAULT_FILES.sources), json2(converted.files.sources));
+  await writeFileAtomic(path10.join(ctx.root, EDIT_DEFAULT_FILES.edit), json2(converted.files.edit));
   await writeFileAtomic(path10.join(ctx.root, EDIT_DEFAULT_FILES.brief), converted.files.brief);
   const result = await validateEditProject(reader);
   const c = converted.counts;
@@ -8106,9 +8654,9 @@ warning: ${warning}`).join(""),
   };
 }
 function parseWordTimings(file, value2) {
-  const list = Array.isArray(value2) ? value2 : [value2];
-  return list.map((entry, index) => {
-    const where = list.length > 1 ? `${file}[${index}]` : file;
+  const list2 = Array.isArray(value2) ? value2 : [value2];
+  return list2.map((entry, index) => {
+    const where = list2.length > 1 ? `${file}[${index}]` : file;
     const item = entry;
     if (item?.error) throw new CliError("invalid-input", `${where} is an error result of get_word_timings, not word timings: ${JSON.stringify(item.error)}`);
     if (typeof item?.videoId !== "string" && typeof item?.sourceId !== "string") throw new CliError("invalid-input", `${where} needs "videoId" (Dark Mind video) or "sourceId"`);
@@ -8149,9 +8697,9 @@ async function captionsWordsCommand(ctx, files, options) {
   const assigned = result.report.filter((r) => r.status === "assigned");
   const skipped = result.report.filter((r) => r.status === "skipped");
   const captionsFile = docs.project.artifacts.captions;
-  const text2 = `${JSON.stringify(result.captions, null, 2)}
+  const text3 = `${JSON.stringify(result.captions, null, 2)}
 `;
-  if (!options.print && assigned.length) await writeFileAtomic(path10.join(ctx.root, ...captionsFile.split("/")), text2);
+  if (!options.print && assigned.length) await writeFileAtomic(path10.join(ctx.root, ...captionsFile.split("/")), text3);
   const after = options.print ? before : await validateEditProject(reader);
   const lines = [
     `${options.print ? "Would assign" : "Assigned"} word timings to ${assigned.length} captions (${assigned.reduce((a, r) => a + r.matched, 0)} words matched, ${assigned.reduce((a, r) => a + r.interpolated, 0)} interpolated); ${skipped.length} skipped`,
@@ -8168,7 +8716,7 @@ async function captionsWordsCommand(ctx, files, options) {
       validation: validationData(after),
       next: "Word timings change the preview state (preview review); emphasis flags (words[].emphasis) belong to the caption text review."
     },
-    text: options.print ? `${text2}
+    text: options.print ? `${text3}
 ${lines.join("\n")}` : lines.join("\n"),
     exitCode: after.valid ? 0 : 1
   };
@@ -8227,7 +8775,10 @@ async function requiredPipelineFiles(root, documents) {
       for (const input of extension.inputs) if (input.kind === "file") candidates.add(input.path);
     }
     if (documents.project.origin?.file) candidates.add(documents.project.origin.file);
+    if (documents.project.recipe) candidates.add(EDIT_RECIPE_FILES.lock);
   }
+  candidates.add(EDIT_RECIPE_FILES.draft);
+  candidates.add(EDIT_RECIPE_FILES.material);
   for (const file of await walkFiles(root, EDIT_FOLDERS.reviews)) candidates.add(file);
   const existing = [];
   for (const file of candidates) if (await isFile(path11.join(root, ...file.split("/")))) existing.push(file);
@@ -8240,16 +8791,16 @@ function missingFromManifest(required, manifest) {
 
 // src/commands/project.ts
 async function readManifestFile(file) {
-  let text2;
+  let text3;
   try {
-    text2 = await fs12.readFile(file, "utf8");
+    text3 = await fs12.readFile(file, "utf8");
   } catch (error) {
     if (error.code === "ENOENT") return null;
     throw error;
   }
   let parsed;
   try {
-    parsed = JSON.parse(text2);
+    parsed = JSON.parse(text3);
   } catch {
     throw new CliError("invalid-manifest", `${file} is not valid JSON`);
   }
@@ -8596,11 +9147,11 @@ import path17 from "node:path";
 import { promises as fs14 } from "node:fs";
 function probeRational(value2) {
   if (value2 === void 0 || value2 === null) return null;
-  const text2 = String(value2).trim();
-  if (!text2 || text2 === "N/A" || text2 === "0/0") return null;
-  const fraction = /^(-?\d+)\/(\d+)$/.exec(text2);
+  const text3 = String(value2).trim();
+  if (!text3 || text3 === "N/A" || text3 === "0/0") return null;
+  const fraction = /^(-?\d+)\/(\d+)$/.exec(text3);
   if (fraction) return BigInt(fraction[2]) === 0n ? null : rational(BigInt(fraction[1]), BigInt(fraction[2]));
-  const decimal = /^(-?)(\d+)(?:\.(\d+))?$/.exec(text2);
+  const decimal = /^(-?)(\d+)(?:\.(\d+))?$/.exec(text3);
   if (!decimal) return null;
   const digits = decimal[3] ?? "";
   return rational(BigInt(decimal[2] + digits) * (decimal[1] ? -1n : 1n), 10n ** BigInt(digits.length));
@@ -8613,8 +9164,8 @@ function displayRotation(stream) {
   return rounded % 360 === 0 ? 0 : rounded;
 }
 var ALPHA_FORMATS = /^(yuva|rgba|bgra|argb|abgr|gbrap|ya[0-9])/;
-function parseFfprobe(json) {
-  const data = JSON.parse(json || "{}");
+function parseFfprobe(json2) {
+  const data = JSON.parse(json2 || "{}");
   const streams = data.streams ?? [];
   const v = streams.find((s) => s.codec_type === "video" && !s.disposition?.attached_pic);
   const a = streams.find((s) => s.codec_type === "audio");
@@ -8655,8 +9206,8 @@ function parseFfprobe(json) {
     audio: a ? { index: a.index, codec: a.codec_name ?? "unknown", sampleRate: Number(a.sample_rate) || 0, channels: a.channels ?? 0 } : null
   };
 }
-function scrubUrls(text2) {
-  return text2.replace(/https?:\/\/\S+/g, "<url>");
+function scrubUrls(text3) {
+  return text3.replace(/https?:\/\/\S+/g, "<url>");
 }
 async function probeStreams(tools, input, options = {}) {
   let result;
@@ -8716,8 +9267,8 @@ function httpByteReader(url) {
       }
       throw await toHttpError(response, "Range read failed");
     }
-    const range = response.headers["content-range"];
-    const match = typeof range === "string" ? /\/(\d+)$/.exec(range) : null;
+    const range2 = response.headers["content-range"];
+    const match = typeof range2 === "string" ? /\/(\d+)$/.exec(range2) : null;
     if (match) total = Number(match[1]);
     return readBody(response, length2 + 1024);
   };
@@ -8788,10 +9339,10 @@ async function readMp4VideoTiming(reader, maxMoovBytes = 512 * 1024 * 1024) {
     const version = moov.readUInt8(mdhd.start + mdhd.headerSize);
     const timescale = moov.readUInt32BE(mdhd.start + mdhd.headerSize + (version === 1 ? 20 : 12));
     const base = stts.start + stts.headerSize;
-    const count = moov.readUInt32BE(base + 4);
+    const count2 = moov.readUInt32BE(base + 4);
     const entries = [];
     let samples = 0;
-    for (let i = 0; i < count && base + 16 + i * 8 <= stts.start + stts.size; i++) {
+    for (let i = 0; i < count2 && base + 16 + i * 8 <= stts.start + stts.size; i++) {
       const entry = { count: moov.readUInt32BE(base + 8 + i * 8), delta: moov.readUInt32BE(base + 12 + i * 8) };
       entries.push(entry);
       samples += entry.count;
@@ -9024,9 +9575,9 @@ async function buildExecutionPlan(options) {
     if (!clip.sourceId) continue;
     const inExec = executedIn(parseRational(clip.in), fps);
     const frames = rangeFrames(parseRational(clip.in), parseRational(clip.out), fps);
-    const list = windows.get(clip.sourceId) ?? [];
-    list.push({ clipId: clip.id, from: inExec, to: addQ(inExec, divQ(rational(frames), fps)) });
-    windows.set(clip.sourceId, list);
+    const list2 = windows.get(clip.sourceId) ?? [];
+    list2.push({ clipId: clip.id, from: inExec, to: addQ(inExec, divQ(rational(frames), fps)) });
+    windows.set(clip.sourceId, list2);
   }
   const clipFile = /* @__PURE__ */ new Map();
   const originalFacts = /* @__PURE__ */ new Map();
@@ -9041,7 +9592,7 @@ async function buildExecutionPlan(options) {
     file.sha256 = actual;
     if (expected && actual !== expected) error(`${what}-changed`, `${file.path} does not match the SHA-256 recorded in sources.json; a changed ${what} needs a new source revision`, ref);
   };
-  for (const [sourceId, list] of windows) {
+  for (const [sourceId, list2] of windows) {
     const source = sources.get(sourceId);
     if (!source) continue;
     if (source.kind === "asset") {
@@ -9050,7 +9601,7 @@ async function buildExecutionPlan(options) {
       if (!file) continue;
       if (file.size !== source.size) error("asset-changed", `${source.path} has ${file.size} bytes, sources.json records ${source.size}; a changed asset needs a new source revision`, sourceId);
       else await verifyHash(abs2, file, source.sha256, sourceId, "asset", true);
-      for (const w of list) clipFile.set(w.clipId, file);
+      for (const w of list2) clipFile.set(w.clipId, file);
       continue;
     }
     const videoId = normalizeCutProjectVideoId(source.videoId);
@@ -9088,14 +9639,14 @@ async function buildExecutionPlan(options) {
           error("media-unreadable", `${file.path}: ${describeProbeError(factsError)}`, sourceId);
         }
       }
-      for (const w of list) clipFile.set(w.clipId, file);
+      for (const w of list2) clipFile.set(w.clipId, file);
       continue;
     }
     const { candidates, unknown } = await proxyCandidates(path15.join(root, "media", "proxy"), videoId);
     for (const name of unknown) warning("proxy-offset-unknown", `media/proxy/${name} has no entry in media/proxy/index.json (rule E1: unknown offset); it is ignored \u2013 load excerpts again with this darkmind-agent version`, sourceId);
     const missing = [];
     let fellBack = false;
-    for (const w of list) {
+    for (const w of list2) {
       const covering = candidates.filter((c) => compareQ(c.offset, w.from) <= 0 && (c.end === null || compareQ(c.end, w.to) >= 0)).sort((a, b) => length(a) - length(b));
       const chosen = covering[0];
       if (chosen) {
@@ -9487,13 +10038,13 @@ async function detectTools(extension, ctx, extensionDir) {
       resolved = override && await isFile2(override) ? override : (await resolveProgram(tool.name, ctx.root, ctx.env)).resolved;
       if (resolved && tool.name === "node") version = await firstLine(resolved, ["--version"]);
     }
-    let status = "ok";
-    if (!resolved) status = "missing";
+    let status2 = "ok";
+    if (!resolved) status2 = "missing";
     else if (required) {
       const ok = version ? versionSatisfies(version, required) : null;
-      status = ok === null ? "unverified" : ok ? "ok" : "version-mismatch";
+      status2 = ok === null ? "unverified" : ok ? "ok" : "version-mismatch";
     }
-    result.push({ name: tool.name, required, resolved, version, status, ...digest ? { digest } : {} });
+    result.push({ name: tool.name, required, resolved, version, status: status2, ...digest ? { digest } : {} });
   }
   return result;
 }
@@ -9706,29 +10257,29 @@ async function inspectOne(ctx, docs, extension, file, needed, options) {
     })
   );
   const record = key ? await readRecord(root, extension.id, key) : null;
-  let status;
+  let status2;
   let reason;
   if (problems.length) {
-    status = "blocked";
+    status2 = "blocked";
     reason = problems.map((p) => p.message).join("; ");
   } else if (waitingFor) {
-    status = "stale";
+    status2 = "stale";
     reason = `runs after its input extension "${waitingFor}"`;
   } else if (record && outputSha === record.sha256) {
-    status = "current";
+    status2 = "current";
     reason = "output matches the cached run of this state";
   } else if (record && (await fs18.stat(path17.join(cacheDir(root, extension.id), record.cached)).catch(() => null))?.size === record.size) {
-    status = "restorable";
+    status2 = "restorable";
     reason = "an earlier run of exactly this state is cached; it is restored without running the command";
   } else {
-    status = "stale";
+    status2 = "stale";
     reason = !stat ? "not rendered yet" : "definition, inputs or tools changed since the output was rendered (or it was not produced by the runner)";
   }
   return {
     id: extension.id,
     file,
     needed,
-    status,
+    status: status2,
     reason,
     key,
     modeDependent,
@@ -9800,7 +10351,7 @@ function runCommand(program, args, options) {
     const child = spawn3(program, args, { cwd: options.cwd, env: options.env, stdio: ["ignore", "pipe", "pipe"], windowsHide: true, detached: process.platform !== "win32" });
     let stdout = "";
     let stderr = "";
-    const tail = (text2, chunk) => (text2 + chunk).slice(-TAIL_BYTES);
+    const tail = (text3, chunk) => (text3 + chunk).slice(-TAIL_BYTES);
     child.stdout.setEncoding("utf8").on("data", (chunk) => stdout = tail(stdout, chunk));
     child.stderr.setEncoding("utf8").on("data", (chunk) => stderr = tail(stderr, chunk));
     let aborted = false;
@@ -10323,9 +10874,9 @@ function duckingSpans(plan, rampSeconds) {
   return merged;
 }
 var num2 = (value2) => (Math.round(value2 * 1e6) / 1e6).toString();
-function duckFilter(spans, t0, seconds, ducking) {
+function duckFilter(spans, t0, seconds2, ducking) {
   const r = ducking.rampSeconds;
-  const relevant = spans.filter((s) => s.end + r > t0 && s.start - r < t0 + seconds);
+  const relevant = spans.filter((s) => s.end + r > t0 && s.start - r < t0 + seconds2);
   if (!relevant.length) return "";
   const T = `(t+${num2(t0)})`;
   const weights = relevant.map(
@@ -10427,8 +10978,8 @@ async function syncCheck(tools, plan, renderedFile, inputPath, options = {}) {
   }
   const measured = results.filter((r) => r.deviationMs !== null);
   const maxDeviationMs = measured.length ? Math.max(...measured.map((r) => Math.abs(r.deviationMs))) : null;
-  const status = results.some((r) => r.status === "deviation") ? "fail" : measured.length ? "pass" : "inconclusive";
-  return { status, toleranceMs: round(toleranceMs, 2), maxDeviationMs: maxDeviationMs === null ? null : round(maxDeviationMs, 2), clips: results };
+  const status2 = results.some((r) => r.status === "deviation") ? "fail" : measured.length ? "pass" : "inconclusive";
+  return { status: status2, toleranceMs: round(toleranceMs, 2), maxDeviationMs: maxDeviationMs === null ? null : round(maxDeviationMs, 2), clips: results };
 }
 var round = (value2, digits) => Math.round(value2 * 10 ** digits) / 10 ** digits;
 function toRanges(flags, fps, gap = 1) {
@@ -10451,9 +11002,9 @@ async function psnrPerFrame(tools, current, previous, workDir, options = {}) {
     signal: options.signal
   });
   if (result.code !== 0) throw new Error(`psnr comparison failed: ${result.stderr.trim().split(/\r?\n/).pop() ?? ""}`);
-  const text2 = await fs20.readFile(path19.join(workDir, stats), "utf8");
+  const text3 = await fs20.readFile(path19.join(workDir, stats), "utf8");
   const values = [];
-  for (const line of text2.split(/\r?\n/)) {
+  for (const line of text3.split(/\r?\n/)) {
     const match = /psnr_y:(\S+)/.exec(line);
     if (!match) continue;
     values.push(match[1] === "inf" ? Infinity : Number(match[1]));
@@ -10496,16 +11047,16 @@ async function changeCheck(tools, current, previous, plan, workDir, options = {}
     changedFrames: changedFlags.filter(Boolean).length
   };
 }
-function normalizeWords(text2) {
-  return text2.normalize("NFKC").toLowerCase().replace(/[’`]/g, "'").split(/[^\p{L}\p{N}']+/u).map((word) => word.replace(/^'+|'+$/g, "")).filter(Boolean);
+function normalizeWords(text3) {
+  return text3.normalize("NFKC").toLowerCase().replace(/[’`]/g, "'").split(/[^\p{L}\p{N}']+/u).map((word) => word.replace(/^'+|'+$/g, "")).filter(Boolean);
 }
-function parseWhisperJson(json) {
-  const data = JSON.parse(json);
+function parseWhisperJson(json2) {
+  const data = JSON.parse(json2);
   const words = [];
   for (const segment of data.transcription ?? []) {
     const start = (segment.offsets?.from ?? 0) / 1e3;
     const end = (segment.offsets?.to ?? 0) / 1e3;
-    for (const text2 of normalizeWords(segment.text ?? "")) words.push({ text: text2, start, end });
+    for (const text3 of normalizeWords(segment.text ?? "")) words.push({ text: text3, start, end });
   }
   return words;
 }
@@ -10600,7 +11151,7 @@ function compareTranscript(plan, words) {
     recognizedWords: words.length,
     matchedWords,
     deviations,
-    uncaptioned: groups.map(({ from, text: text2 }) => ({ from, text: text2 })),
+    uncaptioned: groups.map(({ from, text: text3 }) => ({ from, text: text3 })),
     timing
   };
 }
@@ -10641,15 +11192,15 @@ var DIALOG_BELOW_TARGET_DB = 2;
 var DIALOG_GAIN_LIMITS = { min: -12, max: 36 };
 var SILENCE_LUFS = -70;
 var fixed = (value2) => (Number.isFinite(value2) ? value2 : value2 > 0 ? 99 : -99).toFixed(2);
-var value = (text2) => text2 === void 0 ? Number.NaN : text2 === "-inf" ? Number.NEGATIVE_INFINITY : text2 === "inf" ? Number.POSITIVE_INFINITY : Number(text2);
+var value = (text3) => text3 === void 0 ? Number.NaN : text3 === "-inf" ? Number.NEGATIVE_INFINITY : text3 === "inf" ? Number.POSITIVE_INFINITY : Number(text3);
 async function ffmpeg(tools, args, signal) {
   const result = await tools.run(tools.ffmpeg, ["-hide_banner", "-nostdin", "-loglevel", "info", ...args], { timeoutMs: 6 * 60 * 6e4, signal });
   if (result.code !== 0) throw new CliError("loudness-failed", `ffmpeg failed: ${result.stderr.trim().split(/\r?\n/).slice(-3).join(" | ")}`);
   return result.stderr;
 }
 async function measureLoudness(tools, file, options = {}) {
-  const range = options.range ? ["-ss", options.range.from.toFixed(6), "-t", options.range.seconds.toFixed(6)] : [];
-  const stderr = await ffmpeg(tools, ["-nostats", ...range, "-i", file, "-map", "0:a:0", "-af", "ebur128=peak=true:framelog=quiet", "-f", "null", "-"], options.signal);
+  const range2 = options.range ? ["-ss", options.range.from.toFixed(6), "-t", options.range.seconds.toFixed(6)] : [];
+  const stderr = await ffmpeg(tools, ["-nostats", ...range2, "-i", file, "-map", "0:a:0", "-af", "ebur128=peak=true:framelog=quiet", "-f", "null", "-"], options.signal);
   const summary2 = stderr.slice(stderr.lastIndexOf("Summary:"));
   const read = (pattern) => {
     const match = pattern.exec(summary2);
@@ -10919,16 +11470,16 @@ var SUBJECT_LABEL = {
   thumbnail: "thumbnail review (frame and headline of the still images)"
 };
 function describeMissing(state) {
-  const show = `darkmind-agent review show ${state.subject}`;
+  const show2 = `darkmind-agent review show ${state.subject}`;
   switch (state.status) {
     case "stale":
-      return `the ${SUBJECT_LABEL[state.subject]} is out of date: ${state.changes.length} change(s) since ${state.approvedRecord}; show the changes to the editor (${show}) and record the editor's decision`;
+      return `the ${SUBJECT_LABEL[state.subject]} is out of date: ${state.changes.length} change(s) since ${state.approvedRecord}; show the changes to the editor (${show2}) and record the editor's decision`;
     case "changes-requested":
       return `the editor requested changes in ${state.record} (${SUBJECT_LABEL[state.subject]}); change the project and show it again`;
     case "not-reviewable":
       return `the ${SUBJECT_LABEL[state.subject]} is not possible yet: ${state.blockers.join("; ")}`;
     default:
-      return `the ${SUBJECT_LABEL[state.subject]} is missing; show it to the editor (${show}) and record the editor's decision`;
+      return `the ${SUBJECT_LABEL[state.subject]} is missing; show it to the editor (${show2}) and record the editor's decision`;
   }
 }
 function evaluateGate(state, action) {
@@ -11060,8 +11611,8 @@ async function reviewTarget(root, state, subject, options = {}) {
       const report = render?.report;
       if (report && report.review?.gate?.status !== "passed") blockers.push(`${render.file} was not rendered through the review gate`);
       for (const name of ["editorial", "captions-text", "preview", "duration-exception"]) {
-        const status = state.subjects[name].status;
-        if (status !== "approved" && status !== "not-required") blockers.push(`the ${SUBJECT_LABEL[name]} is ${status}`);
+        const status2 = state.subjects[name].status;
+        if (status2 !== "approved" && status2 !== "not-required") blockers.push(`the ${SUBJECT_LABEL[name]} is ${status2}`);
       }
       if (!report?.review?.bindings?.preview || !report.review.bindings.editorial || !state.hashes.preview) {
         return { subject, hash: "", snapshot: {}, render, blockers: blockers.length ? blockers : ["no reviewable final render"], warnings };
@@ -11209,7 +11760,7 @@ async function detectBrandPack(root) {
     return null;
   }
   const value2 = parsed;
-  const ok = (text2) => typeof text2 === "string" && text2.length > 0 && text2.length <= 100;
+  const ok = (text3) => typeof text3 === "string" && text3.length > 0 && text3.length <= 100;
   if (value2?.kind !== "darkmind-brand-pack" || !ok(value2.version)) return null;
   const id2 = ok(value2.id) && /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(value2.id) ? value2.id : null;
   return id2 ? { id: id2, version: value2.version } : null;
@@ -11268,18 +11819,18 @@ function segmentRanges(from, to, size) {
   }
   return ranges;
 }
-function segmentKey(plan, range, base) {
+function segmentKey(plan, range2, base) {
   const clips = plan.video.flatMap(
-    (track) => track.clips.filter((clip) => clipSpan(clip, range.from, range.to)).map((clip) => ({ track: track.id, ...clip, file: fingerprint(plan.files[clip.file]) }))
+    (track) => track.clips.filter((clip) => clipSpan(clip, range2.from, range2.to)).map((clip) => ({ track: track.id, ...clip, file: fingerprint(plan.files[clip.file]) }))
   );
-  const captions = base.captions ? plan.captions.filter((c) => c.end > range.from && c.start < range.to) : [];
-  return canonical({ renderer: RENDERER_VERSION, recipe: base.recipe, toolchain: base.toolchain, output: plan.output, range, clips, captions });
+  const captions = base.captions ? plan.captions.filter((c) => c.end > range2.from && c.start < range2.to) : [];
+  return canonical({ renderer: RENDERER_VERSION, recipe: base.recipe, toolchain: base.toolchain, output: plan.output, range: range2, clips, captions });
 }
-function audioKey(plan, range, toolchain) {
+function audioKey(plan, range2, toolchain) {
   const clips = plan.audio.flatMap(
-    (track) => track.clips.filter((clip) => clipSpan(clip, range.from, range.to)).map((clip) => ({ track: track.id, ...clip, file: fingerprint(plan.files[clip.file]) }))
+    (track) => track.clips.filter((clip) => clipSpan(clip, range2.from, range2.to)).map((clip) => ({ track: track.id, ...clip, file: fingerprint(plan.files[clip.file]) }))
   );
-  return canonical({ renderer: RENDERER_VERSION, toolchain, output: plan.output, range, clips, ducking: plan.audioMaster?.ducking ?? void 0 });
+  return canonical({ renderer: RENDERER_VERSION, toolchain, output: plan.output, range: range2, clips, ducking: plan.audioMaster?.ducking ?? void 0 });
 }
 async function cachedEntry(file) {
   const meta = await readJsonFile(`${file}.json`).catch(() => null);
@@ -11334,8 +11885,8 @@ async function verifyOutput(tools, file, plan, frames) {
   if (v?.r_frame_rate !== fpsText || v?.avg_frame_rate !== fpsText) problems.push(`frame rate r=${v?.r_frame_rate} avg=${v?.avg_frame_rate} instead of ${fpsText}`);
   if (profile.videoCodec !== "h264" || profile.pixelFormat !== "yuv420p") problems.push(`video ${profile.videoCodec}/${profile.pixelFormat}`);
   if (profile.audioCodec !== "aac" || profile.sampleRate !== plan.output.sampleRate || profile.channels !== 2) problems.push(`audio ${profile.audioCodec} ${profile.sampleRate} Hz ${profile.channels} ch`);
-  const seconds = frames / toNumberQ(fps);
-  if (Math.abs(profile.audioSeconds - seconds) > 1 / toNumberQ(fps) + 1e-3) problems.push(`audio lasts ${profile.audioSeconds.toFixed(3)} s, the video ${seconds.toFixed(3)} s`);
+  const seconds2 = frames / toNumberQ(fps);
+  if (Math.abs(profile.audioSeconds - seconds2) > 1 / toNumberQ(fps) + 1e-3) problems.push(`audio lasts ${profile.audioSeconds.toFixed(3)} s, the video ${seconds2.toFixed(3)} s`);
   const pts = await probeFramePts(tools, file);
   if (pts.length !== frames) problems.push(`${pts.length} frames instead of ${frames}`);
   else {
@@ -11387,10 +11938,10 @@ async function artifactHashes(root, plan, documents) {
   return result;
 }
 function estimateBytes(plan, frames, mode) {
-  const seconds = frames / toNumberQ(parseRational(plan.output.fps));
+  const seconds2 = frames / toNumberQ(parseRational(plan.output.fps));
   const pixels = plan.output.width * plan.output.height / (1920 * 1080);
   const videoBitsPerSecond = (mode === "proxy" ? 8e6 : 2e7) * pixels;
-  return Math.round((videoBitsPerSecond / 8 * 2.2 + 48e3 * 2 * 3 * 1.5) * seconds + 64 * 1024 ** 2);
+  return Math.round((videoBitsPerSecond / 8 * 2.2 + 48e3 * 2 * 3 * 1.5) * seconds2 + 64 * 1024 ** 2);
 }
 async function pruneCache2(dir, keep, maxAgeMs) {
   const now = Date.now();
@@ -11485,32 +12036,32 @@ async function renderProject(request) {
     const segmentFiles = [];
     let reused = 0;
     const renderStart = Date.now();
-    for (const [index, range] of ranges.entries()) {
-      const key = segmentKey(plan, range, { recipe, toolchain: tcKey, captions: useCaptions });
+    for (const [index, range2] of ranges.entries()) {
+      const key = segmentKey(plan, range2, { recipe, toolchain: tcKey, captions: useCaptions });
       const file = path22.join(segmentDir, `${key}.mp4`);
       segmentFiles.push(file);
       if (await cachedEntry(file)) {
         reused++;
         continue;
       }
-      progress(`segment ${index + 1}/${ranges.length} (frames ${range.from}-${range.to})`);
+      progress(`segment ${index + 1}/${ranges.length} (frames ${range2.from}-${range2.to})`);
       const temp = path22.join(workDir, `segment-${index}.mp4`);
-      const graph = videoSegmentArgs(plan, range.from, range.to, { recipe, captions: useCaptions, out: temp, inputPath });
+      const graph = videoSegmentArgs(plan, range2.from, range2.to, { recipe, captions: useCaptions, out: temp, inputPath });
       for (const extra of graph.files) await fs23.writeFile(path22.join(workDir, extra.name), extra.content, "utf8");
-      await run(tools, await withGraphFile(graph.args, workDir, toolchain.ffmpegMajor, `segment-${index}`), workDir, request.signal, `segment ${range.from}-${range.to}`);
+      await run(tools, await withGraphFile(graph.args, workDir, toolchain.ffmpegMajor, `segment-${index}`), workDir, request.signal, `segment ${range2.from}-${range2.to}`);
       const pts = await probeFramePts(tools, temp);
-      if (pts.length !== range.to - range.from) throw new CliError("render-verification-failed", `segment ${range.from}-${range.to} has ${pts.length} frames instead of ${range.to - range.from}`);
-      await storeEntry(temp, file, range.to - range.from);
+      if (pts.length !== range2.to - range2.from) throw new CliError("render-verification-failed", `segment ${range2.from}-${range2.to} has ${pts.length} frames instead of ${range2.to - range2.from}`);
+      await storeEntry(temp, file, range2.to - range2.from);
     }
     const aKeyRaw = audioKey(plan, { from, to }, tcKey);
-    const mixAudio = async (range, key, float = false) => {
+    const mixAudio = async (range2, key, float = false) => {
       const file = path22.join(audioDir, `${key}.wav`);
       if (await cachedEntry(file)) return { file, status: "reused" };
       progress("audio");
       const temp = path22.join(workDir, `audio-${key.slice(0, 12)}.wav`);
-      const graph = audioArgs(plan, range.from, range.to, { out: temp, inputPath, float });
+      const graph = audioArgs(plan, range2.from, range2.to, { out: temp, inputPath, float });
       await run(tools, await withGraphFile(graph.args, workDir, toolchain.ffmpegMajor, "audio"), workDir, request.signal, "audio");
-      await storeEntry(temp, file, range.to - range.from);
+      await storeEntry(temp, file, range2.to - range2.from);
       return { file, status: "rendered" };
     };
     let aKey = aKeyRaw;
@@ -11570,8 +12121,8 @@ async function renderProject(request) {
       }
     }
     progress("mux");
-    const list = segmentFiles.map((file) => `file '${file.replace(/\\/g, "/").replace(/'/g, "'\\''")}'`).join("\n");
-    await fs23.writeFile(path22.join(workDir, "segments.txt"), `${list}
+    const list2 = segmentFiles.map((file) => `file '${file.replace(/\\/g, "/").replace(/'/g, "'\\''")}'`).join("\n");
+    await fs23.writeFile(path22.join(workDir, "segments.txt"), `${list2}
 `);
     const muxed = path22.join(workDir, "output.mp4");
     await run(
@@ -11703,19 +12254,19 @@ var esc = (value2) => value2.replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 function relativePathUrl(relPath) {
   return relPath.split("/").map(encodeURIComponent).join("/");
 }
-function toTicks(seconds) {
-  return floorQ(mulQ(seconds, rational(PPRO_TICKS_PER_SECOND)));
+function toTicks(seconds2) {
+  return floorQ(mulQ(seconds2, rational(PPRO_TICKS_PER_SECOND)));
 }
 function xmlNumber(value2, decimals) {
-  const text2 = value2.toFixed(decimals).replace(/\.?0+$/, "");
-  return text2 === "-0" ? "0" : text2;
+  const text3 = value2.toFixed(decimals).replace(/\.?0+$/, "");
+  return text3 === "-0" ? "0" : text3;
 }
 var rateXml = (timebase, ntsc, ind) => `${ind}<rate>
 ${ind}	<timebase>${timebase}</timebase>
 ${ind}	<ntsc>${ntsc ? "TRUE" : "FALSE"}</ntsc>
 ${ind}</rate>`;
-function framesOf(seconds, timebase) {
-  return floorQ(mulQ(seconds, rational(timebase)));
+function framesOf(seconds2, timebase) {
+  return floorQ(mulQ(seconds2, rational(timebase)));
 }
 function buildXmeml(seq) {
   const tb = seq.fps;
@@ -11724,9 +12275,9 @@ function buildXmeml(seq) {
   const groups = /* @__PURE__ */ new Map();
   let clipSeq = 0;
   const register = (group, ref) => {
-    const list = groups.get(group) ?? [];
-    list.push(ref);
-    groups.set(group, list);
+    const list2 = groups.get(group) ?? [];
+    list2.push(ref);
+    groups.set(group, list2);
   };
   const videoItems = seq.video.map(
     (clips, ti) => clips.map((clip, ci) => {
@@ -12135,8 +12686,8 @@ async function verifyConform(tools, file, spec, oriented) {
     else {
       if (info.audio.sampleRate !== spec.sampleRate) problems.push(`audio ${info.audio.sampleRate} Hz instead of ${spec.sampleRate}`);
       if (info.audio.channels < 2) problems.push(`${info.audio.channels} audio channel(s) instead of stereo`);
-      const seconds = info.durationSeconds ? toNumberQ(info.durationSeconds) : 0;
-      if (spec.audioOnly && Math.abs(seconds - frames / spec.fps) > 1 / spec.fps) problems.push(`audio lasts ${seconds.toFixed(3)} s instead of ${(frames / spec.fps).toFixed(3)} s`);
+      const seconds2 = info.durationSeconds ? toNumberQ(info.durationSeconds) : 0;
+      if (spec.audioOnly && Math.abs(seconds2 - frames / spec.fps) > 1 / spec.fps) problems.push(`audio lasts ${seconds2.toFixed(3)} s instead of ${(frames / spec.fps).toFixed(3)} s`);
     }
   }
   if (spec.audioOnly) return problems;
@@ -12351,7 +12902,7 @@ async function exportPremierePackage(request) {
       if (r.d === 1001n) return { timebase: Math.round(value2), ntsc: true };
       return { timebase: Math.max(1, Math.round(value2)), ntsc: false };
     };
-    const derive = async (file, abs2, info, sha2563, spec) => {
+    const derive2 = async (file, abs2, info, sha2563, spec) => {
       const ext = spec.audioOnly ? "wav" : "mov";
       const key = sha256Hex(JSON.stringify({ version: CONFORM_VERSION, original: sha2563, spec, ffmpeg: toolchain.ffmpeg }));
       const cached = path23.join(conformDir, `${key}.${ext}`);
@@ -12405,15 +12956,15 @@ async function exportPremierePackage(request) {
       const clips = allClips.filter((clip) => clip.file === file.id);
       const source = sourceId ? sources.get(sourceId) : void 0;
       const facts = source?.media ?? null;
-      const range = () => conformRange(clips, rate, facts?.durationSeconds ? parseRational(facts.durationSeconds) : info.durationSeconds, handleSeconds);
+      const range2 = () => conformRange(clips, rate, facts?.durationSeconds ? parseRational(facts.durationSeconds) : info.durationSeconds, handleSeconds);
       const mono = info.audio?.channels === 1;
       const audioGains = clips.filter((clip) => clip.kind === "audio").map((clip) => clip.gainDb ?? 0);
       const boost = audioGains.length ? Math.max(0, Math.round((Math.max(...audioGains) - PREMIERE_MAX_LEVEL_DB) * 100) / 100) : 0;
       const gainSpec = boost > 0 ? { gainDb: boost } : {};
       const reasons = sourceId ? conformSources.get(sourceId) : void 0;
       if (reasons && info.video) {
-        const spec = { sourceId, reasons: [...reasons, ...mono ? ["mono"] : [], ...boost > 0 ? ["gain"] : []], ...gainSpec, ...range(), fps: rate, sampleRate: plan.output.sampleRate, hasAudio: Boolean(info.audio) };
-        const derived = await derive(file, abs2, info, sha2563, spec);
+        const spec = { sourceId, reasons: [...reasons, ...mono ? ["mono"] : [], ...boost > 0 ? ["gain"] : []], ...gainSpec, ...range2(), fps: rate, sampleRate: plan.output.sampleRate, hasAudio: Boolean(info.audio) };
+        const derived = await derive2(file, abs2, info, sha2563, spec);
         mediaByFile.set(file.id, derived);
         audioByFile.set(file.id, derived);
         continue;
@@ -12442,8 +12993,8 @@ async function exportPremierePackage(request) {
       }
       if (!clips.some((clip) => clip.kind === "audio")) continue;
       if (mono || boost > 0) {
-        const spec = { sourceId: sourceId ?? file.extensionId ?? "audio", reasons: [...mono ? ["mono"] : [], ...boost > 0 ? ["gain"] : []], ...gainSpec, ...range(), fps: rate, sampleRate: plan.output.sampleRate, hasAudio: true, audioOnly: true };
-        audioByFile.set(file.id, await derive(file, abs2, info, sha2563, spec));
+        const spec = { sourceId: sourceId ?? file.extensionId ?? "audio", reasons: [...mono ? ["mono"] : [], ...boost > 0 ? ["gain"] : []], ...gainSpec, ...range2(), fps: rate, sampleRate: plan.output.sampleRate, hasAudio: true, audioOnly: true };
+        audioByFile.set(file.id, await derive2(file, abs2, info, sha2563, spec));
       } else if (mediaByFile.has(file.id)) {
         audioByFile.set(file.id, mediaByFile.get(file.id));
       } else {
@@ -12702,7 +13253,7 @@ async function exportPremierePackage(request) {
       ...loudness ? [`Loudness: the package does not contain the mastered mix \u2013 set ${loudness.target.integratedLufs} LUFS / ${loudness.target.truePeakDbtp} dBTP when exporting from Premiere (see "Loudness" below).`] : [],
       "Save the Premiere project (File > Save As\u2026) wherever you like \u2013 it is a separate working state; changes are not transferred back into the pipeline."
     ];
-    const recipe = docs.project.recipe ? { id: docs.project.recipe.id, version: String(docs.project.recipe.version) } : null;
+    const recipe = docs.project.recipe ? { id: docs.project.recipe.id, version: docs.project.recipe.version === null ? "draft" : String(docs.project.recipe.version) } : null;
     const partial = {
       kind: "darkmind-premiere-package",
       version: 1,
@@ -12763,8 +13314,8 @@ async function exportPremierePackage(request) {
       const previousDir = path23.join(premiereDir, version.previous);
       const previous = await readJsonFile(path23.join(previousDir, PACKAGE_MANIFEST)).catch(() => null);
       if (previous?.packageKey === packageKey) {
-        const check2 = await verifyPremierePackage(previousDir);
-        if (check2.ok) {
+        const check3 = await verifyPremierePackage(previousDir);
+        if (check3.ok) {
           await pruneCache2(conformDir, keepConform, 14 * 864e5);
           return { status: "unchanged", dir: rel2(root, previousDir), manifest: previous, warnings: issues.filter((i) => i.severity === "warning") };
         }
@@ -12773,8 +13324,8 @@ async function exportPremierePackage(request) {
     const manifest = { ...partial, createdAt: (request.now?.() ?? /* @__PURE__ */ new Date()).toISOString(), packageKey, files };
     await fs24.writeFile(path23.join(staging, PACKAGE_MANIFEST), `${JSON.stringify(manifest, null, 2)}
 `, "utf8");
-    const check = await verifyPremierePackage(staging);
-    if (!check.ok) throw new CliError("export-verification-failed", `The package is incomplete: ${check.problems.join("; ")}`, { problems: check.problems });
+    const check2 = await verifyPremierePackage(staging);
+    if (!check2.ok) throw new CliError("export-verification-failed", `The package is incomplete: ${check2.problems.join("; ")}`, { problems: check2.problems });
     const target = path23.join(premiereDir, `v${String(version.number).padStart(4, "0")}`);
     await fs24.mkdir(premiereDir, { recursive: true });
     await renameWithRetry(staging, target);
@@ -12802,9 +13353,9 @@ function draftMarkers(docs, plan) {
       seen.add(id2);
       const item = items.get(id2);
       if (!item) continue;
-      const text2 = item.kind === "statement" ? item.quote ?? "" : item.text ?? item.description;
+      const text3 = item.kind === "statement" ? item.quote ?? "" : item.text ?? item.description;
       const speaker = item.kind === "statement" && item.speaker?.name ? ` \u2013 ${item.speaker.name}` : "";
-      markers.push({ frame: clip.start, name: `${id2}${speaker}`, comment: text2.length > 500 ? `${text2.slice(0, 497)}\u2026` : text2 });
+      markers.push({ frame: clip.start, name: `${id2}${speaker}`, comment: text3.length > 500 ? `${text3.slice(0, 497)}\u2026` : text3 });
     }
   }
   return markers;
@@ -12877,11 +13428,11 @@ async function verifyCommand(ctx, folder) {
   const relDir = folder ?? await latestPackage(ctx.root);
   if (!relDir) throw new CliError("not-found", 'no Premiere package in renders/premiere/; run "darkmind-agent export premiere" first');
   const dir = path24.resolve(ctx.root, relDir);
-  const check = await verifyPremierePackage(dir);
+  const check2 = await verifyPremierePackage(dir);
   return {
-    data: { dir, ok: check.ok, checkedFiles: check.checkedFiles, problems: check.problems, sequence: check.manifest?.sequence ?? null },
-    text: check.ok ? `${dir}: complete (${check.checkedFiles} files match the manifest; media paths relative to the XML)` : [`${dir}: ${check.problems.length} problem(s)`, ...check.problems.map((p) => `  - ${p}`)].join("\n"),
-    exitCode: check.ok ? 0 : 1
+    data: { dir, ok: check2.ok, checkedFiles: check2.checkedFiles, problems: check2.problems, sequence: check2.manifest?.sequence ?? null },
+    text: check2.ok ? `${dir}: complete (${check2.checkedFiles} files match the manifest; media paths relative to the XML)` : [`${dir}: ${check2.problems.length} problem(s)`, ...check2.problems.map((p) => `  - ${p}`)].join("\n"),
+    exitCode: check2.ok ? 0 : 1
   };
 }
 
@@ -12897,25 +13448,25 @@ import { promises as fs25 } from "node:fs";
 import path25 from "node:path";
 var LARGE_ORIGINALS_BYTES = 10 * 1024 ** 3;
 var CACHE_MIN_VALIDITY_MS = 10 * 60 * 1e3;
-function parseTime(text2) {
-  const parts = text2.trim().split(":");
-  if (parts.length > 3 || parts.some((part) => !/^\d+(\.\d+)?$/.test(part))) throw new CliError("invalid-input", `"${text2}" is not a time (seconds or [h:]mm:ss)`);
+function parseTime(text3) {
+  const parts = text3.trim().split(":");
+  if (parts.length > 3 || parts.some((part) => !/^\d+(\.\d+)?$/.test(part))) throw new CliError("invalid-input", `"${text3}" is not a time (seconds or [h:]mm:ss)`);
   return parts.reduce((total, part) => total * 60 + Number(part), 0);
 }
-function parseRange(text2) {
-  const colon = text2.indexOf(":");
-  const videoId = text2.slice(0, colon).trim();
-  const times = text2.slice(colon + 1).split("-");
+function parseRange2(text3) {
+  const colon = text3.indexOf(":");
+  const videoId = text3.slice(0, colon).trim();
+  const times = text3.slice(colon + 1).split("-");
   if (colon < 0 || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(videoId) || times.length !== 2) {
-    throw new CliError("invalid-input", `--range "${text2}" must look like <videoId>:<from>-<to>, e.g. 3F2A\u2026:12.5-20 or 3F2A\u2026:1:05-1:20`);
+    throw new CliError("invalid-input", `--range "${text3}" must look like <videoId>:<from>-<to>, e.g. 3F2A\u2026:12.5-20 or 3F2A\u2026:1:05-1:20`);
   }
   const from = parseTime(times[0]);
   const to = parseTime(times[1]);
-  if (!(to > from)) throw new CliError("invalid-input", `--range "${text2}": end must be after start`);
+  if (!(to > from)) throw new CliError("invalid-input", `--range "${text3}": end must be after start`);
   return { videoId: normalizeCutProjectVideoId(videoId), from, to };
 }
-function formatSeconds(seconds) {
-  return String(Math.round(seconds * 1e3) / 1e3);
+function formatSeconds2(seconds2) {
+  return String(Math.round(seconds2 * 1e3) / 1e3);
 }
 function seekArgument(value2) {
   const micro = value2.n * 1000000n / value2.d;
@@ -12925,7 +13476,7 @@ async function snapExcerptStart(tools, input, from) {
   const before = Math.max(0, Math.floor(from) - 5);
   const pts = await probeFramePts(tools, input, { readIntervals: `${before}%${Math.ceil(from) + 2}` });
   if (pts.length === 0) throw new CliError("proxy-offset-unknown", "The proxy frame times around the excerpt start could not be read (rule E1).");
-  const target = parseRational(formatSeconds(from));
+  const target = parseRational(formatSeconds2(from));
   let chosen = null;
   for (const value2 of pts) if (compareQ(value2, target) <= 0) chosen = value2;
   return chosen ?? pts[0];
@@ -12947,29 +13498,29 @@ async function loadTransfer(ctx, ticket, server) {
 function relativeTo(root, file) {
   return path25.relative(root, file).split(path25.sep).join("/");
 }
-async function proxyFile(ctx, tools, item, range, outDir, force, warnings, indexEntries) {
-  const name = range ? `${item.videoId}_${formatSeconds(range.from)}-${formatSeconds(range.to)}.mp4` : `${item.videoId}.mp4`;
+async function proxyFile(ctx, tools, item, range2, outDir, force, warnings, indexEntries) {
+  const name = range2 ? `${item.videoId}_${formatSeconds2(range2.from)}-${formatSeconds2(range2.to)}.mp4` : `${item.videoId}.mp4`;
   const out = path25.join(outDir, name);
-  const rangeInfo = range ? { range: { from: range.from, to: range.to } } : {};
+  const rangeInfo = range2 ? { range: { from: range2.from, to: range2.to } } : {};
   if (!force && await fs25.stat(out).catch(() => null)) {
     const indexed = (await readProxyIndex(outDir)).files.find((entry) => entry.file.toLowerCase() === name.toLowerCase());
     const info2 = await probe(tools, out).catch(() => null);
-    if (info2?.hasVideo && (indexed || !range)) {
+    if (info2?.hasVideo && (indexed || !range2)) {
       const { size: size2 } = await fs25.stat(out);
       return { videoId: item.videoId, path: relativeTo(ctx.root, out), status: "exists", bytes: size2, ...rangeInfo, durationSeconds: info2.durationSeconds, offset: indexed?.offset ?? "0" };
     }
   }
-  const input = item.files?.video.url ?? (range ? item.playlistUrl : null);
+  const input = item.files?.video.url ?? (range2 ? item.playlistUrl : null);
   let start = null;
-  if (range && input) start = await snapExcerptStart(tools, input, range.from);
-  const seek = range && start ? ["-ss", seekArgument(start), "-t", formatSeconds(range.to - toNumberQ(start))] : [];
+  if (range2 && input) start = await snapExcerptStart(tools, input, range2.from);
+  const seek = range2 && start ? ["-ss", seekArgument(start), "-t", formatSeconds2(range2.to - toNumberQ(start))] : [];
   const temp = `${out}.part.mp4`;
   const args = ["-hide_banner", "-nostdin", "-loglevel", "error", "-y"];
   if (item.files) {
     args.push(...seek, "-i", item.files.video.url);
     if (item.files.audio) args.push(...seek, "-i", item.files.audio.url, "-map", "0:v:0", "-map", "1:a:0");
     else args.push("-map", "0:v:0", "-map", "0:a?");
-  } else if (range && item.playlistUrl) {
+  } else if (range2 && item.playlistUrl) {
     warnings.push(`${item.videoId}: proxy files unavailable (${item.filesError ?? "unknown reason"}), excerpt read via the HLS playlist.`);
     args.push(...seek, "-i", item.playlistUrl, "-map", "0:v:0", "-map", "0:a?");
   } else {
@@ -12980,8 +13531,8 @@ async function proxyFile(ctx, tools, item, range, outDir, force, warnings, index
   }
   args.push("-c", "copy", "-movflags", "+faststart", temp);
   await fs25.mkdir(outDir, { recursive: true });
-  let result = await tools.run(tools.ffmpeg, args, { timeoutMs: range ? 30 * 6e4 : 4 * 60 * 6e4 });
-  if (result.code !== 0) result = await tools.run(tools.ffmpeg, args, { timeoutMs: range ? 30 * 6e4 : 4 * 60 * 6e4 });
+  let result = await tools.run(tools.ffmpeg, args, { timeoutMs: range2 ? 30 * 6e4 : 4 * 60 * 6e4 });
+  if (result.code !== 0) result = await tools.run(tools.ffmpeg, args, { timeoutMs: range2 ? 30 * 6e4 : 4 * 60 * 6e4 });
   if (result.code !== 0) {
     await fs25.rm(temp, { force: true });
     const reason = result.stderr.trim().split(/\r?\n/).filter(Boolean).pop() ?? `exit code ${result.code}`;
@@ -12997,7 +13548,7 @@ async function proxyFile(ctx, tools, item, range, outDir, force, warnings, index
     offset = shown.length ? subQ(start, shown[0]) : start;
   }
   await renameWithRetry(temp, out);
-  const expected = range ? range.to - toNumberQ(offset) : item.durationSeconds;
+  const expected = range2 ? range2.to - toNumberQ(offset) : item.durationSeconds;
   if (expected && info.durationSeconds !== null && Math.abs(info.durationSeconds - expected) > 1) {
     warnings.push(`${name}: duration ${info.durationSeconds.toFixed(2)} s, expected ${expected.toFixed(2)} s.`);
   }
@@ -13005,9 +13556,9 @@ async function proxyFile(ctx, tools, item, range, outDir, force, warnings, index
   indexEntries.push({
     file: name,
     videoId: item.videoId,
-    kind: range ? "excerpt" : "full",
+    kind: range2 ? "excerpt" : "full",
     offset: formatRationalReadable(offset, 9),
-    ...range ? { requested: { from: range.from, to: range.to } } : {},
+    ...range2 ? { requested: { from: range2.from, to: range2.to } } : {},
     durationSeconds: info.durationSeconds === null ? null : String(info.durationSeconds)
   });
   return {
@@ -13054,7 +13605,7 @@ async function originalFile(ctx, tools, item, outDir, force, hasProbe, warnings)
 async function mediaCommand(ctx, ticketArg, options = {}, tools = defaultTools(ctx.env)) {
   if (!ticketArg) throw new CliError("invalid-input", "Usage: darkmind-agent media <ticket> [--out <dir>] [--range <videoId>:<from>-<to>]\u2026");
   const ticket = checkTicket(ticketArg);
-  const ranges = (options.ranges ?? []).map(parseRange);
+  const ranges = (options.ranges ?? []).map(parseRange2);
   const config = await readConfig(ctx.root);
   const [ffmpegVersion, ffprobeVersion] = await Promise.all([toolVersion(tools, "ffmpeg"), toolVersion(tools, "ffprobe")]);
   if (ranges.length > 0 && (!ffmpegVersion || !ffprobeVersion)) {
@@ -13075,26 +13626,26 @@ async function mediaCommand(ctx, ticketArg, options = {}, tools = defaultTools(c
     const byId = new Map(transfer.videos.map((item) => [normalizeCutProjectVideoId(item.videoId), item]));
     const jobs = [];
     if (ranges.length > 0) {
-      for (const range of ranges) {
-        const item = byId.get(range.videoId);
-        if (item) jobs.push({ item, range });
+      for (const range2 of ranges) {
+        const item = byId.get(range2.videoId);
+        if (item) jobs.push({ item, range: range2 });
         else {
-          const error = ticketErrors.get(range.videoId);
-          failed.push({ videoId: range.videoId, range: { from: range.from, to: range.to }, code: error?.code ?? "not-in-ticket", message: error?.message ?? "The ticket does not contain this video." });
+          const error = ticketErrors.get(range2.videoId);
+          failed.push({ videoId: range2.videoId, range: { from: range2.from, to: range2.to }, code: error?.code ?? "not-in-ticket", message: error?.message ?? "The ticket does not contain this video." });
         }
       }
     } else {
       for (const item of transfer.videos) jobs.push({ item, range: null });
     }
     const indexEntries = [];
-    await runPool(jobs, options.concurrency ?? 3, async ({ item, range }) => {
+    await runPool(jobs, options.concurrency ?? 3, async ({ item, range: range2 }) => {
       try {
-        files.push(await proxyFile(ctx, tools, item, range, outDir, force, warnings, indexEntries));
+        files.push(await proxyFile(ctx, tools, item, range2, outDir, force, warnings, indexEntries));
         ctx.progress(`proxy ${++done}/${jobs.length} ${item.videoId}`);
       } catch (error) {
         failed.push({
           videoId: item.videoId,
-          ...range ? { range: { from: range.from, to: range.to } } : {},
+          ...range2 ? { range: { from: range2.from, to: range2.to } } : {},
           code: error instanceof CliError ? error.code : "failed",
           message: errorMessage(error)
         });
@@ -13149,14 +13700,14 @@ async function mediaCommand(ctx, ticketArg, options = {}, tools = defaultTools(c
 
 // src/commands/render.ts
 async function readRawJson(file, label2) {
-  let text2;
+  let text3;
   try {
-    text2 = await fs26.readFile(file, "utf8");
+    text3 = await fs26.readFile(file, "utf8");
   } catch {
     throw new CliError("not-found", `${label2} does not exist`);
   }
   try {
-    const value2 = JSON.parse(text2.replace(/^\uFEFF/, ""));
+    const value2 = JSON.parse(text3.replace(/^\uFEFF/, ""));
     if (!value2 || typeof value2 !== "object" || Array.isArray(value2)) throw new Error("not an object");
     return value2;
   } catch (error) {
@@ -13276,10 +13827,10 @@ function parseMode(options) {
   if (options.proxy && options.original) throw new CliError("usage", "use either --proxy or --original");
   return options.original ? "original" : "proxy";
 }
-function parseSection(text2) {
-  if (text2 === void 0) return null;
-  const match = /^(\d+)[-:](\d+)$/.exec(text2.trim());
-  if (!match) throw new CliError("usage", `--section "${text2}" must look like <fromFrame>-<toFrame> (end exclusive), e.g. 120-245`);
+function parseSection(text3) {
+  if (text3 === void 0) return null;
+  const match = /^(\d+)[-:](\d+)$/.exec(text3.trim());
+  if (!match) throw new CliError("usage", `--section "${text3}" must look like <fromFrame>-<toFrame> (end exclusive), e.g. 120-245`);
   const from = Number(match[1]);
   const to = Number(match[2]);
   if (to <= from) throw new CliError("usage", "--section: the end must be after the start");
@@ -13302,8 +13853,8 @@ async function planCommand(ctx, options, tools = defaultTools(ctx.env)) {
     const fps2 = parseRational(plan.output.fps);
     const ranges = segmentRanges(0, plan.totalFrames, Number(fps2.n / fps2.d) * 10);
     segments = ranges.length;
-    for (const range of ranges) {
-      const key = segmentKey(plan, range, { recipe: RENDER_RECIPES[mode], toolchain: toolchainKey(toolchain), captions: plan.captions.length > 0 });
+    for (const range2 of ranges) {
+      const key = segmentKey(plan, range2, { recipe: RENDER_RECIPES[mode], toolchain: toolchainKey(toolchain), captions: plan.captions.length > 0 });
       if (await fs26.stat(path26.join(ctx.root, "renders", RENDER_DIRS.cache, "segments", `${key}.mp4`)).catch(() => null)) cached++;
     }
   }
@@ -13597,8 +14148,8 @@ async function levelsCommand(ctx, options, tools = defaultTools(ctx.env)) {
       const file = plan.files[clip.file];
       if (!file) continue;
       const inLocal = parseRational(clip.inLocal);
-      const seconds = clip.frames / fpsValue;
-      const measured = await measureLoudness(tools, path28.join(ctx.root, file.path), { range: { from: Number(inLocal.n) / Number(inLocal.d), seconds } });
+      const seconds2 = clip.frames / fpsValue;
+      const measured = await measureLoudness(tools, path28.join(ctx.root, file.path), { range: { from: Number(inLocal.n) / Number(inLocal.d), seconds: seconds2 } });
       const gain = dialogGain(measured.integratedLufs, reference);
       const current = clip.gainDb ?? 0;
       const proposed = gain ?? current;
@@ -13606,7 +14157,7 @@ async function levelsCommand(ctx, options, tools = defaultTools(ctx.env)) {
         id: clip.id,
         trackId: track.id,
         ...clip.statementId ? { statementId: clip.statementId } : {},
-        seconds: Math.round(seconds * 100) / 100,
+        seconds: Math.round(seconds2 * 100) / 100,
         measuredLufs: Number.isFinite(measured.integratedLufs) ? Math.round(measured.integratedLufs * 10) / 10 : null,
         gainDb: current,
         proposedGainDb: proposed,
@@ -13716,12 +14267,12 @@ async function clientCandidates(client, env, platform) {
         }
       }
     }
-    found.sort((a, b) => compareVersions(b.version, a.version));
+    found.sort((a, b) => compareVersions2(b.version, a.version));
     candidates.push(...found.map((item) => item.file));
   }
   return candidates;
 }
-function compareVersions(a, b) {
+function compareVersions2(a, b) {
   for (let i = 0; i < Math.max(a.length, b.length); i++) if ((a[i] ?? 0) !== (b[i] ?? 0)) return (a[i] ?? 0) - (b[i] ?? 0);
   return 0;
 }
@@ -13734,11 +14285,11 @@ async function findClient(client, env, run2, platform) {
   }
   return null;
 }
-function parseJsonArray(text2) {
-  const start = text2.indexOf("[");
+function parseJsonArray(text3) {
+  const start = text3.indexOf("[");
   if (start < 0) return [];
   try {
-    const value2 = JSON.parse(text2.slice(start));
+    const value2 = JSON.parse(text3.slice(start));
     return Array.isArray(value2) ? value2 : [];
   } catch {
     return [];
@@ -13805,8 +14356,8 @@ async function fetchPluginClients(server) {
     const body = await readBody(response, 1024 * 1024);
     if (response.statusCode !== 200) return null;
     const data = JSON.parse(body.toString("utf8"));
-    const text2 = (value2) => typeof value2 === "string" && value2 ? value2 : null;
-    return { claude: text2(data.claude?.marketplace), copilot: text2(data.copilot?.marketplace), version: text2(data.version) };
+    const text3 = (value2) => typeof value2 === "string" && value2 ? value2 : null;
+    return { claude: text3(data.claude?.marketplace), copilot: text3(data.copilot?.marketplace), version: text3(data.version) };
   } catch {
     return null;
   }
@@ -14649,15 +15200,15 @@ data: ${revision}
 async function sendFile(request, response, file) {
   const stat = await fs29.stat(file);
   const type = CONTENT_TYPES[path30.extname(file).toLowerCase()] ?? "application/octet-stream";
-  const range = /^bytes=(\d*)-(\d*)$/.exec(request.headers.range ?? "");
+  const range2 = /^bytes=(\d*)-(\d*)$/.exec(request.headers.range ?? "");
   let start = 0;
   let end = stat.size - 1;
-  if (range && (range[1] || range[2])) {
-    if (range[1]) {
-      start = Number(range[1]);
-      if (range[2]) end = Math.min(Number(range[2]), end);
+  if (range2 && (range2[1] || range2[2])) {
+    if (range2[1]) {
+      start = Number(range2[1]);
+      if (range2[2]) end = Math.min(Number(range2[2]), end);
     } else {
-      start = Math.max(0, stat.size - Number(range[2]));
+      start = Math.max(0, stat.size - Number(range2[2]));
     }
     if (start > end || start >= stat.size) {
       response.writeHead(416, { "Content-Range": `bytes */${stat.size}` }).end();
@@ -14695,6 +15246,406 @@ async function previewCommand(ctx, options, tools = defaultTools(ctx.env)) {
   return { data: { url: server.url, stopped: true }, text: `preview stopped (${server.url})` };
 }
 
+// src/commands/recipe.ts
+import { promises as fs30 } from "node:fs";
+import path31 from "node:path";
+import { pathToFileURL } from "node:url";
+async function brandPackDir(env, scriptPath = process.argv[1]) {
+  const explicit = env.DARKMIND_BRAND_PACK?.trim();
+  if (explicit) return path31.resolve(explicit);
+  const skill = await detectSkill(scriptPath);
+  return skill ? path31.join(skill.folder, "brand") : null;
+}
+async function loadBrandPackModules(env, scriptPath) {
+  const dir = await brandPackDir(env, scriptPath);
+  if (!dir || !await fs30.stat(path31.join(dir, "brand.json")).catch(() => null)) {
+    throw new CliError("brand-pack-missing", "no brand pack: run darkmind-agent from the editing skill (the Dark Mind plugin) or set DARKMIND_BRAND_PACK to its brand/ folder");
+  }
+  const load = async (rel3) => {
+    try {
+      return await import(pathToFileURL(path31.join(dir, ...rel3.split("/"))).href);
+    } catch (error) {
+      throw new CliError("brand-pack-invalid", `brand pack ${dir}: ${rel3} cannot be loaded (${errorMessage(error)}); install the editing skill again`);
+    }
+  };
+  const catalogModule = await load("lib/catalog.mjs");
+  if (typeof catalogModule.loadRecipeCatalog !== "function") throw new CliError("brand-pack-invalid", `brand pack ${dir} has no recipe catalog (older than 0.7.0): update the editing skill`);
+  return {
+    dir,
+    brand: await catalogModule.loadBrand(dir),
+    catalog: await catalogModule.loadRecipeCatalog(dir),
+    recipes: await load("lib/recipes.mjs"),
+    projectDocs: await load("lib/project-docs.mjs")
+  };
+}
+var json = (value2) => `${JSON.stringify(value2, null, 2)}
+`;
+var recipeSha256 = (recipe) => sha256Hex(Buffer.from(canonicalRecipeJson(recipe), "utf8"));
+var formatIssue = (issue) => `${issue.path || "(recipe)"}: ${issue.message} [${issue.code}]`;
+async function readRecipeFile(file) {
+  let text3;
+  try {
+    text3 = await fs30.readFile(file, "utf8");
+  } catch (error) {
+    throw new CliError("recipe-missing", `${file} cannot be read (${error.code === "ENOENT" ? "missing" : errorMessage(error)})`);
+  }
+  try {
+    return JSON.parse(text3.replace(/^\uFEFF/, ""));
+  } catch (error) {
+    throw new CliError("recipe-invalid", `${file} is not valid JSON: ${errorMessage(error)}`);
+  }
+}
+async function readRecipeLock(root) {
+  const file = path31.join(root, EDIT_RECIPE_FILES.lock);
+  const raw = await readJsonFile(file).catch((error) => {
+    throw new CliError("recipe-lock-invalid", `${EDIT_RECIPE_FILES.lock} is not valid JSON: ${errorMessage(error)}`);
+  });
+  if (raw === null) return null;
+  const parsed = editRecipeLockSchema.safeParse(raw);
+  if (!parsed.success) throw new CliError("recipe-lock-invalid", `${EDIT_RECIPE_FILES.lock}: ${parsed.error.issues.slice(0, 5).map((i) => `${i.path.join(".")}: ${i.message}`).join("; ")}`);
+  const lock = parsed.data;
+  if (recipeSha256(lock.recipe) !== lock.sha256) {
+    throw new CliError("recipe-lock-modified", `${EDIT_RECIPE_FILES.lock} was changed by hand (its recipe no longer has SHA-256 ${lock.sha256.slice(0, 12)}\u2026); apply the recipe again (recipe try for a draft)`);
+  }
+  return lock;
+}
+async function validate(ctx, file) {
+  const pack = await loadBrandPackModules(ctx.env);
+  const target = path31.resolve(ctx.root, file ?? EDIT_RECIPE_FILES.draft);
+  const result = validateRecipe(await readRecipeFile(target), pack.catalog);
+  const todo = result.recipe ? [...canonicalRecipeJson(result.recipe).matchAll(/"TODO: /g)].length : 0;
+  return {
+    data: {
+      file: path31.relative(ctx.root, target).split(path31.sep).join("/") || target,
+      valid: result.valid,
+      recipe: result.recipe ? { id: result.recipe.meta.id, title: result.recipe.meta.title } : null,
+      brandPack: pack.catalog.brand,
+      issues: result.issues,
+      todo,
+      sha256: result.recipe ? recipeSha256(result.recipe) : null
+    },
+    text: [
+      result.valid ? `valid recipe ${result.recipe.meta.id} for brand pack ${pack.catalog.brand.version}${todo ? ` \u2013 ${todo} TODO text(s) left` : ""}` : `INVALID recipe (${result.issues.length} issues):`,
+      ...result.issues.slice(0, 50).map((i) => `  ${formatIssue(i)}`)
+    ].join("\n"),
+    exitCode: result.valid ? 0 : 1
+  };
+}
+async function show(ctx, file) {
+  const pack = await loadBrandPackModules(ctx.env).catch(() => null);
+  let recipe;
+  let meta;
+  let origin;
+  if (file) {
+    const result = validateRecipe(await readRecipeFile(path31.resolve(ctx.root, file)), null);
+    if (!result.recipe) throw new CliError("recipe-invalid", `${file}: ${result.issues.slice(0, 5).map(formatIssue).join("; ")}`);
+    recipe = result.recipe;
+    meta = { version: null, sha256: recipeSha256(recipe), source: "draft", publishedAt: null };
+    origin = file;
+  } else {
+    const lock = await readRecipeLock(ctx.root);
+    if (!lock) throw new CliError("recipe-lock-missing", `no ${EDIT_RECIPE_FILES.lock} in this folder: name a recipe file (darkmind-agent recipe show ${EDIT_RECIPE_FILES.draft})`);
+    recipe = lock.recipe;
+    meta = { version: lock.version, sha256: lock.sha256, source: lock.source, publishedAt: lock.publishedAt };
+    origin = EDIT_RECIPE_FILES.lock;
+  }
+  const markdown = renderRecipeMarkdown(recipe, meta, pack?.catalog ?? null);
+  return { data: { file: origin, ...meta, recipe, markdown }, text: markdown.trimEnd() };
+}
+async function timelineClipCount(root, project) {
+  const artifacts = project.artifacts ?? {};
+  const timeline = await readJsonFile(path31.join(root, ...(artifacts.timeline ?? "timeline.json").split("/"))).catch(() => null);
+  return [...timeline?.video ?? [], ...timeline?.audio ?? []].reduce((n, t) => n + (t.clips?.length ?? 0), 0);
+}
+async function applyRecipeToProject(ctx, pack, recipe, lock, options = {}) {
+  const projectFile = path31.join(ctx.root, "project.json");
+  const project = await readJsonFile(projectFile);
+  if (!project) throw new CliError("project-missing", "no project.json in this folder: start the project first (darkmind-agent init, then write project.json \u2013 see SKILL.md)");
+  const issues = validateRecipe(recipe, pack.catalog).issues;
+  if (issues.length) throw new CliError("recipe-invalid", `the recipe does not fit brand pack ${pack.catalog.brand.version}: ${issues.slice(0, 5).map(formatIssue).join("; ")}`, { issues });
+  const sha2563 = recipeSha256(recipe);
+  const reference = { id: recipe.meta.id, version: lock.version, sha256: sha2563, source: lock.source };
+  const fields = pack.recipes.recipeProjectFields(pack.brand, recipe, reference);
+  const changedProfile = JSON.stringify(project.output) !== JSON.stringify(fields.output);
+  const clips = changedProfile ? await timelineClipCount(ctx.root, project) : 0;
+  if (changedProfile && clips && !options.force) {
+    const out = fields.output;
+    const current = project.output;
+    throw new CliError(
+      "recipe-profile-change",
+      `${recipe.meta.id} renders ${out.width} \xD7 ${out.height} at ${out.fps}; the timeline already has ${clips} clips for ${current?.width} \xD7 ${current?.height} at ${current?.fps} (crops and frames would change) \u2013 start a new project, or pass --force and rebuild the timeline`
+    );
+  }
+  const existing = await readRecipeLock(ctx.root).catch(() => null);
+  if (existing?.source === "catalog" && lock.source === "draft" && !options.force) {
+    throw new CliError("recipe-lock-catalog", `the project uses ${existing.slug} version ${existing.version} of the catalog; replacing it with a local draft needs --force (only in a test project)`);
+  }
+  const lockDocument = {
+    schemaVersion: 1,
+    kind: EDIT_RECIPE_LOCK_KIND,
+    slug: recipe.meta.id,
+    version: lock.version,
+    sha256: sha2563,
+    source: lock.source,
+    publishedAt: lock.publishedAt,
+    brandPack: { id: pack.catalog.brand.id, version: pack.catalog.brand.version },
+    lockedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    recipe
+  };
+  await writeFileAtomic(path31.join(ctx.root, EDIT_RECIPE_FILES.lock), json(lockDocument));
+  await writeFileAtomic(projectFile, json({ ...project, ...fields }));
+  return { lock: lockDocument, projectJson: fields, changedProfile };
+}
+async function tryRecipe(ctx, file, options) {
+  const pack = await loadBrandPackModules(ctx.env);
+  const target = path31.resolve(ctx.root, file ?? EDIT_RECIPE_FILES.draft);
+  const result = validateRecipe(await readRecipeFile(target), pack.catalog);
+  if (!result.recipe || !result.valid) {
+    throw new CliError("recipe-invalid", `${path31.basename(target)} is not a valid recipe: ${result.issues.slice(0, 5).map(formatIssue).join("; ")} (darkmind-agent recipe validate shows all)`, { issues: result.issues });
+  }
+  const applied = await applyRecipeToProject(ctx, pack, result.recipe, { version: null, source: "draft", publishedAt: null }, options);
+  const required = Object.entries(result.recipe.structure.blocks).filter(([, spec]) => spec.use === "required").map(([block2]) => block2);
+  return {
+    data: {
+      recipe: result.recipe.meta.id,
+      source: "draft",
+      sha256: applied.lock.sha256,
+      lock: EDIT_RECIPE_FILES.lock,
+      projectJson: applied.projectJson,
+      next: [
+        "darkmind-agent recipe show \u2013 the recipe as the agent follows it",
+        `vendor the blocks with add-block (${required.join(", ")})`,
+        "darkmind-agent recipe check after every change of the timeline; darkmind-agent validate as usual",
+        "render the proxy and show it with the check result to the editor; change recipe.draft.json and run recipe try again"
+      ]
+    },
+    text: `applied draft ${result.recipe.meta.id} (SHA-256 ${applied.lock.sha256.slice(0, 12)}\u2026) to this project: ${EDIT_RECIPE_FILES.lock} and project.json (output, duration, recipe, audioMaster)`
+  };
+}
+async function lockedRecipe(ctx) {
+  const pack = await loadBrandPackModules(ctx.env);
+  const lock = await readRecipeLock(ctx.root);
+  if (!lock) throw new CliError("recipe-lock-missing", `no ${EDIT_RECIPE_FILES.lock}: apply a recipe first (recipe try for a draft)`);
+  const issues = [];
+  if (!satisfiesVersionRange(pack.catalog.brand.version, lock.recipe.brand.versions)) {
+    issues.push({ severity: "error", code: "recipe-brand-incompatible", message: `${lock.slug} needs brand pack ${lock.recipe.brand.versions}; this skill has ${pack.catalog.brand.version} \u2013 update the editing skill (plugin update) or apply a newer version of the recipe` });
+  }
+  for (const issue of validateRecipe(lock.recipe, pack.catalog).issues) {
+    if (issue.code !== "recipe-brand-incompatible") issues.push({ severity: "error", code: issue.code, message: `${EDIT_RECIPE_FILES.lock} ${issue.path}: ${issue.message}` });
+  }
+  return { pack, lock, issues };
+}
+async function recipeReviewNotes(ctx) {
+  const lock = await readRecipeLock(ctx.root).catch(() => null);
+  if (!lock) return null;
+  const pack = await loadBrandPackModules(ctx.env).catch(() => null);
+  if (!pack) return null;
+  const docs = await pack.projectDocs.loadProjectDocs(ctx.root, pack.dir).catch(() => null);
+  if (!docs) return null;
+  const result = pack.recipes.checkProject(pack.brand, lock.recipe, docs);
+  return {
+    recipe: { slug: lock.slug, version: lock.version, source: lock.source },
+    deviations: result.issues.filter((i) => i.severity === "deviation"),
+    hints: result.issues.filter((i) => i.severity === "hint"),
+    material: result.material ?? [],
+    editorial: result.editorial ?? null
+  };
+}
+async function check(ctx, options) {
+  const { pack, lock, issues: lockIssues } = await lockedRecipe(ctx);
+  const docs = await pack.projectDocs.loadProjectDocs(ctx.root, pack.dir);
+  const project = docs.project;
+  if (project.recipe?.sha256 && project.recipe.sha256 !== lock.sha256) {
+    lockIssues.push({ severity: "error", code: "recipe-lock-mismatch", message: `project.json names SHA-256 ${project.recipe.sha256.slice(0, 12)}\u2026, ${EDIT_RECIPE_FILES.lock} holds ${lock.sha256.slice(0, 12)}\u2026: apply the recipe again` });
+  }
+  if (options.done) {
+    const status2 = await reviewCommand(ctx, "status", void 0, {});
+    docs.reviews = status2.data;
+  }
+  const result = pack.recipes.checkProject(pack.brand, lock.recipe, docs);
+  const issues = [...lockIssues, ...result.issues];
+  const count2 = (severity) => issues.filter((i) => i.severity === severity).length;
+  const valid = count2("error") === 0;
+  const ready = valid && count2("pending") === 0;
+  const counts = { error: count2("error"), deviation: count2("deviation"), pending: count2("pending"), warning: count2("warning"), hint: count2("hint") };
+  const version = lock.version === null ? "draft" : `version ${lock.version}`;
+  const lines = issues.slice(0, 80).map((i) => `  ${i.severity} ${i.code}: ${i.message}`);
+  return {
+    data: { ...result, recipe: { id: lock.slug, version: lock.version, source: lock.source, sha256: lock.sha256 }, brandPack: pack.catalog.brand, valid, ready, counts, issues },
+    text: [
+      `${valid ? ready ? "ok" : "valid, not ready" : "ERRORS"}: ${lock.slug} ${version} \u2013 ${counts.error} errors, ${counts.deviation} deviations from the recipe (report them, the editor may want them), ${counts.pending} pending, ${counts.warning} warnings, ${counts.hint} hints${result.done === null ? "" : result.done ? "; done" : "; not done"}`,
+      ...lines
+    ].join("\n"),
+    exitCode: valid ? 0 : 1
+  };
+}
+async function chapters(ctx, options) {
+  const { pack, lock } = await lockedRecipe(ctx);
+  if (!lock.recipe.technical.deliverables.chapters?.required) throw new CliError("recipe-no-chapters", `${lock.slug} has no YouTube chapter list`);
+  const docs = await pack.projectDocs.loadProjectDocs(ctx.root, pack.dir);
+  const result = pack.recipes.projectChapters(lock.recipe, docs);
+  const failed = result.issues.some((i) => i.severity === "error");
+  if (options.out && !failed) await writeFileAtomic(path31.resolve(ctx.root, options.out), `${result.text}
+`);
+  return {
+    data: { recipe: lock.slug, source: docs.chapters ? "chapters.json" : lock.recipe.technical.deliverables.chapters.derive ? `derived from ${lock.recipe.technical.deliverables.chapters.derive}` : null, ...result, ...options.out && !failed ? { written: options.out } : {} },
+    text: [result.text || "(no chapters)", ...result.issues.map((i) => `  ${i.severity} ${i.code}: ${i.message}`)].join("\n"),
+    exitCode: failed ? 1 : 0
+  };
+}
+async function derive(ctx, options) {
+  const pack = await loadBrandPackModules(ctx.env);
+  const docs = await pack.projectDocs.loadProjectDocs(ctx.root, pack.dir).catch((error) => {
+    throw new CliError("project-missing", errorMessage(error));
+  });
+  const config = await readJsonFile(path31.join(ctx.root, "darkmind.json")).catch(() => null);
+  const sourceProject = config?.projectId ? { projectId: config.projectId, version: config.baseVersion && config.baseVersion > 0 ? config.baseVersion : null } : null;
+  const id2 = options.id ?? "new-format";
+  const { recipe, todo, lengthSeconds } = pack.recipes.deriveRecipe(pack.brand, docs, { id: id2, sourceProject });
+  const result = validateRecipe(recipe, pack.catalog);
+  if (!result.valid) throw new CliError("recipe-derive-failed", `the derived skeleton is invalid: ${result.issues.slice(0, 5).map(formatIssue).join("; ")}`, { issues: result.issues });
+  const out = path31.resolve(ctx.root, options.out ?? EDIT_RECIPE_FILES.draft);
+  const rel3 = path31.relative(ctx.root, out).split(path31.sep).join("/");
+  if (!options.print) {
+    if (await fs30.stat(out).catch(() => null) && !options.force) throw new CliError("recipe-draft-exists", `${rel3} exists: pass --force to replace it, or --out <file>`);
+    await writeFileAtomic(out, json(recipe));
+  }
+  return {
+    data: { recipe, todo, lengthSeconds, ...options.print ? {} : { written: rel3 } },
+    text: options.print ? json(recipe).trimEnd() : `wrote ${rel3}: skeleton of ${id2} from this project (${Math.round(lengthSeconds)} s); complete with the editor: ${todo.join(", ")} \u2013 generalise, nothing of this one episode belongs into the recipe`
+  };
+}
+async function recipeCommand(ctx, action, args, options) {
+  if (args.length > (action === "submit" ? 2 : 1)) throw new CliError("usage", `recipe ${action ?? ""}: too many arguments ("${args.join(" ")}")`);
+  switch (action) {
+    case "validate":
+      return validate(ctx, args[0]);
+    case "show":
+      return show(ctx, args[0]);
+    case "try":
+      return tryRecipe(ctx, args[0], options);
+    case "check":
+      return check(ctx, options);
+    case "chapters":
+      return chapters(ctx, options);
+    case "derive":
+      return derive(ctx, options);
+    case "use":
+      return use(ctx, args[0], options);
+    case "submit":
+      return submit(ctx, args[0], args[1], options);
+    case "status":
+      return status(ctx);
+    default:
+      throw new CliError(
+        "usage",
+        "usage: darkmind-agent recipe validate [<file>] | show [<file>] | try [<file>] [--force] | check [--done] | chapters [--out <file>] | derive [--id <slug>] [--out <file>] [--force] [--print] | use <ticket> [--upgrade] [--draft] [--force] | submit <ticket> [<file>] | status"
+      );
+  }
+}
+async function postTransfer(ctx, endpoint, body, retry) {
+  const server = resolveServer(ctx.server, await readConfig(ctx.root).catch(() => null), ctx.env);
+  const send = async () => {
+    const response = await httpRequest(`${server}${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(body),
+      timeoutMs: 6e4
+    });
+    if ((response.statusCode ?? 0) >= 400) throw await toHttpError(response, "Dark Mind refused the request");
+    return JSON.parse((await readBody(response, 4 * 1024 * 1024)).toString("utf8"));
+  };
+  try {
+    return { server, data: retry ? await withRetry(send, { attempts: 3 }) : await send() };
+  } catch (error) {
+    if (error instanceof HttpError) {
+      const payload = error.body;
+      throw new CliError(error.code ?? `http-${error.status}`, payload?.message ?? error.message, payload?.details ?? { status: error.status });
+    }
+    throw new CliError("network-error", `Cannot reach ${server}: ${errorMessage(error)}`);
+  }
+}
+async function use(ctx, ticket, options) {
+  const value2 = checkTicket(ticket);
+  const pack = await loadBrandPackModules(ctx.env);
+  const { data } = await postTransfer(ctx, "/api/agent-transfer/recipe", { ticket: value2 }, true);
+  const result = validateRecipe(data.recipe, pack.catalog);
+  if (!result.recipe) throw new CliError("recipe-invalid", `Dark Mind sent an unreadable recipe: ${result.issues.slice(0, 3).map(formatIssue).join("; ")}`);
+  if (recipeSha256(result.recipe) !== data.sha256) throw new CliError("recipe-corrupt", `${data.slug} version ${data.version} does not match its SHA-256; fetch it again (recipe_get)`);
+  if (!result.valid) {
+    throw new CliError("recipe-invalid", `${data.slug} version ${data.version} does not fit brand pack ${pack.catalog.brand.version} of this skill: ${result.issues.slice(0, 5).map(formatIssue).join("; ")} (update the skill: darkmind-agent plugin update)`, { issues: result.issues });
+  }
+  const recipe = result.recipe;
+  if (options.draft) {
+    const file = path31.join(ctx.root, EDIT_RECIPE_FILES.draft);
+    if (await fs30.stat(file).catch(() => null) && !options.force) throw new CliError("recipe-draft-exists", `${EDIT_RECIPE_FILES.draft} exists: pass --force to replace it with ${data.slug} version ${data.version}`);
+    await writeFileAtomic(file, json(recipe));
+    return {
+      data: { recipe: data.slug, version: data.version, written: EDIT_RECIPE_FILES.draft, basedOnVersion: data.version },
+      text: `wrote ${EDIT_RECIPE_FILES.draft} from ${data.slug} version ${data.version}: change it with the editor, then recipe validate / try; publish with recipe_publish_begin(slug "${data.slug}", basedOnVersion ${data.version}, changeNote)`
+    };
+  }
+  const existing = await readRecipeLock(ctx.root).catch(() => null);
+  let changes = [];
+  if (existing?.source === "catalog") {
+    if (existing.slug !== data.slug && !options.force) throw new CliError("recipe-lock-other", `the project uses ${existing.slug} version ${existing.version}; switching to ${data.slug} needs --force`);
+    if (existing.slug === data.slug && existing.version === data.version && existing.sha256 === data.sha256) {
+      return { data: { recipe: data.slug, version: data.version, status: "unchanged", sha256: data.sha256 }, text: `${data.slug} version ${data.version} is already the project's recipe` };
+    }
+    if (existing.slug === data.slug && !options.upgrade) {
+      throw new CliError("recipe-upgrade-required", `the project is built with ${data.slug} version ${existing.version}; moving to version ${data.version} is an upgrade: ask the editor, then run recipe use <ticket> --upgrade (the preview and final reviews must be approved again)`);
+    }
+    if (existing.slug === data.slug) changes = classifyRecipeChange(existing.recipe, recipe);
+  }
+  const applied = await applyRecipeToProject(ctx, pack, recipe, { version: data.version, source: "catalog", publishedAt: data.publishedAt }, { force: options.force });
+  const upgraded = existing?.source === "catalog" && existing.slug === data.slug;
+  return {
+    data: {
+      recipe: data.slug,
+      version: data.version,
+      status: data.status,
+      source: "catalog",
+      sha256: applied.lock.sha256,
+      lock: EDIT_RECIPE_FILES.lock,
+      projectJson: applied.projectJson,
+      ...upgraded ? { upgradedFrom: existing.version, changes, reviews: "the recipe reference changed: the preview and final reviews must be approved again; the editorial review stays" } : {},
+      next: ["darkmind-agent recipe show \u2013 read the whole recipe, ask its briefing questions", "darkmind-agent recipe check after every change of the timeline"]
+    },
+    text: `${upgraded ? `upgraded ${data.slug} from version ${existing.version} to ${data.version} (${changes.join(", ") || "no structural change"})` : `applied ${data.slug} version ${data.version}`} \u2013 ${EDIT_RECIPE_FILES.lock} and project.json${data.status !== "published" ? ` (status: ${data.status})` : ""}`
+  };
+}
+async function submit(ctx, ticket, file, options) {
+  const value2 = checkTicket(ticket);
+  const pack = await loadBrandPackModules(ctx.env);
+  const target = path31.resolve(ctx.root, file ?? EDIT_RECIPE_FILES.draft);
+  const result = validateRecipe(await readRecipeFile(target), pack.catalog);
+  if (!result.recipe || !result.valid) throw new CliError("recipe-invalid", `${path31.basename(target)} is not a valid recipe: ${result.issues.slice(0, 5).map(formatIssue).join("; ")}`, { issues: result.issues });
+  const todo = [...canonicalRecipeJson(result.recipe).matchAll(/"TODO: /g)].length;
+  if (todo) throw new CliError("recipe-todo", `${path31.basename(target)} still has ${todo} "TODO: " text(s): complete them with the editor before publishing`);
+  const sha2563 = recipeSha256(result.recipe);
+  const { data } = await postTransfer(ctx, "/api/agent-transfer/recipe-submit", { ticket: value2, recipe: result.recipe }, false);
+  if (data.sha256 !== sha2563) throw new CliError("recipe-corrupt", `Dark Mind stored SHA-256 ${data.sha256.slice(0, 12)}\u2026, the draft has ${sha2563.slice(0, 12)}\u2026; fetch the version (recipe_get) and compare`);
+  const lock = await readRecipeLock(ctx.root).catch(() => null);
+  let relocked = false;
+  if (lock?.source === "draft" && lock.sha256 === sha2563) {
+    await applyRecipeToProject(ctx, pack, result.recipe, { version: data.version, source: "catalog", publishedAt: data.publishedAt }, { force: options.force });
+    relocked = true;
+  }
+  return {
+    data: { recipe: data.slug, version: data.version, sha256: sha2563, publishedAt: data.publishedAt, changeKinds: data.changeKinds, relocked },
+    text: `published ${data.slug} version ${data.version}${data.changeKinds.length ? ` (${data.changeKinds.join(", ")})` : ""}${relocked ? `; this project now uses the published version (${EDIT_RECIPE_FILES.lock})` : ""}`
+  };
+}
+async function status(ctx) {
+  const lock = await readRecipeLock(ctx.root);
+  const draft = await fs30.stat(path31.join(ctx.root, EDIT_RECIPE_FILES.draft)).catch(() => null) !== null;
+  if (!lock) return { data: { recipe: null, draft }, text: `no recipe in this project${draft ? ` (${EDIT_RECIPE_FILES.draft} present)` : ""}` };
+  return {
+    data: { recipe: lock.slug, version: lock.version, source: lock.source, sha256: lock.sha256, publishedAt: lock.publishedAt, brandPack: lock.brandPack, lockedAt: lock.lockedAt, draft, next: "recipe_list shows the newest published version; an upgrade only with the editor (recipe_get \u2192 recipe use <ticket> --upgrade)" },
+    text: `${lock.slug} ${lock.version === null ? "local draft" : `version ${lock.version}`} (${lock.source}, SHA-256 ${lock.sha256.slice(0, 12)}\u2026, brand pack ${lock.brandPack?.version ?? "?"}, since ${lock.lockedAt})${draft ? `; ${EDIT_RECIPE_FILES.draft} present` : ""}`
+  };
+}
+
 // src/commands/review.ts
 function parseSubject(value2) {
   if (!value2) throw new CliError("usage", `name the review subject: ${EDIT_REVIEW_SUBJECTS.join(", ")}`);
@@ -14702,8 +15653,8 @@ function parseSubject(value2) {
   if (!EDIT_REVIEW_SUBJECTS.includes(subject)) throw new CliError("usage", `unknown review subject "${value2}" (${EDIT_REVIEW_SUBJECTS.join(", ")})`);
   return subject;
 }
-function clock(seconds) {
-  const value2 = toNumberQ(parseRational(seconds));
+function clock(seconds2) {
+  const value2 = toNumberQ(parseRational(seconds2));
   const ms = Math.round(value2 * 1e3);
   const h = Math.floor(ms / 36e5);
   const m = Math.floor(ms % 36e5 / 6e4);
@@ -14774,9 +15725,9 @@ function editorialText(state, projection) {
       lines.push(`${index + 1}. scene ${item.id}: ${item.description}`, ...item.text ? [`     text: "${item.text}"`] : []);
       return;
     }
-    const range = item.range ? `${clock(item.range.in)}\u2013${clock(item.range.out)} (${(toNumberQ(parseRational(item.range.out)) - toNumberQ(parseRational(item.range.in))).toFixed(2)} s)` : "(no range)";
+    const range2 = item.range ? `${clock(item.range.in)}\u2013${clock(item.range.out)} (${(toNumberQ(parseRational(item.range.out)) - toNumberQ(parseRational(item.range.in))).toFixed(2)} s)` : "(no range)";
     const speaker = item.speaker ? ` \u2013 ${[item.speaker.name, item.speaker.role].filter(Boolean).join(", ")}` : "";
-    lines.push(`${index + 1}. statement ${item.id}: ${label2(item.sourceId)} ${range}${speaker}`, `     "${item.quote ?? ""}"`, `     context: ${item.context}`);
+    lines.push(`${index + 1}. statement ${item.id}: ${label2(item.sourceId)} ${range2}${speaker}`, `     "${item.quote ?? ""}"`, `     context: ${item.context}`);
   });
   const broll = Object.entries(projection.broll);
   if (broll.length) lines.push("B-roll:", ...broll.map(([id2, b]) => `  ${id2}: ${label2(b.sourceId)} \u2013 ${b.description}${b.afterId ? ` (after ${b.afterId})` : ""}`));
@@ -14858,6 +15809,12 @@ async function showResult(ctx, subject, options, tools) {
   const stills = subject === "thumbnail" ? await stillRenders(ctx.root, state, tools, ctx.env) : void 0;
   const target = await reviewTarget(ctx.root, state, subject, { render: options.render, stills });
   const current = state.subjects[subject];
+  const recipe = subject === "editorial" || subject === "preview" || subject === "final" ? await recipeReviewNotes(ctx).catch(() => null) : null;
+  const recipeLines = recipe ? [
+    `recipe ${recipe.recipe.slug} ${recipe.recipe.version === null ? "draft" : `version ${recipe.recipe.version}`}: ${recipe.deviations.length} deviation(s) from the recipe${recipe.deviations.length ? " \u2013 name each one to the editor (fine when the editor asked for it)" : ""}`,
+    ...recipe.deviations.slice(0, 30).map((d) => `  deviation ${d.code}: ${d.message}`),
+    ...recipe.hints.slice(0, 10).map((h) => `  hint ${h.code}: ${h.message}`)
+  ] : [];
   return {
     data: {
       subject,
@@ -14872,9 +15829,10 @@ async function showResult(ctx, subject, options, tools) {
       record: current.record,
       render: target.render ? { report: target.render.file, output: target.render.report?.output ?? null, checks: target.render.report?.checks ?? null, problems: target.render.problems } : null,
       ...stills ? { stills } : {},
+      ...recipe ? { recipe } : {},
       next: target.blockers.length ? null : `After the editor's explicit confirmation: darkmind-agent review approve ${subject} --hash ${target.hash.slice(0, 16)}${target.render ? ` --render ${target.render.file}` : ""} --by "<editor>" --confirmation "<the editor's words>"`
     },
-    text: showText(state, subject, target, stills).join("\n"),
+    text: [...showText(state, subject, target, stills), ...recipeLines].join("\n"),
     exitCode: 0
   };
 }
@@ -14981,10 +15939,10 @@ async function uploadCommand(ctx, ticket, options = {}) {
   let remaining = 0;
   let remainingObjects = [];
   if (total > 0) {
-    const check = expectKind(await redeemTicket(server, ticket), "push", "upload");
-    remaining = check.objects.length;
+    const check2 = expectKind(await redeemTicket(server, ticket), "push", "upload");
+    remaining = check2.objects.length;
     const errors = new Map(results.filter((result) => "error" in result).map((result) => [result.sha256, result.error]));
-    remainingObjects = check.objects.map((object) => {
+    remainingObjects = check2.objects.map((object) => {
       const error = errors.get(object.sha256);
       return {
         path: bySha.get(object.sha256)?.path ?? object.sha256,
@@ -15100,6 +16058,31 @@ Reviews (editorial work control; decisions of the editor only, never of the agen
                                 --confirmation only in an interactive terminal, where the editor confirms)
   review reject <subject> --hash <hash> --by <editor> --confirmation <words> --comment <what to change>
 
+Format recipes (data from the Dark Mind recipe catalog; the project works with the copy in recipe.lock.json)
+  recipe validate [<file>]      Check a recipe (default recipe.draft.json): schema, own references and every block,
+                                profile, caption style, check and capability against the brand pack of this skill
+  recipe show [<file>]          The recipe as Markdown (default: the project's recipe.lock.json) \u2013 for the editor
+  recipe try [<file>] [--force] Apply a local recipe draft (default recipe.draft.json) to this test project:
+                                recipe.lock.json (source draft) and project.json output, duration, recipe and
+                                audioMaster; refuses a profile change on a built timeline without --force
+  recipe check [--done]         The project against its locked recipe: errors (brand pack, format contract) block,
+                                deviations from the recipe are reported (the editor may ask for them), pending,
+                                warnings, hints; --done also needs the reviews of the recipe ("finished")
+  recipe chapters [--out <file>]
+                                YouTube chapter list of recipes with chapters (derived or from chapters.json)
+  recipe derive [--id <slug>] [--out <file>] [--force] [--print]
+                                Recipe skeleton from this project (default recipe.draft.json): profile, length,
+                                blocks, sections, order, hook, end; concept, material and rules stay TODO
+  recipe use <ticket> [--upgrade] [--draft] [--force]
+                                Freeze a catalog version (ticket of recipe_get) into the project: recipe.lock.json and
+                                project.json; another version of the same recipe only with --upgrade (after the editor
+                                agreed; preview and final reviews again); --draft writes recipe.draft.json instead
+  recipe submit <ticket> [<file>]
+                                Publish the local draft (default recipe.draft.json, no TODO left) with a ticket of
+                                recipe_publish_begin \u2013 only on the editor's explicit request; a test project that
+                                tried the same draft is moved to the published version
+  recipe status                 The project's recipe (version, source, SHA-256, brand pack); compare with recipe_list
+
 Premiere hand-off (one-way; Premiere changes are never transferred back)
   export premiere [--handles <seconds>] [--attach <project file>]...
                                 Package for Premiere Pro in renders/premiere/vNNNN/: xmeml timeline (cuts, B-roll,
@@ -15174,6 +16157,10 @@ var OPTIONS = {
   caption: { type: "string", multiple: true },
   target: { type: "string" },
   apply: { type: "boolean" },
+  id: { type: "string" },
+  done: { type: "boolean" },
+  upgrade: { type: "boolean" },
+  draft: { type: "boolean" },
   client: { type: "string", multiple: true },
   "remove-legacy": { type: "boolean" },
   local: { type: "boolean" },
@@ -15193,8 +16180,8 @@ async function terminalPrompt(question) {
   }
 }
 var defaultIo = {
-  stdout: (text2) => process.stdout.write(text2),
-  stderr: (text2) => process.stderr.write(text2),
+  stdout: (text3) => process.stdout.write(text3),
+  stderr: (text3) => process.stderr.write(text3),
   env: process.env,
   cwd: process.cwd(),
   isTty: Boolean(process.stderr.isTTY),
@@ -15211,7 +16198,7 @@ function envBytes(env, name) {
   return Number.isInteger(value2) && value2 > 0 ? value2 : void 0;
 }
 async function main(argv, io = defaultIo) {
-  let json = argv.includes("--json");
+  let json2 = argv.includes("--json");
   try {
     if (nodeMajor() < MIN_NODE_MAJOR) throw new CliError("node-too-old", `Node ${process.versions.node} is too old; darkmind-agent needs Node >= ${MIN_NODE_MAJOR}.`);
     let parsed;
@@ -15221,10 +16208,10 @@ async function main(argv, io = defaultIo) {
       throw new CliError("usage", `${errorMessage(error)}. Run "darkmind-agent --help".`);
     }
     const { values, positionals } = parsed;
-    json = Boolean(values.json);
+    json2 = Boolean(values.json);
     const [command, ...args] = positionals;
     if (values.version || command === "version") {
-      emit(io, json, { data: { version: AGENT_VERSION }, text: AGENT_VERSION });
+      emit(io, json2, { data: { version: AGENT_VERSION }, text: AGENT_VERSION });
       return 0;
     }
     if (values.help || !command || command === "help") {
@@ -15233,14 +16220,14 @@ async function main(argv, io = defaultIo) {
       return command || values.help ? 0 : 2;
     }
     const ctx = {
-      root: path31.resolve(io.cwd, values.dir ?? "."),
+      root: path32.resolve(io.cwd, values.dir ?? "."),
       server: values.server,
       env: io.env,
       progress: (message) => {
-        if (io.isTty && !values.quiet && !json) io.stderr(`${message}
+        if (io.isTty && !values.quiet && !json2) io.stderr(`${message}
 `);
       },
-      ...io.prompt && !json ? { prompt: io.prompt } : {}
+      ...io.prompt && !json2 ? { prompt: io.prompt } : {}
     };
     const concurrency = positiveInt2(values.concurrency, "concurrency");
     const warnFileMb = positiveInt2(values["warn-mb"], "warn-mb");
@@ -15310,6 +16297,9 @@ async function main(argv, io = defaultIo) {
         if (args.length > 2) throw new CliError("usage", `review takes an action and a subject, not "${args.slice(2).join(" ")}"`);
         result = await reviewCommand(ctx, args[0], args[1], { hash: values.hash, by: values.by, confirmation: values.confirmation, comment: values.comment, render: values.render });
         break;
+      case "recipe":
+        result = await recipeCommand(ctx, args[0], args.slice(1), { force: values.force, print: values.print, out: values.out, id: values.id, done: values.done, upgrade: values.upgrade, draft: values.draft });
+        break;
       case "extensions":
         result = await withInterrupt(
           (signal) => extensionsCommand(ctx, args[0], args.slice(1), { proxy: values.proxy, original: values.original, hash: values.hash, yes: values.yes, force: values.force, signal })
@@ -15325,12 +16315,12 @@ async function main(argv, io = defaultIo) {
       io.stdout(`${result.text}
 `);
     } else {
-      emit(io, json, result);
+      emit(io, json2, result);
     }
     return result.exitCode ?? 0;
   } catch (error) {
     const cliError = error instanceof CliError ? error : new CliError("internal-error", errorMessage(error));
-    if (json) {
+    if (json2) {
       io.stdout(
         `${JSON.stringify({ ok: false, error: { code: cliError.code, message: cliError.message, ...cliError.details !== void 0 ? { details: cliError.details } : {} } })}
 `
@@ -15356,8 +16346,8 @@ async function withInterrupt(fn) {
     process.off("SIGTERM", onSignal);
   }
 }
-function emit(io, json, result) {
-  if (json) io.stdout(`${JSON.stringify({ ok: (result.exitCode ?? 0) === 0, ...result.data })}
+function emit(io, json2, result) {
+  if (json2) io.stdout(`${JSON.stringify({ ok: (result.exitCode ?? 0) === 0, ...result.data })}
 `);
   else io.stdout(`${result.text}
 `);

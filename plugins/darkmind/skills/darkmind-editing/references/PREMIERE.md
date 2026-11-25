@@ -53,7 +53,7 @@ An identical package is reported as `unchanged`; a changed state gives a new ver
   block and brand pack version. The brand layer is not changed in Premiere – parameters change in the pipeline.
 - **Next to `IMPORT.md`** (not on a track): the thumbnail PNG, if its review is approved and it was rendered from the
   original (`extensions run <id> --original`; otherwise `IMPORT.md` says why it is missing), and the files given with
-  `--attach` – run `recipe.mjs chapters --out renders/chapters.txt` right before the export so the list matches.
+  `--attach` – run `darkmind-agent recipe chapters --out renders/chapters.txt` right before the export so the list matches.
 - **Loudness:** the package carries the clips with their levels, **not** the −14 LUFS master of the render (and the
   music is not ducked). `IMPORT.md` gives the target for Premiere's export (Effects > Loudness Normalization:
   ITU BS.1770-3, −14 LUFS, −1 dBTP) and what the latest final render measured and applied.

@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "kind": "darkmind-format-recipe",
+  "meta": {
+    "id": "nei-short",
+    "title": "The Never Ending Interview – short (9:16)",
+    "summary": "One link of the Never Ending Interview as a vertical short: the question, the next band's answer with word captions and the new question that goes on.",
+    "tags": ["nei", "short"]
+  },
+  "brand": { "pack": "loud-society", "versions": ">=0.7.0 <2.0.0" },
+  "concept": {
+    "idea": "One link of a Never Ending Interview chain: a band asks a question (the asker briefly), the next band answers – shortened to the punchline, with word captions – and asks its own question for the next band. The link comes from the same reconstructed chain as the episode.",
+    "platforms": [],
+    "references": [{ "note": "MVP reference test, result C (from the same chain as the episode): doc/mvp/E2E_REFERENCE_TEST.md" }]
+  },
+  "briefing": [
+    { "id": "link", "question": "Which link (or which festival material) – or should the agent choose the strongest answer of the chain?", "required": false }
+  ],
+  "material": [
+    { "id": "question", "label": "The asker's question on camera", "kind": "question", "level": "hard", "min": 1, "max": 1 },
+    { "id": "answer", "label": "The answer and the band's own new question", "kind": "answer", "level": "hard", "min": 1, "max": 1, "description": "One link of the chain reconstructed from transcripts (capability nei-chain)." }
+  ],
+  "structure": {
+    "sections": [
+      {
+        "id": "question",
+        "title": "The question",
+        "purpose": "The asker briefly with the question; band_card of the asker.",
+        "blocks": ["band_card", "chevron_wipe"],
+        "material": ["question"],
+        "notes": ["Band card: [\"MYLES KENNEDY\", \"alter bridge\"], image box in the upper half; give a 9:16 crop of the face."]
+      },
+      {
+        "id": "answer",
+        "title": "The answer",
+        "purpose": "The answer full frame (no vertical_in_16x9) with word captions and the wordmark flash over the first caption line.",
+        "blocks": ["caption_word", "wordmark_flash", "glitch_flash"],
+        "material": ["answer"]
+      },
+      {
+        "id": "new-question",
+        "title": "The new question",
+        "purpose": "The band's own new question for the next band, complete.",
+        "material": ["answer"]
+      },
+      {
+        "id": "end",
+        "title": "End",
+        "purpose": "animal_scream (sound) → logo_end (video and audio clip), optionally revealed by a chevron_wipe.",
+        "blocks": ["animal_scream", "logo_end", "chevron_wipe"]
+      }
+    ],
+    "blocks": {
+      "band_card": { "use": "required", "min": 1, "role": "who asks (short), at the question" },
+      "caption_word": { "use": "required", "min": 1, "max": 1 },
+      "wordmark_flash": { "use": "required", "min": 1, "role": "over the first caption line of the answer" },
+      "animal_scream": { "use": "required", "min": 1, "max": 1 },
+      "logo_end": { "use": "required", "min": 1, "max": 1 },
+      "chevron_wipe": { "use": "optional", "role": "into the logo end or around the band card" },
+      "glitch_flash": { "use": "optional" }
+    },
+    "groups": [],
+    "order": ["band_card", "wordmark_flash", "animal_scream", "logo_end"],
+    "hook": null,
+    "endsWith": "logo_end"
+  },
+  "technical": {
+    "profile": "vertical",
+    "duration": { "minSeconds": 30, "maxSeconds": 90 },
+    "captions": {
+      "styles": ["brand-word"],
+      "required": true,
+      "default": "brand-word",
+      "note": "word timings via the MCP tool get_word_timings → darkmind-agent captions-words; safe zones are kept by the blocks (captions 54–70 % H, top 15 % and bottom 20 % free)"
+    },
+    "music": { "slot": "optional", "note": "the brand pack ships no music (T14)" },
+    "deliverables": { "thumbnail": false, "chapters": null, "titleSuffix": " | The Never Ending Interview" }
+  },
+  "rules": [
+    { "id": "same-chain", "text": "The link comes from the same reconstructed chain as the episode (capability nei-chain, transcripts only – never upload notes or metadata); choose it by the strength of the answer.", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "no-interviewer", "text": "No interviewer: the asker's question on camera, the answer shortened to the punchline, the band's own new question – no read-out questions, prompts or hand-overs of the interviewer.", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "quotes-verbatim", "text": "Quotes verbatim; misheard band names are corrected with the editor (quote and caption).", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "full-frame", "text": "Vertical footage full frame (no vertical_in_16x9).", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "no-lower-third", "text": "No lower third; names come from the band card. Not part of the format: sting, lower third, format and cliffhanger cards, endcard.", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "one-emphasis", "text": "At most one emphasised word per caption group (words[].emphasis), part of the caption text review.", "level": "recommended", "check": { "kind": "editorial" } }
+  ],
+  "review": { "done": ["editorial", "captions-text", "preview", "final"], "report": ["the reason for the chosen link"] },
+  "capabilities": ["nei-chain"],
+  "provenance": { "origin": "migration", "testProjects": [] }
+}

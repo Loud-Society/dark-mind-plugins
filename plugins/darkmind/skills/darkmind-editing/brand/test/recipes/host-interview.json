@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "kind": "darkmind-format-recipe",
+  "meta": {
+    "id": "host-interview",
+    "title": "Host interview \"jensen x <guest>\" (16:9)",
+    "summary": "A long conversation of the host with one guest in topic blocks (= YouTube chapters), framed by a quote cold open, sting, title card and the Loud Society outro.",
+    "tags": ["longform", "youtube", "interview"]
+  },
+  "brand": { "pack": "loud-society", "versions": ">=0.7.0 <2.0.0" },
+  "concept": {
+    "idea": "The host meets one guest: a quote of the guest opens cold, sting and title card \"jensen x <guest>\" follow, the arrival with a double lower third, then the conversation in topic blocks with inserts, the goodbye and the Loud Society outro.",
+    "platforms": ["YouTube"],
+    "references": [{ "note": "Reference \"jensen x mark tremonti\" (YouTube NeQ3LGhyRrw), analysis doc/mvp/brand/ANALYSIS_YOUTUBE_LONGFORM.md section B" }]
+  },
+  "briefing": [
+    { "id": "people", "question": "Guest and host (names as on the title card and the lower third)?", "required": true },
+    { "id": "topics", "question": "Planned topic blocks (titles for the chapters)?", "required": false }
+  ],
+  "material": [
+    { "id": "conversation", "label": "The conversation with a two-shot for the arrival", "kind": "interview", "level": "hard", "min": 1, "hints": "calm camera and a lavalier or separate sound (Phase 6 WP7: festival camera sound was not usable)" },
+    { "id": "inserts", "label": "Inserts (music videos, live)", "kind": "b-roll", "level": "recommended", "description": "only with source credit and cleared rights (T14)" },
+    { "id": "bw-broll", "label": "Black-and-white B-roll for the title and the exit", "kind": "b-roll", "level": "recommended" }
+  ],
+  "structure": {
+    "sections": [
+      { "id": "cold-open", "title": "Cold open", "purpose": "A quote of the guest (core sentence) – footage only.", "duration": { "targetSeconds": 6 }, "material": ["conversation"] },
+      { "id": "sting", "title": "Sting", "purpose": "logo_sting (video and audio clip).", "duration": { "targetSeconds": 3 }, "blocks": ["logo_sting"] },
+      {
+        "id": "title",
+        "title": "Title",
+        "purpose": "title_card \"jensen x <guest>\" over black-and-white B-roll (background transparent on an overlay track) or on black.",
+        "duration": { "targetSeconds": 5 },
+        "blocks": ["title_card"],
+        "material": ["bw-broll"],
+        "notes": ["Parameters: { \"title\": \"jensen x mark tremonti\" } (+ \"background\": \"transparent\" over B-roll)"]
+      },
+      {
+        "id": "arrival",
+        "title": "Arrival, two-shot",
+        "purpose": "Double lower_third: guest left, host right.",
+        "duration": { "targetSeconds": 15 },
+        "blocks": ["lower_third"],
+        "material": ["conversation"],
+        "notes": ["Parameters: { \"people\": [{ guest }, { host }] }"]
+      },
+      {
+        "id": "topics",
+        "title": "Topic blocks (= YouTube chapters)",
+        "purpose": "The conversation with inserts, chevron_wipe between the blocks, optional subtitles.",
+        "duration": { "minSeconds": 90, "maxSeconds": 150 },
+        "blocks": ["chevron_wipe", "glitch_flash", "subtitles_16x9"],
+        "material": ["conversation", "inserts"],
+        "notes": ["7–8 blocks in the reference."]
+      },
+      { "id": "goodbye", "title": "Goodbye", "purpose": "Handshake, black-and-white exit B-roll.", "duration": { "targetSeconds": 15 }, "material": ["conversation", "bw-broll"] },
+      { "id": "outro", "title": "Outro", "purpose": "loud_sounds → logo_end → endcard.", "duration": { "targetSeconds": 15 }, "blocks": ["loud_sounds", "logo_end", "endcard"] }
+    ],
+    "blocks": {
+      "logo_sting": { "use": "required", "min": 1, "max": 1 },
+      "title_card": { "use": "required", "min": 1, "max": 1, "role": "\"jensen x <guest>\", over black-and-white B-roll (transparent) or on black" },
+      "lower_third": { "use": "required", "min": 1, "role": "first one double (guest left, host right) at the two-shot" },
+      "chevron_wipe": { "use": "required", "min": 1, "role": "between topic blocks" },
+      "loud_sounds": { "use": "required", "min": 1, "max": 1 },
+      "logo_end": { "use": "required", "min": 1, "max": 1 },
+      "endcard": { "use": "required", "min": 1, "max": 1 },
+      "subtitles_16x9": { "use": "optional", "max": 1 },
+      "glitch_flash": { "use": "optional" },
+      "thumbnail": { "use": "required", "min": 1, "max": 1, "still": true, "role": "headline JENSEN X <GUEST>" }
+    },
+    "groups": [],
+    "order": ["logo_sting", "title_card", "lower_third", "loud_sounds", "logo_end", "endcard"],
+    "hook": { "untilBlock": "logo_sting", "forbidden": ["lower_third", "title_card"], "note": "quote cold open ~6 s" },
+    "endsWith": "endcard"
+  },
+  "technical": {
+    "profile": "landscape",
+    "duration": { "minSeconds": 600, "maxSeconds": 1500, "reference": { "minSeconds": 840, "maxSeconds": 960, "note": "reference ≈ 15 min" } },
+    "captions": { "styles": ["brand-16x9"], "required": false, "default": "none" },
+    "music": { "slot": "optional", "note": "the brand pack ships no music (T14)" },
+    "deliverables": {
+      "thumbnail": true,
+      "chapters": {
+        "required": true,
+        "derive": null,
+        "note": "topic blocks = chapters: chapters.json with a title per block and the first clip of the block ({ \"schemaVersion\": 1, \"kind\": \"darkmind-chapters\", \"chapters\": [{ \"title\": \"Intro\", \"frame\": 0 }, { \"title\", \"clipId\" }] }); anchored to clips, so the list follows edits. YouTube: first chapter 0:00, at least three, each ≥ 10 s."
+      }
+    }
+  },
+  "rules": [
+    { "id": "first-lower-third", "text": "The first lower third introduces guest and host together (people: [guest, host]).", "level": "hard", "check": { "kind": "machine", "id": "lower-third-people", "params": { "people": 2 } } },
+    { "id": "insert-rights", "text": "Inserts (music videos, live) need a source credit and cleared rights (T14).", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "transitions", "text": "No transitions other than chevron_wipe and glitch_flash.", "level": "hard", "check": { "kind": "editorial" } }
+  ],
+  "review": { "done": ["editorial", "captions-text", "preview", "final", "thumbnail"], "report": ["the topic blocks with their chapter titles"] },
+  "capabilities": [],
+  "provenance": { "origin": "migration", "testProjects": [] }
+}

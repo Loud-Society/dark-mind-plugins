@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "kind": "darkmind-brand-pack",
   "id": "loud-society",
-  "version": "0.6.0",
+  "version": "0.8.0",
   "description": "Brand tokens of the Loud Society brand pack (Phase 6). Positions and sizes are fractions of the frame height (H) or width (W) of the output profile; text sizes are cap heights (height of a capital letter, as measured on the reference frames) – the scenes derive the font size from the measured cap height of Neuborn; brand-layer parameters may only change within the limits given here (T6). Values come from doc/mvp/BRAND_LOUD_SOCIETY.md and the reference frames; final approval by Loud Society (T11).",
   "colors": {
     "black": "#0A0A0A",

@@ -1,6 +1,6 @@
 ---
 name: darkmind-editing
-description: Edit videos with Dark Mind. Researches footage through the Dark Mind MCP server, shows the hits to the user in the Dark Mind review player and collects them in the user's research basket, builds a reviewable cut draft and an editing pipeline in a local project folder, renders proxy previews and the final video locally with darkmind-agent, records only the editor's explicit approvals, syncs the project as versions to Dark Mind and optionally exports a Premiere Pro package. Loud Society formats (Never Ending Interview episode and short, anecdote and statement shorts, host interview) are built with the brand pack's format recipes and brand blocks. Use when the user wants to research or review Dark Mind material ("find material about …"), use the research basket, or create, continue or change a video, short, interview cut or Dark Mind cut project, or mentions Dark Mind, darkmind-agent, cut projects, proxies, originals, captions, Loud Society, Never Ending Interview, thumbnails or a Premiere export.
+description: Edit videos with Dark Mind. Researches footage via the Dark Mind MCP server, shows hits in the review player and the research basket, builds a reviewable cut draft and editing pipeline in a local project folder, renders proxies and the final video with darkmind-agent, records only the editor's explicit approvals, syncs project versions to Dark Mind and optionally exports a Premiere Pro package. Loud Society formats (Never Ending Interview episode and short, anecdote and statement shorts, host interview) follow format recipes from the Dark Mind catalog; new recipes are developed with the editor and published there. Use when the user wants to research or review Dark Mind material, use the research basket, create, continue or change a video, short, interview cut or cut project, develop a format recipe, or mentions Dark Mind, darkmind-agent, cut projects, proxies, originals, captions, Loud Society, Never Ending Interview, thumbnails or a Premiere export.
 ---
 
 # Dark Mind editing skill
@@ -72,9 +72,10 @@ render → **final approval** → sync → optional Premiere export. Push after 
 
 - Ask what the video is for: format (short 9:16 1080 × 1920 / 30 fps, or episode 16:9 1920 × 1080 / 25 fps), length
   (reference short: 30–60 s), topic, statements, audience, captions. **Loud Society format?** Then choose the recipe
-  with the editor (`nei-episode`, `nei-short`, `short-anecdote`, `short-statement`, `host-interview`), read
-  `brand/recipes/<recipe>.md` and follow [references/BRAND.md](references/BRAND.md). Write `brief.md` (with
-  "Recipe: <id>" for brand projects).
+  with the editor (`nei-episode`, `nei-short`, `short-anecdote`, `short-statement`, `host-interview`), ask its
+  briefing questions and follow [references/BRAND.md](references/BRAND.md). Write `brief.md` (with
+  "Recipe: <id>" for brand projects). The recipe is the base pattern: deviations the editor asks for are fine and are
+  reported, never blocked.
 - Use an **empty folder per project and machine**. New project: `project_create(name, description)` (locks it for the
   user) → `darkmind-agent init <projectId>`. Existing project: `project_checkout` → `project_pull` →
   `darkmind-agent download <ticket>` (no `init`). A project saved from Explore contains only `cutlist.json`: after the
@@ -85,10 +86,11 @@ render → **final approval** → sync → optional Premiere export. Push after 
   agrees → `extensions approve <id> --hash <hash> --yes` first) → then `darkmind-agent preview`. The preview lists
   whatever is still missing (banner and terminal) with these steps;
   brand captions and overlays appear only from their rendered outputs. Details: [references/SYNC.md](references/SYNC.md#restore-in-a-fresh-folder).
-- With a recipe: `node "<skill folder>/brand/tools/recipe.mjs" apply <recipe> --project .` writes the profile, duration
-  frame and loudness step into `project.json`. Then (and without a recipe) write `project.json`, `sources.json` and
-  `edit.json` yourself; start from [examples/interview-short](examples/interview-short/) and
-  [references/FORMAT.md](references/FORMAT.md). JSON Schemas are in `schemas/`.
+- Write `project.json`, `sources.json` and `edit.json` yourself; start from
+  [examples/interview-short](examples/interview-short/) and [references/FORMAT.md](references/FORMAT.md). JSON Schemas
+  are in `schemas/`. With a recipe: `recipe_get(slug)` → `darkmind-agent recipe use <ticket>` freezes it into
+  `recipe.lock.json` and writes the profile, duration frame, recipe reference and loudness step into `project.json`;
+  `darkmind-agent recipe show` prints the whole recipe – read it before the draft.
 
 ### 2. Research
 
@@ -136,7 +138,7 @@ render → **final approval** → sync → optional Premiere export. Push after 
   --yes`. Brand blocks need none of this.
 - Brand projects: brand blocks with `brand/tools/add-block.mjs`, brand captions (`brand-word`/`brand-phrase`/
   `brand-16x9`, word timings via `get_word_timings` → `darkmind-agent captions-words`), and
-  `node "<skill folder>/brand/tools/recipe.mjs" check --project .` after every timeline change
+  `darkmind-agent recipe check` after every timeline change – errors block, deviations go into the review report
   ([references/BRAND.md](references/BRAND.md)).
 - `darkmind-agent validate --ready` → `darkmind-agent plan` (lists missing proxies with a ready `media --range` hint)
   → load them → `darkmind-agent levels --apply` (dialogue clip gains from the measured loudness; again after every cut
@@ -167,9 +169,9 @@ render → **final approval** → sync → optional Premiere export. Push after 
   `candidates`), the editor chooses and confirms the headline → `frame`, render, `review show thumbnail` → editor's
   explicit OK → `review approve thumbnail …` → `extensions run thumbnail --original` (the deliverable PNG). Details in
   [references/REVIEWS.md](references/REVIEWS.md#thumbnail-phase-6).
-- Brand projects are **done** when `recipe.mjs check --reviews` (output of `darkmind-agent review status --json`)
-  reports no errors and nothing pending; 16:9 recipes also give the editor the YouTube chapter list
-  (`recipe.mjs chapters --out renders/chapters.txt`).
+- Brand projects are **done** when `darkmind-agent recipe check --done` reports no errors and nothing pending; recipes
+  with chapters also give the editor the YouTube chapter list (`darkmind-agent recipe chapters --out
+  renders/chapters.txt`).
 
 ### 7. Sync (push)
 
@@ -211,7 +213,7 @@ how to set it in Premiere). Details in [references/PREMIERE.md](references/PREMI
 | `media-facts-missing`, `media-facts-changed`, `original-changed` | Run `probe`; a changed original needs a new source revision – ask the editor |
 | `not-indexed`, `indexing-failed`, `proxy-unavailable` | No proxy: choose another copy or, with the user's consent, work with the original |
 | `local-changes` | `download` would overwrite local edits: ask before `--force` |
-| `brand assets … not found` (add-block), `brand-pack-modified` (recipe check) | [references/BRAND.md](references/BRAND.md#errors) |
+| `brand assets … not found` (add-block), `brand-pack-modified`, `deviation`, `recipe-lock-*` (recipe check) | [references/BRAND.md](references/BRAND.md#errors) |
 
 ## References
 
@@ -222,6 +224,7 @@ how to set it in Premiere). Details in [references/PREMIERE.md](references/PREMI
 - [references/RESEARCH.md](references/RESEARCH.md) – efficient research, review player, research basket, choosing sources
 - [references/PREMIERE.md](references/PREMIERE.md) – Premiere Pro hand-off
 - [references/BRAND.md](references/BRAND.md) – Loud Society brand projects: recipes, brand blocks, assets, checks
-- [brand/recipes/](brand/recipes/) – the five format recipes and the Never Ending Interview chain guide (`NEI_CHAIN.md`)
+- [references/RECIPES.md](references/RECIPES.md) – developing and publishing format recipes with the editor (catalog)
+- [brand/recipes/NEI_CHAIN.md](brand/recipes/NEI_CHAIN.md) – the Never Ending Interview chain guide
 - [examples/interview-short/](examples/interview-short/) – complete example project (format contract v1)
 - `schemas/` – JSON Schemas of every artefact

@@ -17,6 +17,12 @@ approved by the editor; `host-interview` only as a technical draft (material rej
 (NEI without the interviewer) and `darkmind-agent` 0.12.x (`levels`, mastering limiter, rights T14). Version 1.0 waits
 for the brand approval by Loud Society (T11) and the audio selection (T13), both still open.
 
+**0.7.0 (2026-11-25, format recipes as data):** the recipes are format recipe documents for the Dark Mind recipe
+catalog ([FORMAT_RECIPES.md](../../../doc/mvp/FORMAT_RECIPES.md), WP0): `lib/catalog.mjs`, the recipe check with
+non-blocking deviations, `deriveRecipe`; `tools/recipe.mjs` and the recipe Markdown documents are replaced by
+`darkmind-agent recipe` (0.15.0). **0.8.0:** material coverage (`material.json`) in the recipe check; the recipes come
+from the Dark Mind catalog (the starting recipes are test data in `test/recipes/`).
+
 **Assets:** the skill download contains no brand assets (Neuborn is for internal editors only, T12). `add-block` finds
 them in `~/.darkmind/brand-assets` (`darkmind-agent brand-assets <ticket>` with a ticket of the MCP tool
 `get_brand_assets`), via `--assets <folder>` / `DARKMIND_BRAND_ASSETS`, in `brand/assets/` of an older skill
@@ -35,8 +41,9 @@ installation, or in the repository's `brand-assets/`.
 | `lib/scene.mjs`, `lib/cmap.mjs`, `lib/motion.mjs`, `lib/cards.mjs` | Browser helpers of the scenes (fonts from the declared bytes, exact glyph coverage from the font's cmap – R6, shadow text, RGB split, block glitch, glow, ink box for tests; chevron geometry and the motion-blurred wipe, cover images; text items and glitch phases of the NEI cards) |
 | `lib/*-scene.mjs`, `blocks/<block>/scene.html` | The scenes (`window.scene = { init, renderAt }`) |
 | `blocks/<block>/block.json` | Block description: profiles, caption style, faces, logo, output, parameters |
-| `recipes/<recipe>.json` + `.md` | Format recipes (WP5): machine-readable description (profile, duration frame, mandatory/optional blocks, order, hook, parameters, chapters, "done") and the agent document; `NEI_CHAIN.md` = guide of the chain reconstruction |
-| `lib/recipes.mjs`, `lib/chapters.mjs`, `tools/recipe.mjs` | Recipe check of a project, YouTube chapter list, CLI `list`/`show`/`apply`/`check`/`chapters` |
+| `recipes/NEI_CHAIN.md` | Guide of the capability `nei-chain` (the recipes themselves are in the Dark Mind catalog; `test/recipes/` holds the starting recipes as test data) |
+| `lib/catalog.mjs` | What the pack offers recipes: profiles, blocks (still/video/audio, profiles), caption styles, named checks, capabilities, chapter derivations – darkmind-agent and Dark Mind validate recipes against it |
+| `lib/recipes.mjs`, `lib/project-docs.mjs`, `lib/chapters.mjs` | Recipe check of a project (severities error/deviation/pending/warning/hint), the project.json fields of a recipe, a recipe skeleton derived from a project, the project files the check reads, YouTube chapter list; driven by `darkmind-agent recipe` |
 | `lib/nei-chain.mjs`, `tools/nei-chain.mjs` | NEI chain reconstruction: proposals from saved transcripts (`extract`), graph, sub-chains, branches, gaps, conflicts and the chosen path (`build`) |
 | `tools/add-block.mjs` | Vendors a block into a project (below) |
 | `package.json`, `package-lock.json` | Tool `playwright-core` (exact version); copied to the project's `extensions/` |
@@ -146,41 +153,50 @@ Texts are checked before rendering (characters, lines, Neuborn glyphs) and refus
 (development machine, 4 workers): format card 5 s in ~3 s, band card ~1.5 s, cliffhanger ~2 s, vertical footage about
 real time (frame extraction from the source dominates).
 
-## Format recipes (WP5)
+## Format recipes
 
-Recipes describe how a format is built – for the agent (`recipes/<id>.md`) and machine-readable (`recipes/<id>.json`).
-They set the output profile, the duration frame and the loudness step in `project.json` and are checked against the
-project:
+Recipes describe how a format is built: concept, briefing questions, material needs, sections, blocks, order, hook,
+technical frame, rules (`hard` = part of the format, `recommended`) and the reviews of "done" – as data
+(`kind: darkmind-format-recipe`, schema `schemas/recipe.schema.json`, plan
+[FORMAT_RECIPES.md](../../../doc/mvp/FORMAT_RECIPES.md)). A recipe only names what this pack offers (`lib/catalog.mjs`):
+blocks, profiles, caption styles, the named checks (`lower-third-people`) and capabilities (`nei-chain`); new checks or
+capabilities are a pack release, never part of a recipe. The recipes live in the Dark Mind recipe catalog (MCP
+`recipe_list`/`recipe_get`, published from the AI client – [`references/RECIPES.md`](../references/RECIPES.md)); a
+project freezes its recipe into `recipe.lock.json`. Published starting recipes (copies as test data in `test/recipes/`):
 
 | Recipe | Profile | Duration | Mandatory blocks (order) | Also |
 |--------|---------|----------|--------------------------|------|
-| [`nei-episode`](recipes/nei-episode.md) | 16:9/25 | 5–25 min (reference 5–8 min, 4–6 links) | `logo_sting` → 2 × `format_card` → ≥ 2 × `band_card` (+ `chevron_wipe` with A/B) → `cliffhanger_card` → `loud_sounds` → `logo_end` → `endcard` | `thumbnail`, chapters per link; optional `vertical_in_16x9`, `subtitles_16x9`, `glitch_flash`; no cards in the cold open |
-| [`nei-short`](recipes/nei-short.md) | 9:16/30 | 30–90 s | `band_card` → `wordmark_flash` (+ `caption_word`) → `animal_scream` → `logo_end` | one link of the same chain; title suffix " \| The Never Ending Interview" |
-| [`short-anecdote`](recipes/short-anecdote.md) | 9:16/30 | 15–60 s | `wordmark_flash` (+ `caption_word`) → `animal_scream` → `logo_end` | no lower third in the first 3 s |
-| [`short-statement`](recipes/short-statement.md) | 9:16/30 | 30–65 s | `logo_sting` → `lower_third` → `animal_scream` → `logo_end`, one of `caption_word`/`caption_phrase` | no lower third before the sting |
-| [`host-interview`](recipes/host-interview.md) | 16:9/25 | 10–25 min | `logo_sting` → `title_card` → `lower_third` (first one double) → `loud_sounds` → `logo_end` → `endcard`, `chevron_wipe` | `thumbnail`, chapters from `chapters.json` |
+| [`nei-episode`](test/recipes/nei-episode.json) | 16:9/25 | 5–25 min (reference 5–8 min, 4–6 links) | `logo_sting` → 2 × `format_card` → ≥ 2 × `band_card` (+ `chevron_wipe` with A/B) → `cliffhanger_card` → `loud_sounds` → `logo_end` → `endcard` | `thumbnail`, chapters per link; optional `vertical_in_16x9`, `subtitles_16x9`, `glitch_flash`; no cards in the cold open |
+| [`nei-short`](test/recipes/nei-short.json) | 9:16/30 | 30–90 s | `band_card` → `wordmark_flash` (+ `caption_word`) → `animal_scream` → `logo_end` | one link of the same chain; title suffix " \| The Never Ending Interview" |
+| [`short-anecdote`](test/recipes/short-anecdote.json) | 9:16/30 | 15–60 s | `wordmark_flash` (+ `caption_word`) → `animal_scream` → `logo_end` | no lower third in the first 3 s |
+| [`short-statement`](test/recipes/short-statement.json) | 9:16/30 | 30–65 s | `logo_sting` → `lower_third` → `animal_scream` → `logo_end`, one of `caption_word`/`caption_phrase` | no lower third before the sting |
+| [`host-interview`](test/recipes/host-interview.json) | 16:9/25 | 10–25 min | `logo_sting` → `title_card` → `lower_third` (first one double) → `loud_sounds` → `logo_end` → `endcard`, `chevron_wipe` | `thumbnail`, chapters from `chapters.json` |
 
-Every recipe has `audio_master` (−14 LUFS, −1 dBTP) and an optional music slot (MVP without music, T14).
+Every brand project has `audio_master` (−14 LUFS, −1 dBTP); every recipe an optional music slot (MVP without music,
+T14).
 
 ```powershell
-node <skill>/brand/tools/recipe.mjs list                     # recipes
-node <skill>/brand/tools/recipe.mjs apply nei-episode        # project.json: output, duration, recipe, audioMaster
-node <skill>/brand/tools/recipe.mjs check                    # exit 1 on errors; JSON with issues, blocks, chapters
-node <skill>/brand/tools/recipe.mjs chapters --out chapters.txt
-darkmind-agent review status --json > review-status.json
-node <skill>/brand/tools/recipe.mjs check --reviews review-status.json   # "done": the reviews of the recipe
+darkmind-agent recipe use <ticket of recipe_get>            # recipe.lock.json + project.json fields
+darkmind-agent recipe show                                  # the project's recipe as Markdown
+darkmind-agent recipe validate recipe.draft.json            # a draft: schema + every name against this pack's catalog
+darkmind-agent recipe try                                   # apply the draft to a test project
+darkmind-agent recipe check [--done]                        # exit 1 on errors; issues, blocks, chapters, editorial rules
+darkmind-agent recipe chapters --out renders/chapters.txt
+darkmind-agent recipe derive --id <slug>                    # recipe skeleton from a project (recipe.draft.json)
 ```
 
-`check` reports (severities like `darkmind-agent validate`): **errors** – wrong recipe/profile/duration frame, missing
-or non-brand `audioMaster`, mandatory block missing or unplaced, too many, a block outside the recipe, brand parameters
-outside the limits (the blocks' own preflight), recipe parameters (e.g. wipes of the episode need A/B), a modified
-vendored brand pack (T6: the brand layer is fixed – an older vendored version is only a warning), order, a forbidden
-block in the hook, the wrong last block, the first lower third of the host interview not double, a captions style
-outside the recipe, a still image on a track, invalid chapters; **pending** – thumbnail candidates not chosen yet,
-captions missing, chapters missing (`host-interview`), reviews of "done" open; **warnings** – episode-layer extensions
-(allowed, T6), an outdated vendored pack, a music bed (rights, T14). Safe zones are kept by the blocks themselves
-(tests); the format contract (references, frames, gaps) stays with `darkmind-agent validate`. The duration frame is set
-by the recipe; outside it the editor grants a duration exception (Phase 4), the frame is never changed.
+`check` severities: **errors** (blocking: brand pack and format contract) – recipe/profile/duration frame of
+`project.json` not the recipe's, missing or non-brand `audioMaster`, brand parameters outside the limits (the blocks'
+own preflight), a modified vendored brand pack (T6: the brand layer is fixed), a vendored block not placed, a still
+image on a track, invalid chapters; **deviations** (reported, never blocking – the recipe is a base pattern and the
+editor may ask for them) – a required block missing, too many, a block outside the recipe, a recipe parameter (wipes
+of the episode with A/B), order, a forbidden block in the hook, the wrong last block, a captions style outside the
+recipe, captions missing, a music bed without slot, a hard rule with a machine check (`lower-third-people`);
+**pending** – thumbnail candidates not chosen yet, chapters missing, reviews of "done" open (`--done`); **warnings** –
+episode-layer extensions (allowed, T6), an outdated vendored pack, a music bed (rights, T14); **hints** – a recommended
+rule with a machine check. The result also lists the editorial rules and what the review report must contain. Safe
+zones are kept by the blocks themselves (tests); the format contract (references, frames, gaps) stays with
+`darkmind-agent validate`. Outside the duration frame the editor grants a duration exception (Phase 4).
 
 **Chapters** (YouTube description) for `nei-episode` are derived from the band cards (each chapter starts with the
 wipe that reveals the card, title from the card lines), for `host-interview` from `chapters.json`
@@ -191,6 +207,31 @@ timeline clips so the list follows edits); YouTube rules: first chapter 0:00, at
 (`nei-chain.mjs extract`), checked and corrected by the agent in `chain.json`, then `nei-chain.mjs build` (graph,
 branches, gaps, Loud Society questions, repeated appearances, contradictions/ambiguities for the editor, chosen path,
 Markdown for the review report).
+
+## Placing blocks on the timeline
+
+Brand knowledge every recipe relies on (moved here from the former recipe documents):
+
+- **Sting and logo end** need a video clip **and** an audio clip (`add-block` prints both in `timelineClips`; the audio
+  goes to an `effects` track, `linkedTo` the video clip).
+- **A wipe replaces the cut:** clip A ends at the wipe start, the wipe (`a`/`b` parameters, 13 frames) lies there, clip
+  B continues right after it with `in = b.in + 0.5 s`. Band cards are revealed and left by wipes: before the card a wipe
+  with `b = { "extensionId": "<card>", "in": "0" }` (the card continues with `in` = wipe length), after it a wipe with
+  `a = { "extensionId": "<card>", "in": "<card length − wipe length>" }`.
+- **Logo end** = wipe (`b = { "extensionId": "logo-end", "in": "0" }`) + `logo_end` from `in` = wipe length; its audio
+  clip starts at the wipe start.
+- **Band card still:** `image` = a frame of the band's interview (`{ sourceId, in, crop? }`); 16:9: the card shows its
+  centre in the right 60 % – give a `crop` (16:9) that frames the faces; 9:16: image box in the upper half, a 9:16
+  `crop` of the face.
+- **Vertical footage in 16:9:** the source clip stays on `main` (its dialog clip carries the sound); place
+  `vertical_in_16x9` (`clip` = the same source and range) on a `graphics` track exactly over it. In 9:16 vertical
+  footage fills the frame (no `vertical_in_16x9`).
+- **Sound-only blocks** (`loud_sounds`, `animal_scream`): one audio clip on `effects` (`loud_sounds` right before the
+  logo end).
+- **Thumbnail** is a still image next to the video (never on a track): propose 2–4 `candidates`, the editor chooses,
+  headline 2–5 words; flat camera footage needs `contrast` ≈ 1.4–1.5.
+- **Captions:** the caption block lies on an `overlay` track over the whole video; word captions 54–70 % H, the top
+  15 % and bottom 20 % stay free (9:16).
 
 ## Using a block in a project
 

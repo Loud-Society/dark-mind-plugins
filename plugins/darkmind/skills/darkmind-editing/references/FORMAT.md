@@ -10,7 +10,7 @@ gaps, paths) and names file, field and clip ID in each issue.
 
 | Path | Who writes it | Content |
 |------|---------------|---------|
-| `project.json` | you (or `import-cutlist`) | `schemaVersion: 1`, `kind: "darkmind-edit-project"`, `title`, `output` (`width`, `height`, `fps` as string `"30/1"`, `sampleRate: 48000`), `duration` frame (`minSeconds`, `maxSeconds`), `recipe` (`null` without a Phase 6 recipe), `artifacts` (paths), `extensions` (list of `extension.json` paths) |
+| `project.json` | you (or `import-cutlist`) | `schemaVersion: 1`, `kind: "darkmind-edit-project"`, `title`, `output` (`width`, `height`, `fps` as string `"30/1"`, `sampleRate: 48000`), `duration` frame (`minSeconds`, `maxSeconds`), `recipe` (`null` without a format recipe; written by `darkmind-agent recipe` together with `recipe.lock.json`, never by hand), `artifacts` (paths), `extensions` (list of `extension.json` paths) |
 | `brief.md` | you | The editor's assignment |
 | `sources.json` | you; `probe` adds `media`/`original` | Sources: `darkmind-video` (Dark Mind `videoId`, `fileName`) or `asset` (file under `assets/` with `sha256`, `size`, `origin`, `provenance`); third-party material (`origin` `stock`/`other`, music, external B-roll) also `rights` = `{ holder, license, status, scope?, source? }` – the final render and the Premiere export block until `status` is `cleared` (T14) |
 | `edit.json` | you | Reviewable draft: `sequence` (statements and scenes in order), `broll` |

@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "kind": "darkmind-format-recipe",
+  "meta": {
+    "id": "nei-episode",
+    "title": "The Never Ending Interview – episode (16:9)",
+    "summary": "Musicians at festivals answer a question another band asked and ask a new one for the next band; an episode follows one reconstructed chain of links.",
+    "tags": ["nei", "longform", "youtube"]
+  },
+  "brand": { "pack": "loud-society", "versions": ">=0.7.0 <2.0.0" },
+  "concept": {
+    "idea": "Musicians at festivals answer a question another band asked, then ask a new question for the next band they do not know. The questions are free – funny, absurd or deep. An episode follows one chain reconstructed from the interviews: starter question, 4–6 links (reference) and a cliffhanger with the open question. Only the NEI segment of a festival interview belongs into the episode (not \"Who Follows Who\" or the shout-outs that often follow).",
+    "platforms": ["YouTube"],
+    "references": [{ "note": "MVP reference test, result A: doc/mvp/E2E_REFERENCE_TEST.md" }]
+  },
+  "briefing": [
+    { "id": "material", "question": "Which festival interviews (upload area, festival) does the episode use?", "required": true },
+    { "id": "starter", "question": "Is there a preferred starter question or band, or does the chain decide?", "required": false },
+    { "id": "length", "question": "Target length and number of links (reference: 5–8 min with 4–6 links)?", "required": false },
+    { "id": "subtitles", "question": "Subtitles (subtitles_16x9) or none (default)?", "required": false }
+  ],
+  "material": [
+    {
+      "id": "starter-question",
+      "label": "Starter question of the first asker on camera",
+      "kind": "question",
+      "level": "hard",
+      "min": 1,
+      "max": 1,
+      "hints": "often a vertical selfie video; can also be a question by Loud Society"
+    },
+    {
+      "id": "links",
+      "label": "Links: the answer to the previous question and the band's own new question",
+      "kind": "answer",
+      "level": "hard",
+      "min": 1,
+      "description": "Reference episode: 4–6 links. The chain comes from indexed transcripts only (capability nei-chain).",
+      "hints": "Festival interviews with the NEI segment; real chains are graphs – the missing interviews of a chain can be uploaded"
+    }
+  ],
+  "structure": {
+    "sections": [
+      {
+        "id": "cold-open",
+        "title": "Cold open",
+        "purpose": "The strongest or funniest answer of the chain – footage only, no cards, no band card, no lower third.",
+        "duration": { "targetSeconds": 9 },
+        "blocks": [],
+        "material": ["links"],
+        "notes": ["Give the reason for the choice in the review report."]
+      },
+      {
+        "id": "sting",
+        "title": "Sting",
+        "purpose": "logo_sting (video and audio clip), then a chevron_wipe with a = the sting and b = the next shot.",
+        "duration": { "targetSeconds": 3 },
+        "blocks": ["logo_sting", "chevron_wipe"]
+      },
+      {
+        "id": "explainer",
+        "title": "Format explainer",
+        "purpose": "format_card with the format title and up to three short sentences.",
+        "duration": { "minSeconds": 5, "maxSeconds": 6 },
+        "blocks": ["format_card"],
+        "notes": ["Parameters: { \"title\": \"Never ending interview\", \"text\": [\"We ask musicians at festivals one question.\", \"The answer comes from someone else – who then comes up with a new question.\", \"And it keeps going.\"] }"]
+      },
+      {
+        "id": "transition",
+        "title": "Transition to the starter",
+        "purpose": "format_card leading to the starter question.",
+        "duration": { "targetSeconds": 3 },
+        "blocks": ["format_card"],
+        "notes": ["Parameters: { \"text\": \"Our starting question comes from none other than…\" }"]
+      },
+      {
+        "id": "starter",
+        "title": "Starter",
+        "purpose": "band_card of the first asker, then their question.",
+        "duration": { "targetSeconds": 25 },
+        "blocks": ["band_card", "vertical_in_16x9"],
+        "material": ["starter-question"],
+        "notes": [
+          "Band card lines as written, two people: [\"EVIL JARED\", \"x KROGI\"].",
+          "Vertical selfie questions with vertical_in_16x9."
+        ]
+      },
+      {
+        "id": "links",
+        "title": "Links (n ×)",
+        "purpose": "Per link: chevron_wipe → band_card at the first appearance of the band → chevron_wipe → the answer shortened to the punchline → the band's own question for the next band, complete.",
+        "duration": { "minSeconds": 60, "maxSeconds": 90 },
+        "blocks": ["chevron_wipe", "band_card", "glitch_flash", "subtitles_16x9"],
+        "material": ["links"],
+        "notes": [
+          "Band card: [\"MYLES KENNEDY\", \"alter bridge\"]; image = a frame of the band's interview with a 16:9 crop that frames the faces.",
+          "subtitles_16x9 is optional over the whole episode and off by default."
+        ]
+      },
+      {
+        "id": "cliffhanger",
+        "title": "Cliffhanger",
+        "purpose": "cliffhanger_card after the last link: the open question goes to the next band ({ \"next\": \"<band>\", \"question\": \"<the open question>\" }; without next: \"who answers the next question…\").",
+        "duration": { "targetSeconds": 5 },
+        "blocks": ["cliffhanger_card"]
+      },
+      {
+        "id": "outro",
+        "title": "Outro",
+        "purpose": "loud_sounds (sound) → chevron_wipe (b = logo end) → logo_end → endcard as the last picture.",
+        "duration": { "targetSeconds": 15 },
+        "blocks": ["loud_sounds", "chevron_wipe", "logo_end", "endcard"]
+      }
+    ],
+    "blocks": {
+      "logo_sting": { "use": "required", "min": 1, "max": 1, "role": "after the cold open, followed by a chevron wipe" },
+      "format_card": { "use": "required", "min": 2, "max": 2, "role": "explainer (title + up to 3 sentences, ~6 s) and transition (\"Our starting question comes from none other than…\", ~3 s)" },
+      "band_card": { "use": "required", "min": 2, "role": "starter card and one card at the first appearance of every link, revealed and left by chevron wipes" },
+      "chevron_wipe": { "use": "required", "min": 1, "parameters": { "required": ["a", "b"] }, "role": "transition after the sting, into and out of every band card, into the logo end" },
+      "vertical_in_16x9": { "use": "optional", "role": "vertical selfie questions" },
+      "cliffhanger_card": { "use": "required", "min": 1, "max": 1, "role": "after the last link: the open question goes to the next band" },
+      "loud_sounds": { "use": "required", "min": 1, "max": 1, "role": "outro sound montage before the logo end" },
+      "logo_end": { "use": "required", "min": 1, "max": 1 },
+      "endcard": { "use": "required", "min": 1, "max": 1, "role": "last picture, YouTube end screen zone free" },
+      "subtitles_16x9": { "use": "optional", "max": 1 },
+      "glitch_flash": { "use": "optional" },
+      "thumbnail": { "use": "required", "min": 1, "max": 1, "still": true, "role": "YouTube thumbnail: frame chosen by the editor, headline = the question or a \"WHO IS NEXT?\"-like claim (2–5 words)" }
+    },
+    "groups": [],
+    "order": ["logo_sting", "format_card", "band_card", "cliffhanger_card", "loud_sounds", "logo_end", "endcard"],
+    "hook": { "untilBlock": "logo_sting", "forbidden": ["band_card", "format_card", "lower_third"], "note": "cold open: the strongest/funniest answer, ~9 s, no cards" },
+    "endsWith": "endcard"
+  },
+  "technical": {
+    "profile": "landscape",
+    "duration": {
+      "minSeconds": 300,
+      "maxSeconds": 1500,
+      "reference": { "minSeconds": 300, "maxSeconds": 480, "note": "MVP reference test (E2E_REFERENCE_TEST.md, result A) with 4–6 links" }
+    },
+    "captions": { "styles": ["brand-16x9"], "required": false, "default": "none", "note": "subtitles_16x9 optional, off by default (references without burnt-in subtitles)" },
+    "music": { "slot": "optional", "note": "the brand pack ships no music (T14): a music bed needs its source and rights in sources.json and is ducked by audio_master" },
+    "deliverables": {
+      "thumbnail": true,
+      "chapters": {
+        "required": true,
+        "derive": "band_card",
+        "introTitle": "Intro",
+        "note": "one chapter per link (band card) for the YouTube description, starting with the wipe that reveals the card; chapters.json ({ \"title\", \"clipId\" }) overrides the derived titles. YouTube: first chapter 0:00, at least three, each ≥ 10 s."
+      }
+    }
+  },
+  "rules": [
+    { "id": "nei-segment-only", "text": "Only the NEI segment of a festival interview belongs into the episode (not \"Who Follows Who\" or the shout-outs).", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "chain-from-transcripts", "text": "Reconstruct the chain from transcripts only (capability nei-chain): observations with source and timecode, uncertain or contradictory assignments flagged and shown to the editor, never guessed. Upload notes and metadata values of the NEI videos are never used (they hold the editor's answer key); no get_video for the chain.", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "chain-logic", "text": "The question of link n is answered in link n+1. If a link drops out, report the break and propose a solution (a transition, another link) – never invent a question.", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "chain-path", "text": "Real chains are graphs (branches, unanswered questions, answers without a filmed question, questions by Loud Society, bands appearing several times, separate sub-chains): choose a path – prefer long sub-chains with strong answers – and list unanswered questions as reserve.", "level": "recommended", "check": { "kind": "editorial" } },
+    { "id": "no-interviewer", "text": "No interviewer in the episode: leave out read-out questions, prompts and hand-overs of the interviewer – the previous band's question on camera carries the chain. A link is band card → the shortened answer → the band's own question for the next band (\"my question for the next band is …\", complete). Interviewer voices picked up by the guest's microphone also appear in the transcripts – check the speaker at the material.", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "quotes-verbatim", "text": "Quotes stay verbatim (edit.json); the editor may correct misheard band names (e.g. \"hard case\" = The Hardkiss) in quote and caption.", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "punchline", "text": "Shorten answers to the punchline; keep the band's question for the next band complete.", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "band-card-names", "text": "Band card at the first appearance of every link; names spelled as in the transcript, uncertain spellings flagged (unresolved).", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "cold-open-strongest", "text": "Cold open: the strongest answer (~9 s).", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "flag-unfitting", "text": "Questions that do not fit the band and rude/NSFW answers stay allowed but are flagged in the review report – the editor decides.", "level": "recommended", "check": { "kind": "editorial" } },
+    { "id": "transitions", "text": "No transitions other than chevron_wipe and glitch_flash.", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "episode-layer", "text": "Episode-layer elements (series designs, grading) only as free extensions; they never imitate the brand layer.", "level": "hard", "check": { "kind": "editorial" } }
+  ],
+  "review": {
+    "done": ["editorial", "captions-text", "preview", "final", "thumbnail"],
+    "report": [
+      "the reason for the cold open",
+      "the chosen chain path with the reason for every rejected link; unanswered questions as reserve",
+      "flagged spellings, unfitting questions and rude answers"
+    ]
+  },
+  "capabilities": ["nei-chain"],
+  "provenance": { "origin": "migration", "testProjects": [] }
+}

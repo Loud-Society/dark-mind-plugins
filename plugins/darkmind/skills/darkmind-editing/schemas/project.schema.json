@@ -91,17 +91,38 @@
           "properties": {
             "id": {
               "type": "string",
-              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+              "pattern": "^[a-z0-9](?:[a-z0-9-]{0,38}[a-z0-9])?$"
             },
             "version": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Published catalog version; null for a local draft (source \"draft\")"
+            },
+            "sha256": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 40
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "SHA-256 of the canonical recipe in recipe.lock.json"
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "catalog",
+                "draft"
+              ]
             }
           },
           "required": [
             "id",
-            "version"
+            "version",
+            "sha256",
+            "source"
           ],
           "additionalProperties": false
         },
@@ -109,7 +130,7 @@
           "type": "null"
         }
       ],
-      "description": "Format recipe (Phase 6), e.g. nei-short; sets output profile and duration frame"
+      "description": "Format recipe the project is built with (frozen in recipe.lock.json, written by darkmind-agent recipe)"
     },
     "audioMaster": {
       "anyOf": [

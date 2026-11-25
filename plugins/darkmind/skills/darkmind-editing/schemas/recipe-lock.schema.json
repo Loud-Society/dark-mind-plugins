@@ -1,0 +1,1021 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://darkmind.cloud/schemas/editing-pipeline/v1/recipe-lock.schema.json",
+  "title": "Dark Mind editing pipeline: recipe.lock.json (the recipe frozen into the project, written by darkmind-agent recipe)",
+  "description": "Format contract v1 of the Dark Mind editing pipeline (doc/AI_EDITING_PIPELINE.md). Structure only; run \"darkmind-agent validate\" for references, frame arithmetic, overlaps, gaps and path rules.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "kind": {
+      "type": "string",
+      "const": "darkmind-recipe-lock"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9](?:[a-z0-9-]{0,38}[a-z0-9])?$"
+    },
+    "version": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Published catalog version; null for a draft"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "catalog",
+        "draft"
+      ]
+    },
+    "publishedAt": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 40
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "brandPack": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Brand pack the recipe was applied with"
+    },
+    "lockedAt": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "recipe": {
+      "type": "object",
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "schemaVersion": {
+          "type": "number",
+          "const": 1
+        },
+        "kind": {
+          "type": "string",
+          "const": "darkmind-format-recipe"
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9](?:[a-z0-9-]{0,38}[a-z0-9])?$"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "description": "One or two sentences for the catalog list and the recipe choice"
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "maxItems": 20,
+              "default": []
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "summary"
+          ],
+          "additionalProperties": false
+        },
+        "brand": {
+          "type": "object",
+          "properties": {
+            "pack": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "Brand pack id, e.g. loud-society"
+            },
+            "versions": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "description": "Compatible brand pack versions, e.g. \">=0.7.0 <1.0.0\" or \"^0.7.0\""
+            }
+          },
+          "required": [
+            "pack",
+            "versions"
+          ],
+          "additionalProperties": false
+        },
+        "concept": {
+          "type": "object",
+          "properties": {
+            "idea": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            "audience": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "tone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "platforms": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              },
+              "maxItems": 10,
+              "default": []
+            },
+            "references": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "videoId": {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 500
+                  },
+                  "note": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "note"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 20,
+              "default": []
+            }
+          },
+          "required": [
+            "idea"
+          ],
+          "additionalProperties": false
+        },
+        "briefing": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
+              },
+              "question": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "required": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "question",
+              "required"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 30,
+          "default": [],
+          "description": "Questions the agent asks when the recipe is chosen; the answers go into brief.md"
+        },
+        "material": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "interview",
+                  "question",
+                  "answer",
+                  "b-roll",
+                  "selfie",
+                  "still",
+                  "music",
+                  "other"
+                ]
+              },
+              "level": {
+                "type": "string",
+                "enum": [
+                  "hard",
+                  "recommended"
+                ]
+              },
+              "min": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "max": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "hints": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              }
+            },
+            "required": [
+              "id",
+              "label",
+              "kind",
+              "level"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 50,
+          "default": []
+        },
+        "structure": {
+          "type": "object",
+          "properties": {
+            "sections": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000
+                  },
+                  "duration": {
+                    "type": "object",
+                    "properties": {
+                      "minSeconds": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 86400
+                      },
+                      "targetSeconds": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 86400
+                      },
+                      "maxSeconds": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 86400
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Guide values for the agent; the check counts the whole video only"
+                  },
+                  "blocks": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9_]{1,40}$"
+                    },
+                    "maxItems": 30,
+                    "default": []
+                  },
+                  "material": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
+                    },
+                    "maxItems": 30,
+                    "default": []
+                  },
+                  "notes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "maxItems": 30,
+                    "default": []
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "purpose"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 40
+            },
+            "blocks": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "use": {
+                    "type": "string",
+                    "enum": [
+                      "required",
+                      "optional"
+                    ]
+                  },
+                  "min": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000,
+                    "description": "Minimum uses in the whole video (default 1 for required blocks)"
+                  },
+                  "max": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000,
+                    "description": "Maximum uses in the whole video"
+                  },
+                  "still": {
+                    "type": "boolean",
+                    "description": "Still image next to the video (thumbnail), never on a track"
+                  },
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "required": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 60
+                        },
+                        "maxItems": 30
+                      }
+                    },
+                    "required": [
+                      "required"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "role": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500,
+                    "description": "What the block does in this format"
+                  }
+                },
+                "required": [
+                  "use"
+                ],
+                "additionalProperties": false
+              },
+              "propertyNames": {
+                "pattern": "^[a-z0-9_]{1,40}$"
+              }
+            },
+            "groups": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
+                  },
+                  "oneOf": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9_]{1,40}$"
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                  },
+                  "note": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "id",
+                  "oneOf"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 10,
+              "default": []
+            },
+            "order": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]{1,40}$"
+              },
+              "maxItems": 30,
+              "default": [],
+              "description": "Order of the first appearance of these blocks"
+            },
+            "hook": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "untilBlock": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9_]{1,40}$",
+                      "description": "The hook lasts until this block first appears"
+                    },
+                    "untilSeconds": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "maximum": 600,
+                      "description": "…or for this many seconds"
+                    },
+                    "forbidden": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9_]{1,40}$"
+                      },
+                      "maxItems": 20
+                    },
+                    "note": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    }
+                  },
+                  "required": [
+                    "forbidden"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "endsWith": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]{1,40}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "sections",
+            "blocks"
+          ],
+          "additionalProperties": false
+        },
+        "technical": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+              "description": "Output profile of the brand pack (vertical, landscape)"
+            },
+            "duration": {
+              "type": "object",
+              "properties": {
+                "minSeconds": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 86400
+                },
+                "maxSeconds": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 86400
+                },
+                "reference": {
+                  "type": "object",
+                  "properties": {
+                    "minSeconds": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 86400
+                    },
+                    "maxSeconds": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 86400
+                    },
+                    "note": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500
+                    }
+                  },
+                  "required": [
+                    "minSeconds",
+                    "maxSeconds",
+                    "note"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "minSeconds",
+                "maxSeconds"
+              ],
+              "additionalProperties": false
+            },
+            "captions": {
+              "type": "object",
+              "properties": {
+                "styles": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "plain",
+                      "brand-word",
+                      "brand-phrase",
+                      "brand-16x9"
+                    ]
+                  },
+                  "maxItems": 4
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "default": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "plain",
+                        "brand-word",
+                        "brand-phrase",
+                        "brand-16x9"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "const": "none"
+                    }
+                  ]
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                }
+              },
+              "required": [
+                "styles",
+                "required",
+                "default"
+              ],
+              "additionalProperties": false
+            },
+            "music": {
+              "type": "object",
+              "properties": {
+                "slot": {
+                  "type": "string",
+                  "enum": [
+                    "optional",
+                    "none"
+                  ]
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                }
+              },
+              "required": [
+                "slot"
+              ],
+              "additionalProperties": false
+            },
+            "deliverables": {
+              "type": "object",
+              "properties": {
+                "thumbnail": {
+                  "type": "boolean"
+                },
+                "chapters": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "required": {
+                          "type": "boolean"
+                        },
+                        "derive": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^[a-z0-9_]{1,40}$"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "description": "Block that starts a chapter (band_card) or null for chapters.json"
+                        },
+                        "introTitle": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "note": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 1000
+                        }
+                      },
+                      "required": [
+                        "required",
+                        "derive"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "titleSuffix": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                }
+              },
+              "required": [
+                "thumbnail",
+                "chapters"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "profile",
+            "duration",
+            "captions",
+            "music",
+            "deliverables"
+          ],
+          "additionalProperties": false
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "level": {
+                "type": "string",
+                "enum": [
+                  "hard",
+                  "recommended"
+                ]
+              },
+              "check": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "machine"
+                      },
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+                        "description": "Check of the brand pack catalog"
+                      },
+                      "params": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "maxLength": 200
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "boolean"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "maxLength": 200
+                              },
+                              "maxItems": 30
+                            }
+                          ]
+                        },
+                        "default": {}
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "id"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "editorial"
+                      }
+                    },
+                    "required": [
+                      "kind"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "text",
+              "level",
+              "check"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 60,
+          "default": []
+        },
+        "review": {
+          "type": "object",
+          "properties": {
+            "done": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "editorial",
+                  "captions-text",
+                  "preview",
+                  "duration-exception",
+                  "final",
+                  "thumbnail"
+                ]
+              },
+              "minItems": 1,
+              "maxItems": 6,
+              "description": "Reviews the editor approves before the video is finished"
+            },
+            "report": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "maxItems": 20,
+              "default": [],
+              "description": "What the review report of the agent must contain"
+            }
+          },
+          "required": [
+            "done"
+          ],
+          "additionalProperties": false
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
+          },
+          "maxItems": 10,
+          "default": [],
+          "description": "Capabilities of the brand pack, e.g. nei-chain"
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "type": "string",
+              "enum": [
+                "concept",
+                "project",
+                "migration"
+              ]
+            },
+            "concept": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 300
+                }
+              },
+              "required": [
+                "title"
+              ],
+              "additionalProperties": false
+            },
+            "sourceProject": {
+              "type": "object",
+              "properties": {
+                "projectId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "version": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "projectId",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "testProjects": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "projectId": {
+                    "type": "string",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                  },
+                  "version": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "note": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "projectId",
+                  "version"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 20,
+              "default": []
+            }
+          },
+          "required": [
+            "origin"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "meta",
+        "brand",
+        "concept",
+        "structure",
+        "technical",
+        "review"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "slug",
+    "version",
+    "sha256",
+    "source",
+    "publishedAt",
+    "brandPack",
+    "lockedAt",
+    "recipe"
+  ],
+  "additionalProperties": false
+}

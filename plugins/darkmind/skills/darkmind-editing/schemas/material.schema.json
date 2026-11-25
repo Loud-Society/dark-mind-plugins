@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://darkmind.cloud/schemas/editing-pipeline/v1/material.schema.json",
+  "title": "Dark Mind editing pipeline: material.json (coverage of the material needs of the recipe)",
+  "description": "Format contract v1 of the Dark Mind editing pipeline (doc/AI_EDITING_PIPELINE.md). Structure only; run \"darkmind-agent validate\" for references, frame arithmetic, overlaps, gaps and path rules.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "kind": {
+      "type": "string",
+      "const": "darkmind-material"
+    },
+    "needs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "needId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+            "description": "ID of a material need of the recipe"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "covered",
+              "partial",
+              "missing",
+              "waived"
+            ],
+            "description": "covered, partial, missing, or waived (the editor decided to go without)"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "maxItems": 200,
+            "default": [],
+            "description": "IDs of sources.json that cover the need"
+          },
+          "statements": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "maxItems": 200,
+            "default": [],
+            "description": "IDs of edit.json statements that cover the need"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "What is missing, or why the editor waived it"
+          }
+        },
+        "required": [
+          "needId",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "needs"
+  ],
+  "additionalProperties": false
+}

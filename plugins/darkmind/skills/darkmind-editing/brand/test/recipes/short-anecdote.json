@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "kind": "darkmind-format-recipe",
+  "meta": {
+    "id": "short-anecdote",
+    "title": "Short \"Anecdote\" (9:16)",
+    "summary": "One anecdote from an interview: the strongest sentence first as the hook, then context, the story with literal B-roll and the punchline.",
+    "tags": ["short"]
+  },
+  "brand": { "pack": "loud-society", "versions": ">=0.7.0 <2.0.0" },
+  "concept": {
+    "idea": "A vertical short around one anecdote of an interview. The hook is the strongest sentence of the anecdote, placed first even if it comes later in the interview; context, the story with B-roll that illustrates literally what is said, and the punchline follow; the short ends with the animal scream and the logo end.",
+    "platforms": [],
+    "references": [{ "note": "Analysis of the Loud Society shorts: doc/mvp/brand/ANALYSIS_YOUTUBE_SHORTS.md" }]
+  },
+  "briefing": [{ "id": "anecdote", "question": "Which interview and which anecdote?", "required": false }],
+  "material": [
+    { "id": "anecdote", "label": "The anecdote with a punchline", "kind": "interview", "level": "hard", "min": 1, "max": 1 },
+    { "id": "broll", "label": "B-roll that literally shows what is said", "kind": "b-roll", "level": "recommended", "min": 1 }
+  ],
+  "structure": {
+    "sections": [
+      {
+        "id": "hook",
+        "title": "Hook",
+        "purpose": "The strongest sentence with word captions and the wordmark flash over the first caption line; no lower third.",
+        "duration": { "maxSeconds": 3 },
+        "blocks": ["caption_word", "wordmark_flash"],
+        "material": ["anecdote"]
+      },
+      {
+        "id": "context",
+        "title": "Context",
+        "purpose": "Punch-out (crop), optionally an album sticker as a free extension (episode layer); an optional lower third after the hook.",
+        "blocks": ["lower_third"],
+        "material": ["anecdote"]
+      },
+      {
+        "id": "story",
+        "title": "Story",
+        "purpose": "The story with B-roll that illustrates literally what is said.",
+        "blocks": ["glitch_flash"],
+        "material": ["anecdote", "broll"]
+      },
+      { "id": "punchline", "title": "Punchline", "purpose": "The punchline in the footage.", "material": ["anecdote"] },
+      {
+        "id": "end",
+        "title": "End",
+        "purpose": "animal_scream → logo_end (optionally revealed by a chevron_wipe).",
+        "blocks": ["animal_scream", "logo_end", "chevron_wipe"]
+      }
+    ],
+    "blocks": {
+      "caption_word": { "use": "required", "min": 1, "max": 1 },
+      "wordmark_flash": { "use": "required", "min": 1, "role": "in the hook, over the first caption line" },
+      "animal_scream": { "use": "required", "min": 1, "max": 1 },
+      "logo_end": { "use": "required", "min": 1, "max": 1 },
+      "lower_third": { "use": "optional", "max": 1, "role": "after the hook, at the context" },
+      "chevron_wipe": { "use": "optional" },
+      "glitch_flash": { "use": "optional" }
+    },
+    "groups": [],
+    "order": ["wordmark_flash", "animal_scream", "logo_end"],
+    "hook": { "untilSeconds": 3, "forbidden": ["lower_third"], "note": "the strongest sentence first" },
+    "endsWith": "logo_end"
+  },
+  "technical": {
+    "profile": "vertical",
+    "duration": { "minSeconds": 15, "maxSeconds": 60 },
+    "captions": { "styles": ["brand-word"], "required": true, "default": "brand-word" },
+    "music": { "slot": "optional", "note": "the brand pack ships no music (T14)" },
+    "deliverables": { "thumbnail": false, "chapters": null }
+  },
+  "rules": [
+    { "id": "hook-strongest", "text": "The hook is the strongest sentence of the anecdote, placed first even if it comes later in the interview (the editorial review shows the reordering).", "level": "hard", "check": { "kind": "editorial" } },
+    { "id": "literal-broll", "text": "B-roll illustrates literally what is said.", "level": "recommended", "check": { "kind": "editorial" } },
+    { "id": "transitions", "text": "No transitions other than chevron_wipe and glitch_flash.", "level": "hard", "check": { "kind": "editorial" } }
+  ],
+  "review": { "done": ["editorial", "captions-text", "preview", "final"], "report": ["what each B-roll insert shows"] },
+  "capabilities": [],
+  "provenance": { "origin": "migration", "testProjects": [] }
+}
