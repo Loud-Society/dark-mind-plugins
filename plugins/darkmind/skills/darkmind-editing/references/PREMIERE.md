@@ -5,7 +5,8 @@ Adobe Premiere Pro. Verified with Premiere Pro 2027 (27.0.0) on Windows; other v
 
 ## Rules
 
-1. **Only after the final check** and only on the editor's wish. The export needs the same approvals as
+1. **Only after the final check** and only on the editor's wish – the hand-off is manual work with the editor, so it is
+   never part of an autonomous run and has no `--unreviewed`. The export needs the same approvals as
    `render --original` (editorial, caption text, preview, duration exception if needed) and the originals locally
    (`darkmind-agent plan --original` lists missing ones; load them with `get_media_sources(kind "original")` →
    `darkmind-agent media <ticket>`) – or, as a **proxy package** (`--proxy`, below), only the complete proxies.

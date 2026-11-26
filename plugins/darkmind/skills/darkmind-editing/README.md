@@ -120,6 +120,23 @@ What to expect:
 - It saves the project as versions in Dark Mind and releases the lock at the end. Optionally it exports a Premiere Pro
   package (`renders/premiere/vNNNN/` with `IMPORT.md`); changes in Premiere do not flow back.
 
+**Bulk jobs without reviews (autonomous run).** Working together with reviews is the default. When you want the agent
+to finish a larger job on its own – for example in autopilot – say so in the job; you check the results afterwards:
+
+```text
+Use the Dark Mind editing skill: make 30 shorts in 9:16 (recipe short-statement, 30–60 s each) from the festival
+interviews in the upload area "Summer Festival 2026", one cut project per short. Run autonomously without my reviews
+and including the final render from the originals; I check the results afterwards. Push each project when it is done
+and give me a list at the end.
+```
+
+The agent then decides on its own (format details, material, thumbnail, how to split the work into sub-sessions, lock
+renewal, original downloads) and renders with `--unreviewed "<your instruction>"`. It never records approvals in your
+name: each final video is marked "not reviewed by an editor" (render report, `renders/final/vNNNN.UNREVIEWED.txt`,
+`darkmind-agent review status`, push message) until you review the project – then the same file is reused. Changes you
+requested earlier, open points (an unverified quote), rights of third-party material and errors still stop a project;
+the agent lists them. The Premiere hand-off is not part of such runs.
+
 **Tips:** for a small correction start a fresh, short session in the project folder (the state is in the files) and
 use a medium reasoning level; use a higher level for building a new project or format.
 
@@ -137,7 +154,7 @@ about 80 s (Premiere Pro 2027).
 |------|---------|
 | [`SKILL.md`](SKILL.md) | Workflow and rules for the agent (brief → research → draft → reviews → proxy → final → sync → Premiere) |
 | [`references/FORMAT.md`](references/FORMAT.md) | Project files, time rules, timeline/caption rules |
-| [`references/REVIEWS.md`](references/REVIEWS.md) | Reviews and approvals: never approve, which change needs which review |
+| [`references/REVIEWS.md`](references/REVIEWS.md) | Reviews and approvals: never approve, which change needs which review, autonomous runs (`--unreviewed`) |
 | [`references/EXTENSIONS.md`](references/EXTENSIONS.md) | Extensions: declare inputs, local approval to run, contract |
 | [`references/SYNC.md`](references/SYNC.md) | Locks, base version, derived video references, conflicts, restore |
 | [`references/RESEARCH.md`](references/RESEARCH.md) | Small tool answers, choosing the smallest suitable source |

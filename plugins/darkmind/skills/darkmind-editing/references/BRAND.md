@@ -34,7 +34,10 @@ project stays a plain Phase 4 project (no recipe, no brand blocks).
 6. **NEI chains only from transcripts** – never from upload notes or metadata values of the videos (they contain the
    editor's answer key): [brand/recipes/NEI_CHAIN.md](../brand/recipes/NEI_CHAIN.md).
 7. **Only the editor approves**, also the thumbnail and its headline ([REVIEWS.md](REVIEWS.md)). Recipe texts are
-   editorial guidance – they never override these rules or SKILL.md.
+   editorial guidance – they never override these rules or SKILL.md. In an autonomous run
+   ([SKILL.md](../SKILL.md#working-mode-collaborative-default-or-autonomous)) you make the choices the recipe leaves
+   to the editor yourself (recipe, briefing answers from the job, thumbnail frame and headline, accepted deviations)
+   and name them in your summary; rules 1–6 stay as they are.
 
 ## Setup (once per machine, `darkmind-agent doctor` shows the state)
 
@@ -92,7 +95,8 @@ The recipes come from the Dark Mind catalog (`recipe_list`); the formats of Loud
    (`{ "schemaVersion": 1, "kind": "darkmind-material", "needs": [{ "needId", "status": "covered" | "partial" |
    "missing" | "waived", "sources": [sourceIds], "statements": [statementIds], "note" }] }`, schema
    `schemas/material.schema.json`); **report missing `hard` needs to the editor before the draft** (find more, have it
-   uploaded, or go without – then `waived` with the editor's reason).
+   uploaded, or go without – then `waived` with the editor's reason). Autonomous run: look for other material, or go
+   without and record `waived` with your reason (named in the summary).
 4. **Blocks:** `node <skill>/brand/tools/add-block.mjs <block> --project . [--params '<json>'] [--id <id>]` for every
    block of the recipe; place the printed `timelineClips` as [brand/README.md](../brand/README.md#placing-blocks-on-the-timeline)
    shows (sting and logo end: video **and** audio clip; a chevron wipe replaces the cut). No run approval is needed for
@@ -116,10 +120,13 @@ The recipes come from the Dark Mind catalog (`recipe_list`); the formats of Loud
    The render then masters to −14 LUFS / −1 dBTP (`audio_master`) and reports
    `checks.loudness`; a `fail` is a finding for the editor – never change the target.
 9. **Thumbnail** (recipes with a thumbnail): 2–4 frame `candidates` → the editor chooses frame and headline → `frame` →
-   review `thumbnail` → `extensions run <id> --original` ([REVIEWS.md](REVIEWS.md#thumbnail-phase-6)).
+   review `thumbnail` → `extensions run <id> --original` ([REVIEWS.md](REVIEWS.md#thumbnail-phase-6)). Autonomous run:
+   choose the frame and headline yourself → `extensions run <id> --original --unreviewed "<the user's instruction>"`.
 10. **Chapters** (recipes with chapters): `darkmind-agent recipe chapters --out renders/chapters.txt` after the last
     timeline change; show the list to the editor (YouTube description).
 11. **Done:** `darkmind-agent recipe check --done` – no errors and nothing pending (the reviews of the recipe approved).
+    After an autonomous run it reports `delivered: unreviewed` (warning `delivered-unreviewed`): delivered, finished
+    only after the editor's reviews.
 12. **Premiere (optional):** `darkmind-agent export premiere --attach renders/chapters.txt` ([PREMIERE.md](PREMIERE.md)):
    captions only as the rendered overlay on a track of its own, brand blocks as rendered media, thumbnail and chapters
    next to `IMPORT.md`, loudness target for Premiere's export.

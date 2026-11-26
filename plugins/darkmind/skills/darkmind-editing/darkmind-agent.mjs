@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// darkmind-agent 0.18.0+52e644bfaa0d (built 2026-11-26T10:09:21.336Z)
+// darkmind-agent 0.19.0+36d20fbd237f (built 2026-11-26T11:02:05.291Z)
 // Local helper for AI agents working on Dark Mind cut projects. Requires Node >= 20 and ffmpeg in PATH.
 // Usage: node darkmind-agent.mjs --help
 var __defProp = Object.defineProperty;
@@ -7259,7 +7259,7 @@ import http from "node:http";
 import https from "node:https";
 
 // src/version.ts
-var AGENT_VERSION = true ? "0.18.0+52e644bfaa0d" : "0.0.0-dev";
+var AGENT_VERSION = true ? "0.19.0+36d20fbd237f" : "0.0.0-dev";
 var MIN_NODE_MAJOR = 20;
 function nodeMajor(version = process.versions.node) {
   return Number.parseInt(version.split(".")[0], 10);
@@ -11899,11 +11899,12 @@ async function computeReviewState(root, options = {}) {
     const projection = finalProjection(report, { preview: bindings.preview, editorial: bindings.editorial, captionsText: bindings.captionsText });
     const hash = hashOf(projection);
     const decided = decide("final", hash, records, (approved) => diffProjections(approved, projection));
+    const unreviewed = report.review.gate?.basis === "unreviewed" ? report.review.gate.unreviewed : void 0;
     finalState = subject("final", {
       hash,
       ...decided,
       ...bindings.preview !== previewHash ? { status: "stale", blockers: [`${report.output} shows an older state of the project; render the final output again`] } : {},
-      note: `latest final output ${report.output}`
+      note: `latest final output ${report.output}${unreviewed ? ` \u2013 rendered WITHOUT editor review (autonomous run: ${unreviewed.reason})` : ""}`
     });
   } else {
     const approvedElsewhere = finalRecords.filter((r) => r.record.decision === "approved" && r.record.snapshot.preview === previewHash).at(-1);
@@ -11915,6 +11916,8 @@ async function computeReviewState(root, options = {}) {
     note: `still images: ${Object.keys(thumbnail.stills).join(", ")}`,
     ...decide("thumbnail", thumbnailHash, records, (approved) => diffProjections(approved, thumbnail))
   });
+  const finalGate = latestFinal?.report.review?.gate;
+  const unreviewedFinal = latestFinal && finalGate?.basis === "unreviewed" && finalGate.unreviewed && latestFinal.report.review.bindings?.preview === previewHash ? { report: latestFinal.file, output: latestFinal.report.output, reason: finalGate.unreviewed.reason, skipped: finalGate.unreviewed.skipped } : null;
   return {
     validation,
     recipe: Boolean(documents?.project.recipe),
@@ -11924,11 +11927,20 @@ async function computeReviewState(root, options = {}) {
     records,
     problems,
     subjects: { editorial: editorialState, "captions-text": captionsState, preview: previewState, "duration-exception": durationState, final: finalState, thumbnail: thumbnailState },
-    latestFinal
+    latestFinal,
+    unreviewedFinal
   };
 }
 function reviewBindings(state) {
   return { editorial: state.hashes.editorial, captionsText: state.hashes.captionsText, preview: state.hashes.preview, totalFrames: state.validation.totalFrames };
+}
+var MAX_UNREVIEWED_REASON = 500;
+function parseUnreviewed(value2) {
+  if (value2 === void 0) return null;
+  const reason = value2.trim().replace(/\s+/g, " ");
+  if (!reason) throw new CliError("usage", `--unreviewed needs the reason: the user's instruction for an autonomous run without reviews, e.g. --unreviewed "bulk job: 30 shorts, no reviews (user request)"`);
+  if (reason.length > MAX_UNREVIEWED_REASON) throw new CliError("usage", `--unreviewed: the reason has more than ${MAX_UNREVIEWED_REASON} characters`);
+  return { reason };
 }
 var SUBJECT_LABEL = {
   editorial: "editorial review (statements, sources, ranges, order)",
@@ -11951,18 +11963,43 @@ function describeMissing(state) {
       return `the ${SUBJECT_LABEL[state.subject]} is missing; show it to the editor (${show2}) and record the editor's decision`;
   }
 }
-function evaluateGate(state, action) {
+function evaluateGate(state, action, options = {}) {
+  const autonomous = action === "export" || action === "render-proxy-section" ? null : options.unreviewed ?? null;
   const blockers = [];
   const approvals = [];
   const notes = [];
+  const skipped = [];
   const { validation } = state;
   if (!validation.valid) blockers.push({ code: "project-invalid", message: `the project has ${validation.counts.error} errors; run "darkmind-agent validate"` });
-  if (action === "still-original") {
-    const subject = state.subjects.thumbnail;
+  const need = (name) => {
+    const subject = state.subjects[name];
+    if (subject.status === "not-required") return;
     if (subject.status === "approved") {
       if (subject.record) approvals.push(subject.record);
-    } else if (subject.status !== "not-required") blockers.push({ code: `review-${subject.status}`, subject: "thumbnail", message: describeMissing(subject) });
-    return { action, status: blockers.length ? "blocked" : "passed", basis: "reviews", blockers, approvals, notes };
+      return;
+    }
+    if (autonomous && (subject.status === "missing" || subject.status === "stale")) {
+      skipped.push({ subject: name, status: subject.status });
+      return;
+    }
+    blockers.push({
+      code: `review-${subject.status}`,
+      subject: name,
+      message: describeMissing(subject) + (autonomous && subject.status === "changes-requested" ? " (--unreviewed never overrides a decision of the editor)" : "")
+    });
+  };
+  const result = (basis2) => {
+    if (!skipped.length) return { action, status: blockers.length ? "blocked" : "passed", basis: basis2, blockers, approvals, notes };
+    const unreviewed = { reason: autonomous.reason, skipped };
+    notes.push(
+      `autonomous run WITHOUT editor review (--unreviewed "${unreviewed.reason}"): skipped ${skipped.map((s) => `${s.subject} (${s.status})`).join(", ")}; nothing was approved \u2013 the result is marked "not reviewed by an editor"`
+    );
+    if (skipped.some((s) => s.subject === "duration-exception")) notes.push(`length outside the duration frame without the editor's exception: ${state.subjects["duration-exception"].note ?? ""}`);
+    return { action, status: blockers.length ? "blocked" : "passed", basis: "unreviewed", blockers, approvals, notes, unreviewed };
+  };
+  if (action === "still-original") {
+    need("thumbnail");
+    return result("reviews");
   }
   const pending = validation.issues.filter((i) => i.severity === "pending" && i.code !== "toolchain-missing");
   if (action === "render-proxy-section") {
@@ -11973,15 +12010,6 @@ function evaluateGate(state, action) {
     blockers.push({ code: "project-not-ready", message: `${pending.length} points are pending (${[...new Set(pending.map((i) => i.code))].join(", ")}); resolve them first (darkmind-agent validate --ready)` });
   }
   for (const mismatch of state.mismatches) blockers.push({ code: "timeline-draft-mismatch", subject: "editorial", message: `timeline differs from the draft: ${mismatch.message}` });
-  const need = (name) => {
-    const subject = state.subjects[name];
-    if (subject.status === "not-required") return;
-    if (subject.status === "approved") {
-      if (subject.record) approvals.push(subject.record);
-      return;
-    }
-    blockers.push({ code: `review-${subject.status}`, subject: name, message: describeMissing(subject) });
-  };
   let basis = "reviews";
   if (action === "render-proxy") {
     if (state.recipe && state.subjects.editorial.status !== "approved") {
@@ -11997,19 +12025,25 @@ function evaluateGate(state, action) {
       blockers.push({ code: issue.code, message: `source "${issue.ref ?? "?"}": ${issue.message}` });
     }
   }
-  return { action, status: blockers.length ? "blocked" : "passed", basis, blockers, approvals, notes };
+  return result(basis);
 }
 function gateError(gate) {
   const what = { "render-proxy": "The proxy preview", "render-proxy-section": "The section render", "render-original": "The final render", export: "The export", "still-original": "The thumbnail from the original" }[gate.action];
+  const reviewBlocked = gate.action !== "export" && gate.blockers.some((b) => b.code === "review-missing" || b.code === "review-stale");
   return new CliError(
     "review-required",
-    [`${what} needs approvals that are missing:`, ...gate.blockers.map((b) => `  - ${b.message}`), "Approvals are recorded only after the editor explicitly confirms them (darkmind-agent review approve)."].join("\n"),
+    [
+      `${what} needs approvals that are missing:`,
+      ...gate.blockers.map((b) => `  - ${b.message}`),
+      "Approvals are recorded only after the editor explicitly confirms them (darkmind-agent review approve).",
+      ...reviewBlocked ? [`Only if the user asked for an autonomous run without reviews (e.g. a bulk job): --unreviewed "<the user's instruction>" skips missing reviews and marks the result as not reviewed.`] : []
+    ].join("\n"),
     { gate }
   );
 }
 async function requireReviewGate(root, action, options = {}) {
-  const state = await computeReviewState(root, options);
-  const gate = evaluateGate(state, action);
+  const state = await computeReviewState(root, { toolchain: options.toolchain });
+  const gate = evaluateGate(state, action, { unreviewed: options.unreviewed });
   if (gate.status === "blocked") throw gateError(gate);
   return { gate, state };
 }
@@ -12079,6 +12113,9 @@ async function reviewTarget(root, state, subject, options = {}) {
     if (subject === "final") {
       const report = render?.report;
       if (report && report.review?.gate?.status !== "passed") blockers.push(`${render.file} was not rendered through the review gate`);
+      if (report?.review?.gate?.basis === "unreviewed") {
+        blockers.push(`${render.file} was rendered without editor review (autonomous run); once the earlier reviews are approved, run render --original again (it reuses the file and records the approvals) and show it`);
+      }
       for (const name of ["editorial", "captions-text", "preview", "duration-exception"]) {
         const status2 = state.subjects[name].status;
         if (status2 !== "approved" && status2 !== "not-required") blockers.push(`the ${SUBJECT_LABEL[name]} is ${status2}`);
@@ -12274,6 +12311,7 @@ async function writeToolchain(root, relPath, toolchain, skill) {
 // src/pipeline/render.ts
 var RENDERER_VERSION = "wp7-1";
 var RENDER_DIRS = { proxy: "proxy", original: "final", sections: "sections", cache: ".cache", tmp: ".tmp" };
+var UNREVIEWED_NOTE_SUFFIX = ".UNREVIEWED.txt";
 var canonical = (value2) => sha256Hex(JSON.stringify(value2));
 function fingerprint(file) {
   return file.sha256 ? { path: file.path, size: file.size, sha256: file.sha256 } : { path: file.path, size: file.size, mtimeMs: file.mtimeMs };
@@ -12446,7 +12484,7 @@ async function renderProject(request) {
     const action = mode === "original" ? "render-original" : request.section ? "render-proxy-section" : "render-proxy";
     const rendering = toolchainBinding(toolchainDocument(toolchain, null));
     const override = mode === "original" && rendering ? { ffmpeg: rendering.ffmpeg, ...captionsEnabled && toolchain.font ? { captionFont: rendering.captionFont } : {} } : void 0;
-    if (request.reviewGates !== false) gate = (await requireReviewGate(root, action, { toolchain: override })).gate;
+    if (request.reviewGates !== false) gate = (await requireReviewGate(root, action, { toolchain: override, unreviewed: request.unreviewed })).gate;
     let extensionResults = [];
     if (request.extensions !== false) {
       const summary3 = await runExtensions({ root, mode, tools, env: request.env, neededOnly: true, signal: request.signal, progress });
@@ -12456,7 +12494,7 @@ async function renderProject(request) {
     const planned = await buildExecutionPlan({ root, mode, tools, hashes: { cache: hashCache, computeOriginals: mode === "original" }, signal: request.signal });
     await hashCache.save();
     if (gate && planned.validation.documents) {
-      const again = evaluateGate(await computeReviewState(root, { validation: planned.validation, toolchain: override }), action);
+      const again = evaluateGate(await computeReviewState(root, { validation: planned.validation, toolchain: override }), action, { unreviewed: request.unreviewed });
       if (again.status === "blocked") throw gateError(again);
       gate = again;
     }
@@ -12582,10 +12620,12 @@ async function renderProject(request) {
         await pruneCache2(segmentDir, new Set(segmentFiles), 14 * 864e5);
         const bindings = await bindingsOfPlan();
         const reportFile2 = `renders/${RENDER_DIRS[mode]}/${version.previous}.json`;
-        if (canonical(previousReport.review?.bindings ?? null) !== canonical(bindings) || gate && previousReport.review?.gate?.status !== "passed") {
-          previousReport.review = { ...reviewNote(mode), bindings, gate: gate ?? previousReport.review?.gate ?? null };
+        const basisChanged = gate && (previousReport.review?.gate?.status !== "passed" || previousReport.review?.gate?.basis !== gate.basis || canonical(previousReport.review?.gate?.approvals ?? []) !== canonical(gate.approvals));
+        if (canonical(previousReport.review?.bindings ?? null) !== canonical(bindings) || basisChanged) {
+          previousReport.review = reviewOf(mode, bindings, gate ?? previousReport.review?.gate ?? null);
           await writeJsonFile(path23.join(root, ...reportFile2.split("/")), previousReport);
         }
+        await syncUnreviewedNote(kindDir, version.previous, previousReport);
         return { status: "unchanged", output: previousReport.output, reportFile: reportFile2, report: previousReport };
       }
     }
@@ -12683,7 +12723,7 @@ async function renderProject(request) {
       extensions: extensionResults,
       checks: { profile: { status: "pass", problems: [] }, sync, transcription, changes, loudness },
       audioMaster: mastered,
-      review: { ...reviewNote(mode), bindings: await bindingsOfPlan(), gate },
+      review: reviewOf(mode, await bindingsOfPlan(), gate),
       plan
     };
     const reportFile = path23.join(kindDir, `${baseName}.json`);
@@ -12697,6 +12737,7 @@ async function renderProject(request) {
       await fs25.rm(outputAbs, { force: true });
       throw error;
     }
+    if (!section) await syncUnreviewedNote(kindDir, baseName, report);
     await pruneCache2(segmentDir, new Set(segmentFiles), 14 * 864e5);
     await pruneCache2(audioDir, /* @__PURE__ */ new Set([audioFile]), 14 * 864e5);
     return { status: "rendered", output, reportFile: path23.relative(root, reportFile).split(path23.sep).join("/"), report };
@@ -12710,11 +12751,43 @@ async function renderProject(request) {
   }
 }
 var round2 = (value2) => Math.round(value2 * 100) / 100;
-function reviewNote(mode) {
+function reviewOf(mode, bindings, gate) {
+  const unreviewed = gate?.basis === "unreviewed" ? gate.unreviewed : void 0;
+  if (unreviewed) {
+    return {
+      status: "not-reviewed",
+      note: `NOT REVIEWED BY AN EDITOR: ${mode === "original" ? "final output" : "proxy"} of an autonomous run (--unreviewed "${unreviewed.reason}"); skipped reviews: ${unreviewed.skipped.map((s) => `${s.subject} (${s.status})`).join(", ")}. Check it before anything is published; a later review works as usual (darkmind-agent review status).`,
+      bindings,
+      gate,
+      unreviewed
+    };
+  }
   return {
     status: "not-reviewed",
-    note: mode === "original" ? "Final output, not yet approved: the editor approves it after viewing it (darkmind-agent review show final)." : "Proxy preview for the review of the editor (darkmind-agent review show preview); section renders cannot be approved."
+    note: mode === "original" ? "Final output, not yet approved: the editor approves it after viewing it (darkmind-agent review show final)." : "Proxy preview for the review of the editor (darkmind-agent review show preview); section renders cannot be approved.",
+    bindings,
+    gate
   };
+}
+async function syncUnreviewedNote(kindDir, baseName, report) {
+  const file = path23.join(kindDir, `${baseName}${UNREVIEWED_NOTE_SUFFIX}`);
+  const unreviewed = report.review.unreviewed;
+  if (!unreviewed) {
+    await fs25.rm(file, { force: true });
+    return;
+  }
+  const text3 = [
+    `${report.output} \u2013 NOT REVIEWED BY AN EDITOR`,
+    "",
+    `Rendered by darkmind-agent ${report.agentVersion} in an autonomous run on the user's instruction:`,
+    `  ${unreviewed.reason}`,
+    "",
+    `Skipped reviews: ${unreviewed.skipped.map((s) => `${s.subject} (${s.status})`).join(", ")}.`,
+    "Nobody approved this output. Check it before anything is published. A later review of the project works as usual:",
+    "darkmind-agent review status \u2013 the approvals, then render again (the same output is reused and this note removed).",
+    ""
+  ].join("\n");
+  await fs25.writeFile(file, text3, "utf8");
 }
 
 // src/pipeline/xmeml.ts
@@ -14863,7 +14936,7 @@ async function planCommand(ctx, options, tools = defaultTools(ctx.env)) {
     }
   }
   const fps = plan ? parseRational(plan.output.fps) : null;
-  const gate = evaluateGate(await computeReviewState(ctx.root, { validation: result.validation }), mode === "original" ? "render-original" : "render-proxy");
+  const gate = evaluateGate(await computeReviewState(ctx.root, { validation: result.validation }), mode === "original" ? "render-original" : "render-proxy", { unreviewed: parseUnreviewed(options.unreviewed) });
   const extensions = result.validation.valid ? (await inspectExtensions({ root: ctx.root, mode, tools, env: ctx.env }).catch(() => null))?.states.filter((s) => s.needed) ?? [] : [];
   const extensionLines = extensions.filter((s) => s.status !== "current").map(
     (s) => s.status === "blocked" ? `extension ${s.id}: blocked \u2013 ${s.reason}` : s.status === "restorable" ? `extension ${s.id}: render restores it from the cache` : s.trust.approved ? `extension ${s.id}: render runs it (${s.reason})` : `extension ${s.id}: needs a local approval before it runs (darkmind-agent extensions show ${s.id})`
@@ -14877,7 +14950,8 @@ async function planCommand(ctx, options, tools = defaultTools(ctx.env)) {
     ...extensionLines,
     ...!result.validation.valid ? result.validation.issues.filter((i) => i.severity === "error").slice(0, 20).map((i) => `  ${formatEditIssue(i)}`) : [],
     `review gate (render --${mode}): ${gate.status}${gate.basis !== "reviews" ? ` (${gate.basis})` : ""}`,
-    ...gate.blockers.map((b) => `  - ${b.message}`)
+    ...gate.blockers.map((b) => `  - ${b.message}`),
+    ...gate.unreviewed ? gate.notes.map((n) => `  note: ${n}`) : []
   ];
   const listedIssues = capList(issues, 200);
   return {
@@ -14925,6 +14999,7 @@ function describeChecks(report) {
 async function renderCommand(ctx, options, tools = defaultTools(ctx.env)) {
   const mode = parseMode(options);
   const section = parseSection(options.section);
+  const unreviewed = parseUnreviewed(options.unreviewed);
   let outcome;
   try {
     outcome = await renderProject({
@@ -14935,6 +15010,7 @@ async function renderCommand(ctx, options, tools = defaultTools(ctx.env)) {
       section,
       captions: !options.noCaptions,
       checks: !options.noChecks,
+      unreviewed,
       signal: options.signal,
       progress: ctx.progress
     });
@@ -14950,7 +15026,8 @@ async function renderCommand(ctx, options, tools = defaultTools(ctx.env)) {
   const failedChecks = report.checks.sync.status === "fail" || report.checks.loudness?.status === "fail";
   const warnings = report.preflight.filter((i) => i.severity === "warning");
   const gate = report.review.gate;
-  const next = section ? null : mode === "original" ? "Show the final output to the editor: darkmind-agent review show final" : "Show the preview to the editor: darkmind-agent review show preview (plus captions-text, and editorial for a recipe first pass)";
+  const unreviewedRun = report.review.unreviewed;
+  const next = section ? null : unreviewedRun ? mode === "original" ? 'Autonomous run: the final output is marked "not reviewed by an editor"; report it to the user with the skipped reviews (no review show/approve without the editor)' : "Autonomous run: check the proxy yourself (checks, recipe check), then continue" : mode === "original" ? "Show the final output to the editor: darkmind-agent review show final" : "Show the preview to the editor: darkmind-agent review show preview (plus captions-text, and editorial for a recipe first pass)";
   return {
     data: {
       status: outcome.status,
@@ -14973,7 +15050,7 @@ async function renderCommand(ctx, options, tools = defaultTools(ctx.env)) {
       ...outcome.status === "rendered" ? describeChecks(report) : [],
       ...warnings.map((w) => `warning ${w.code}${w.ref ? ` (${w.ref})` : ""}: ${w.message}`),
       ...gate ? [`review gate: ${gate.basis === "reviews" ? `passed (${gate.approvals.length} approvals)` : gate.basis}`, ...gate.notes.map((n) => `note: ${n}`)] : [],
-      mode === "original" ? "The final output is NOT approved yet: the editor approves it after viewing it." : "",
+      unreviewedRun ? `NOT REVIEWED BY AN EDITOR (autonomous run): ${outcome.output} is marked as such in its report${section ? "" : ` and in ${outcome.output.replace(/\.mp4$/, UNREVIEWED_NOTE_SUFFIX)}`}.` : mode === "original" ? "The final output is NOT approved yet: the editor approves it after viewing it." : "",
       next ? `next: ${next}` : ""
     ].filter(Boolean).join("\n"),
     exitCode: failedChecks ? 1 : 0
@@ -15032,12 +15109,13 @@ async function extensionsCommand(ctx, action, ids, options, tools = defaultTools
     };
   }
   if (verb === "run") {
+    let stillGate = null;
     if (mode === "original") {
       const state2 = await computeReviewState(ctx.root);
       const stills = stillImageExtensions(state2.validation.documents?.extensions ?? []).map((e) => e.id);
       if (stills.some((id3) => !ids.length || ids.includes(id3))) {
-        const gate = evaluateGate(state2, "still-original");
-        if (gate.status === "blocked") throw gateError(gate);
+        stillGate = evaluateGate(state2, "still-original", { unreviewed: parseUnreviewed(options.unreviewed) });
+        if (stillGate.status === "blocked") throw gateError(stillGate);
       }
     }
     const release = await acquireLock(path28.join(ctx.root, "renders", ".lock"));
@@ -15045,10 +15123,11 @@ async function extensionsCommand(ctx, action, ids, options, tools = defaultTools
       const result = await runExtensions({ ...base, only: ids, force: options.force, signal: options.signal, progress: ctx.progress });
       const approvals = result.results.filter((r) => r.approval);
       return {
-        data: { ...result, next: approvals.length ? `Show the commands to the user and get their agreement: darkmind-agent extensions show ${approvals[0].id}` : null },
+        data: { ...result, ...stillGate?.unreviewed ? { unreviewed: stillGate.unreviewed } : {}, next: approvals.length ? `Show the commands to the user and get their agreement: darkmind-agent extensions show ${approvals[0].id}` : null },
         text: [
           `extensions run (${mode}): ${result.results.filter((r) => r.action === "rendered").length} rendered, ${result.results.filter((r) => r.action === "restored").length} restored from the cache, ${result.results.filter((r) => r.action === "current").length} current, ${result.results.filter((r) => ["blocked", "failed", "skipped"].includes(r.action)).length} not up to date`,
-          ...result.results.map((r) => `  ${r.action.padEnd(9)} ${r.id.padEnd(24)} ${r.problems.length ? r.problems.map((p) => `[${p.code}] ${p.message}`).join("; ") : `${r.output}${r.durationMs !== void 0 ? ` (${(r.durationMs / 1e3).toFixed(1)} s)` : ""}`}`)
+          ...result.results.map((r) => `  ${r.action.padEnd(9)} ${r.id.padEnd(24)} ${r.problems.length ? r.problems.map((p) => `[${p.code}] ${p.message}`).join("; ") : `${r.output}${r.durationMs !== void 0 ? ` (${(r.durationMs / 1e3).toFixed(1)} s)` : ""}`}`),
+          ...stillGate?.unreviewed ? [`NOT REVIEWED BY AN EDITOR: the still image(s) from the original were rendered without the thumbnail review (autonomous run: ${stillGate.unreviewed.reason})`] : []
         ].join("\n"),
         exitCode: result.ok ? 0 : 1
       };
@@ -16462,12 +16541,19 @@ async function check(ctx, options) {
   if (project.recipe?.sha256 && project.recipe.sha256 !== lock.sha256) {
     lockIssues.push({ severity: "error", code: "recipe-lock-mismatch", message: `project.json names SHA-256 ${project.recipe.sha256.slice(0, 12)}\u2026, ${EDIT_RECIPE_FILES.lock} holds ${lock.sha256.slice(0, 12)}\u2026: apply the recipe again` });
   }
+  let unreviewed = null;
   if (options.done) {
     const status2 = await reviewCommand(ctx, "status", void 0, {});
     docs.reviews = status2.data;
+    unreviewed = status2.data.unreviewed ?? null;
   }
   const result = pack.recipes.checkProject(pack.brand, lock.recipe, docs);
-  const issues = [...lockIssues, ...result.issues];
+  const delivered = result.done === null ? null : result.done ? "reviewed" : unreviewed ? "unreviewed" : null;
+  const issues = [
+    ...lockIssues,
+    ...result.issues,
+    ...delivered === "unreviewed" ? [{ severity: "warning", code: "delivered-unreviewed", message: `${unreviewed.output} was rendered without editor review (autonomous run: ${unreviewed.reason}); the format is finished only after the editor's reviews` }] : []
+  ];
   const count2 = (severity) => issues.filter((i) => i.severity === severity).length;
   const valid = count2("error") === 0;
   const ready = valid && count2("pending") === 0;
@@ -16475,9 +16561,9 @@ async function check(ctx, options) {
   const version = lock.version === null ? "draft" : `version ${lock.version}`;
   const lines = issues.slice(0, 80).map((i) => `  ${i.severity} ${i.code}: ${i.message}`);
   return {
-    data: { ...result, recipe: { id: lock.slug, version: lock.version, source: lock.source, sha256: lock.sha256 }, brandPack: pack.catalog.brand, valid, ready, counts, issues },
+    data: { ...result, delivered, recipe: { id: lock.slug, version: lock.version, source: lock.source, sha256: lock.sha256 }, brandPack: pack.catalog.brand, valid, ready, counts, issues },
     text: [
-      `${valid ? ready ? "ok" : "valid, not ready" : "ERRORS"}: ${lock.slug} ${version} \u2013 ${counts.error} errors, ${counts.deviation} deviations from the recipe (report them, the editor may want them), ${counts.pending} pending, ${counts.warning} warnings, ${counts.hint} hints${result.done === null ? "" : result.done ? "; done" : "; not done"}`,
+      `${valid ? ready ? "ok" : "valid, not ready" : "ERRORS"}: ${lock.slug} ${version} \u2013 ${counts.error} errors, ${counts.deviation} deviations from the recipe (report them, the editor may want them), ${counts.pending} pending, ${counts.warning} warnings, ${counts.hint} hints${result.done === null ? "" : result.done ? "; done" : delivered === "unreviewed" ? "; not done \u2013 delivered WITHOUT editor review" : "; not done"}`,
       ...lines
     ].join("\n"),
     exitCode: valid ? 0 : 1
@@ -16693,23 +16779,33 @@ function statusResult(state) {
   const proxy = evaluateGate(state, "render-proxy");
   const original = evaluateGate(state, "render-original");
   const stills = state.subjects.thumbnail.status !== "not-required" ? evaluateGate(state, "still-original") : null;
+  const autonomous = original.status === "blocked" ? evaluateGate(state, "render-original", { unreviewed: { reason: "(review status)" } }) : null;
   const subjects = EDIT_REVIEW_SUBJECTS.map((name) => state.subjects[name]);
   const open = subjects.filter((s) => s.status === "missing" || s.status === "stale" || s.status === "changes-requested");
+  const unreviewed = state.unreviewedFinal;
   return {
     data: {
       subjects: Object.fromEntries(subjects.map((s) => [s.subject, { ...s, changes: s.changes.slice(0, 50) }])),
       gates: { "render-proxy": proxy, "render-original": original, ...stills ? { "still-original": stills } : {} },
+      autonomous: autonomous ? { status: autonomous.status, skips: autonomous.unreviewed?.skipped ?? [], blockers: autonomous.blockers } : null,
+      // the current final output was delivered without editor review (autonomous run); null when reviewed or absent
+      unreviewed,
       problems: state.problems,
       mismatches: state.mismatches,
       next: open.length ? `darkmind-agent review show ${open[0].subject}` : original.status === "passed" ? "darkmind-agent render --original" : null
     },
     text: [
+      ...unreviewed ? [`NOT REVIEWED BY AN EDITOR: ${unreviewed.output} was rendered in an autonomous run ("${unreviewed.reason}"; skipped ${unreviewed.skipped.map((s) => s.subject).join(", ")})`] : [],
       "review subjects:",
       ...subjects.map(subjectLine),
       "gates:",
       gateLine("render --proxy", proxy),
       gateLine("render --original", original),
       ...stills ? [gateLine("thumbnail original", stills)] : [],
+      ...autonomous ? [
+        `  ${"--unreviewed".padEnd(18)} ${autonomous.status === "passed" ? `possible, skips ${autonomous.unreviewed?.skipped.map((s) => s.subject).join(", ") ?? "nothing"} (only on the user's instruction)` : "blocked even without reviews"}`,
+        ...autonomous.status === "blocked" ? autonomous.blockers.map((b) => `    - ${b.message}`) : []
+      ] : [],
       ...state.problems.map((p) => `problem ${p.file}: ${p.message} [${p.code}]`)
     ].join("\n"),
     exitCode: 0
@@ -17025,15 +17121,19 @@ Editing pipeline (local, format contract v1)
   probe [--source <id>]... [--ticket <original media ticket>] [--force]
                                 Record ffprobe facts of the originals (local in media/original/ or via the
                                 ticket's URLs, header and index only) and assets in sources.json
-  plan [--proxy|--original] [--print]
+  plan [--proxy|--original] [--print] [--unreviewed <reason>]
                                 Read-only: execution plan, preflight (media, tools) and missing media
-  render [--proxy|--original] [--section <from>-<to>] [--no-captions] [--no-checks]
+  render [--proxy|--original] [--section <from>-<to>] [--no-captions] [--no-checks] [--unreviewed <reason>]
                                 Render the proxy preview (default) or the final output from the originals
                                 into renders/; cached segments, verified output, checks (sync, transcription,
                                 changes against the previous version) in the report next to the video.
                                 Review gates: a full proxy needs the editorial review (recipe projects: first
                                 pass without), --original needs editorial, caption text, preview and, outside
                                 the duration frame, a duration exception; sections of the proxy need none.
+                                --unreviewed "<the user's instruction>": autonomous run the user asked for (e.g.
+                                a bulk job) \u2013 missing or out-of-date reviews are skipped, nothing is approved, the
+                                output is marked "not reviewed by an editor" (report, vNNNN.UNREVIEWED.txt, review
+                                status); changes requested by the editor, pending points and rights still block.
                                 Extensions of the timeline are brought up to date first (approved ones only)
   preview [--port <n>]          Local browser preview of the current state (proxies, timeline, captions),
                                 scrubbing, in/out points, auto-reload; no render
@@ -17057,14 +17157,16 @@ Extensions (free building blocks: local scripts that render scenes/graphics into
                                 Local approval to run exactly the shown command and scripts in this folder
                                 (.darkmind/, not synced, not a review): the user types "run" in an interactive
                                 terminal, or --yes after the user has seen them and agreed. No sandbox
-  extensions run [<id>...] [--proxy|--original] [--force]
+  extensions run [<id>...] [--proxy|--original] [--force] [--unreviewed <reason>]
                                 Render stale extensions in input order (approved commands only), restore cached
                                 runs, check every output against its contract; render does this for the
-                                extensions of the timeline. Missing inputs are never regenerated
+                                extensions of the timeline. Missing inputs are never regenerated. A still image
+                                from the original needs the thumbnail review (or --unreviewed, as for render)
 
 Reviews (editorial work control; decisions of the editor only, never of the agent)
   review [status]               State of the reviews (editorial, captions-text, preview, duration-exception,
-                                final) and of the gates in front of render --proxy and render --original
+                                final) and of the gates in front of render --proxy and render --original; what
+                                --unreviewed would skip; a final output rendered without editor review
   review show <subject>         What the editor reviews, changes since the last approval and the state hash
   review approve <subject> --hash <hash> --by <editor> --confirmation <the editor's words> [--render <report>]
                                 Record the editor's explicit approval of exactly the shown state (without
@@ -17179,6 +17281,7 @@ var OPTIONS = {
   hash: { type: "string" },
   by: { type: "string" },
   confirmation: { type: "string" },
+  unreviewed: { type: "string" },
   comment: { type: "string" },
   render: { type: "string" },
   yes: { type: "boolean" },
@@ -17319,10 +17422,10 @@ async function main(argv, io = defaultIo) {
         result = await probeCommand(ctx, { sources: values.source, ticket: values.ticket, force: values.force });
         break;
       case "plan":
-        result = await planCommand(ctx, { proxy: values.proxy, original: values.original, print: values.print });
+        result = await planCommand(ctx, { proxy: values.proxy, original: values.original, print: values.print, unreviewed: values.unreviewed });
         break;
       case "render":
-        result = await withInterrupt((signal) => renderCommand(ctx, { proxy: values.proxy, original: values.original, section: values.section, noCaptions: values["no-captions"], noChecks: values["no-checks"], signal }));
+        result = await withInterrupt((signal) => renderCommand(ctx, { proxy: values.proxy, original: values.original, section: values.section, noCaptions: values["no-captions"], noChecks: values["no-checks"], unreviewed: values.unreviewed, signal }));
         break;
       case "preview":
         result = await withInterrupt((signal) => previewCommand(ctx, { port: positiveInt2(values.port, "port"), signal, log: (line) => io.stderr(`${line}
@@ -17346,7 +17449,7 @@ async function main(argv, io = defaultIo) {
         break;
       case "extensions":
         result = await withInterrupt(
-          (signal) => extensionsCommand(ctx, args[0], args.slice(1), { proxy: values.proxy, original: values.original, hash: values.hash, yes: values.yes, force: values.force, signal })
+          (signal) => extensionsCommand(ctx, args[0], args.slice(1), { proxy: values.proxy, original: values.original, hash: values.hash, yes: values.yes, force: values.force, unreviewed: values.unreviewed, signal })
         );
         break;
       case "export":

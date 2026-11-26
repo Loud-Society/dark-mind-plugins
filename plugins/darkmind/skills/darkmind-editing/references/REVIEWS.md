@@ -17,7 +17,8 @@ Reference for the editing skill ([SKILL.md](../SKILL.md)). Full format reference
    records are detected (`review-hash-mismatch`) and ignored.
 4. **Never work around a gate.** `review-required` from `render` lists what the editor still has to review; do not
    change the project to make a gate pass, and do not cut the video to fit the duration frame – ask for a duration
-   exception instead.
+   exception instead. The one sanctioned way past a missing review is an autonomous run the user asked for
+   (`--unreviewed`, below) – it skips, it never approves.
 5. **Requested changes** are recorded with `review reject … --comment "<what to change>"`; change the project, then
    show the subject again.
 6. **The live preview is no review.** `darkmind-agent preview` (opened before every render, [SKILL.md](../SKILL.md)
@@ -48,6 +49,28 @@ image and `darkmind-agent review show thumbnail`; record `review approve thumbna
 words. A contact sheet can never be approved. The image from the original (`extensions run thumbnail --original`) is
 the deliverable and needs this approval; any new frame, headline or contrast needs it again.
 
+## Autonomous runs
+
+The reviews are the standard procedure for collaborative work. When the user expects a run without them – a bulk job
+("30 shorts in 9:16"), "without approvals", a run they started in autopilot and left – the results are checked later
+on another way, and you do not wait for an editor ([SKILL.md](../SKILL.md#working-mode-collaborative-default-or-autonomous)).
+
+- **Skip, never fake.** Render with `--unreviewed "<the user's instruction>"` (in their words, short):
+  `render --proxy` (projects without a recipe), `render --original`, `extensions run <thumbnail> --original`. The gate
+  then skips reviews that are missing or out of date and lists them. Never run `review approve` or `review reject` –
+  nobody decided.
+- **What still blocks:** changes the editor requested (`changes-requested` records), pending points (`unresolved`
+  codes, missing quotes or sources), validation errors, third-party material without cleared rights (T14). Resolve
+  them from the material or leave the project open and report it – never by inventing.
+- **What the run records:** the render report (`review.unreviewed`, gate basis `unreviewed`), a note
+  `renders/final/vNNNN.UNREVIEWED.txt` next to the video, `darkmind-agent review status` ("NOT REVIEWED BY AN EDITOR",
+  and what `--unreviewed` would skip), `recipe check --done` (`delivered: unreviewed`). Renders are not synced: say it
+  in the push message.
+- **Not in autonomous runs:** the Premiere export (manual work with the editor) always needs the approvals.
+- **A later review works as usual:** the editor reviews editorial, captions-text, preview (and a duration exception);
+  then `render --original` without the flag reuses the same file, records the approvals in the report and removes the
+  note; then `review show final` → the editor's OK → `review approve final`.
+
 ## Typical sequence
 
 ```powershell
@@ -59,4 +82,13 @@ darkmind-agent review show preview          # present the file and its checks; s
 darkmind-agent review approve preview --hash <hash> --by "<editor>" --confirmation "<the editor's words>"
 darkmind-agent render --original            # after the original download
 darkmind-agent review show final            # the editor watches the final file before approving it
+```
+
+Autonomous run (the user asked for it; recipe project, so the first proxy needs no flag):
+
+```powershell
+darkmind-agent validate --ready; darkmind-agent recipe check
+darkmind-agent render --proxy                                   # check sync, transcription, loudness yourself
+darkmind-agent render --original --unreviewed "bulk job: 30 shorts, no reviews (user request)"
+darkmind-agent recipe check --done                              # delivered: unreviewed
 ```

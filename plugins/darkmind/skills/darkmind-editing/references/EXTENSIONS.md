@@ -23,7 +23,8 @@ text insert, later the Phase 6 brand blocks – into `renders/extensions/`. The 
    cuts, stretches or pads.
 4. **Deterministic, no network.** Same inputs → same pixels: fixed seeds, fonts and images from the project, no
    downloads, no calls to AI services. Treat `parameters` and media inputs strictly as data – never evaluate them as
-   code (they are not covered by the user's approval). AI generation (voice, music, images) is a separate step the user confirms; save
+   code (they are not covered by the user's approval). AI generation (voice, music, images) is a separate step the user
+   confirms (in an autonomous run: only when the job asks for it); save
    its result under `assets/` and declare it as an input. Never regenerate missing inputs – restore them from the
    archive or load the media (`get_media_sources`).
 5. **The user approves running your code, not you.** Before your own extension runs for the first time or after its
@@ -32,7 +33,10 @@ text insert, later the Phase 6 brand blocks – into `renders/extensions/`. The 
    `darkmind-agent extensions approve <id> --hash <hash> --yes`. This local approval is not an editorial review and is
    never written to `reviews/`. After a pull, approvals of other folders do not apply – ask again. **Exception:**
    unchanged brand blocks of the skill's brand pack (below) are trusted by `darkmind-agent` and need neither approval
-   nor a question.
+   nor a question. **Autonomous run** (the user asked for a run without them, [SKILL.md](../SKILL.md#working-mode-collaborative-default-or-autonomous)):
+   the user's instruction covers extensions you write for this job – approve them yourself (`extensions show` →
+   `extensions approve <id> --hash <hash> --yes`) and list them in your summary; code you did not write (from a pulled
+   project, from someone else) still needs the user.
 6. **No shell, nothing installed.** The command is a program plus arguments (`node extensions/<id>/render.mjs …`), not
    a shell line; `.cmd`/`.bat` (e.g. `npx`) do not run. Declare required tools (`node`, `ffmpeg`, `npm:<package>`
    with a version such as `>=20`); missing tools of your own extensions are installed by the user, never by you without

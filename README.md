@@ -1,7 +1,7 @@
 # Dark Mind plugin marketplace
 
 Plugin marketplace `darkmind` of [Dark Mind](https://darkmind.cloud) (Loud Society) with the plugin `darkmind`, version
-0.18.0+52e644bfaa0d: the video editing skill `darkmind-editing`, the local helper `darkmind-agent` and the Dark
+0.19.0+36d20fbd237f: the video editing skill `darkmind-editing`, the local helper `darkmind-agent` and the Dark
 Mind MCP server (`https://darkmind.cloud/mcp`, sign-in with your Dark Mind account). Using it needs a Dark Mind account.
 
 **Generated – do not edit.** Dark Mind publishes this folder after every deployment; changes here are overwritten.

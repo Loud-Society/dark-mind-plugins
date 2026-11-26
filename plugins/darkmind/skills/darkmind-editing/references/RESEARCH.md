@@ -49,7 +49,8 @@ The user decides which material counts; let them watch it instead of describing 
     speaker, why). Adding an existing video+range only replaces its note.
   - `basket_remove` (entry IDs or all entries of videos) when the user drops material; `basket_clear` only when the
     user explicitly asks.
-- **From basket to cut project:** `basket_list` → confirm the selection with the user → `project_create` (or the open
+- **From basket to cut project:** `basket_list` → confirm the selection with the user (autonomous run: take the
+  basket or the material the job names as given) → `project_create` (or the open
   project) → every basket video becomes a `sources.json` source (Dark Mind video ID from the entry); entry ranges are
   starting points for the statement ranges in `edit.json` (check the exact cut points in the transcript and proxy);
   notes go into the statement context. Leave the basket as it is unless the user wants it emptied.
@@ -63,11 +64,13 @@ The user decides which material counts; let them watch it instead of describing 
   is the right source even if it is larger (tell the user the size).
 - Compare sizes before any download: `get_media_sources(kind "original", videoIds)` returns `bytes` per video when
   the ticket is issued; nothing is downloaded until `darkmind-agent media` runs. Tell the user before downloading more
-  than a few GB (egress, time).
+  than a few GB (egress, time) – in an autonomous run the user's job covers the originals its renders need: check the
+  free disk space, prefer the smallest suitable copy and report the total in your summary.
 - Dark Mind's duration, width and height are often empty. Learn duration, orientation, frame rate (VFR) and colour
   from `darkmind-agent probe --ticket <original ticket>` (reads only header and index, no download).
 - `not-indexed`/`indexing-failed`: no proxy and no transcript – choose another copy, or ask whether to work with the
-  original. Deleted videos are never offered; do not try to restore or re-upload them.
+  original (autonomous run: choose another copy or leave the video out and report it). Deleted videos are never
+  offered; do not try to restore or re-upload them.
 - Proxies (720p, same timestamps as the original) are for checking cut points and for proxy renders: load excerpts
   with `darkmind-agent media <ticket> --range <videoId>:<from>-<to>` with a few seconds of margin. Originals only for
   the final render and the Premiere export.

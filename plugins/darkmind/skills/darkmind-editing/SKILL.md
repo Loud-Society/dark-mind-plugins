@@ -1,6 +1,6 @@
 ---
 name: darkmind-editing
-description: Edit videos with Dark Mind. Researches footage via the Dark Mind MCP server, shows hits in the review player and the research basket, builds a reviewable cut draft and editing pipeline in a local project folder, renders proxies and the final video with darkmind-agent, records only the editor's explicit approvals, syncs project versions to Dark Mind and optionally exports a Premiere Pro package. Loud Society formats (Never Ending Interview episode and short, anecdote and statement shorts, host interview) follow format recipes from the Dark Mind catalog; new recipes are developed with the editor and published there. Use when the user wants to research or review Dark Mind material, use the research basket, create, continue or change a video, short, interview cut or cut project, develop a format recipe, or mentions Dark Mind, darkmind-agent, cut projects, proxies, originals, captions, Loud Society, Never Ending Interview, thumbnails or a Premiere export.
+description: Edit videos with Dark Mind. Researches footage via the Dark Mind MCP server, shows hits in the review player and the research basket, builds a reviewable cut draft and editing pipeline in a local project folder, renders proxies and the final video with darkmind-agent, records only the editor's explicit approvals or runs bulk jobs autonomously on request, syncs project versions to Dark Mind and optionally exports a Premiere Pro package. Loud Society formats (Never Ending Interview episode and short, anecdote and statement shorts, host interview) follow format recipes from the Dark Mind catalog; new recipes are developed with the editor and published there. Use when the user wants to research or review Dark Mind material, use the research basket, create, continue or change a video, short, interview cut or cut project, develop a format recipe, or mentions Dark Mind, darkmind-agent, cut projects, proxies, originals, captions, Loud Society, Never Ending Interview, thumbnails or a Premiere export.
 ---
 
 # Dark Mind editing skill
@@ -11,6 +11,34 @@ present. **Dark Mind** is the material source and the versioned archive (MCP ser
 **`darkmind-agent`** moves data, validates, renders and records reviews – large data never passes through you.
 
 This contract is the same in GitHub Copilot and Claude Code. Windows is the supported platform.
+
+## Working mode: collaborative (default) or autonomous
+
+The workflow below is the **standard procedure**, not a script: read the job and decide how to work.
+
+- **Collaborative (default).** The editor works with you: brief questions, reviews with the editor's words, pushes
+  at the agreed milestones, as described in the workflow. Choose it whenever the job does not say otherwise.
+- **Autonomous.** The user expects you to finish without them – e.g. a bulk job ("make 30 shorts in 9:16 from the
+  festival material"), "without approvals", or a run the user started in autopilot and left. The results are checked
+  later on another way. Then you decide yourself and do not wait for answers or approvals. If it is unclear, ask
+  **once** at the start, not per video. Note the mode with the user's words in each `brief.md`
+  ("Review mode: autonomous – <the user's instruction>").
+
+In an autonomous run, adapt the standard procedure:
+
+- **Brief:** take format, length, recipe and topic from the job and the material; ask only what really blocks you.
+- **Reviews are skipped, never faked:** check the work yourself (`validate --ready`, `recipe check`, the render checks
+  – sync, transcription, loudness – and frames of the proxy) and render with
+  `--unreviewed "<the user's instruction>"`; the output is marked "not reviewed by an editor"
+  ([references/REVIEWS.md](references/REVIEWS.md#autonomous-runs)). Never run `review approve` – nobody approved.
+- **Originals, pushes, locks:** download the originals the final renders need without asking per video (check the free
+  disk space first); push each finished project with a message that says it is unreviewed; renew your locks for long
+  runs and release them at the end ([references/SYNC.md](references/SYNC.md)).
+- **Many projects:** plan the run yourself. If your client can start sub-agents or sessions, giving each one a cut
+  project of its own (own folder, own lock) works well; keep a short status per project.
+- **Not part of it:** the Premiere hand-off is manual work with the editor and always needs the approvals.
+- **At the end:** a summary per project – output, skipped reviews, recipe deviations, check warnings, open points – and
+  how the editor reviews later (`darkmind-agent review status` in the project folder).
 
 ## Before you start
 
@@ -36,12 +64,14 @@ This contract is the same in GitHub Copilot and Claude Code. Windows is the supp
    notes when they are missing → MCP `get_brand_assets` → `darkmind-agent brand-assets <ticket>`
    ([references/BRAND.md](references/BRAND.md)).
 
-## Ground rules
+## Ground rules (both modes)
 
 - **You never approve.** Reviews are recorded only with the editor's explicit, verbatim confirmation
-  ([references/REVIEWS.md](references/REVIEWS.md)). Never edit `reviews/`.
+  ([references/REVIEWS.md](references/REVIEWS.md)). Never edit `reviews/`. In an autonomous run you skip reviews with
+  `--unreviewed` – you never record one the editor did not give, and a change the editor requested still blocks.
 - **Running your own extension code needs the user's OK** (local approval in `.darkmind/`, not a review;
-  [references/EXTENSIONS.md](references/EXTENSIONS.md)). **Brand blocks are trusted:** a brand block vendored by
+  [references/EXTENSIONS.md](references/EXTENSIONS.md)); in an autonomous run that OK covers the code you write for
+  this job, never code from others. **Brand blocks are trusted:** a brand block vendored by
   `add-block` and unchanged runs without approval and without asking – `darkmind-agent` checks it byte for byte against
   this skill's brand pack (`extensions show` says "approval: not needed"), and `extensions run` installs its npm tool
   (`npm ci --ignore-scripts` in `extensions/`) by itself. Do not ask the user about either. Only when a block is
@@ -50,8 +80,9 @@ This contract is the same in GitHub Copilot and Claude Code. Windows is the supp
 - **Never invent** quotes, timecodes, sources or approvals. Transcript and search times are research values; resolve
   cut points at the material and keep open points as `unresolved` codes.
 - **No SAS URLs, tokens or media content in the conversation.** Tools return tickets; the script redeems them.
-- **Never push silently.** Push only when the user asked for it or at the agreed milestones, and never after a lost
-  lock without telling the user ([references/SYNC.md](references/SYNC.md)).
+- **Never push silently, never over others.** Push when the user asked for it, at the agreed milestones or – in an
+  autonomous run – per finished project with a message that says so; never after a lost lock without telling the
+  user, never over someone else's lock or a newer version ([references/SYNC.md](references/SYNC.md)).
 - **Do not regenerate** saved AI media and do not download originals before the final render without need.
 - **Brand projects:** the brand layer (brand blocks, `extensions/brand-pack/`) is never changed – only block
   parameters within their limits via `add-block`; episode-specific elements are your own extensions. The brand assets
@@ -80,16 +111,19 @@ windows. Use the first option the client offers:
 
 ## Workflow
 
-Brief → research → draft → **editorial review** → live preview → proxy → **preview review** → corrections →
-originals → final render → **final approval** → sync → optional Premiere export. Push after each approved milestone.
+Standard procedure (collaborative): brief → research → draft → **editorial review** → live preview → proxy →
+**preview review** → corrections → originals → final render → **final approval** → sync → optional Premiere export.
+Push after each approved milestone. In an autonomous run the same steps run without the reviews (see
+[Working mode](#working-mode-collaborative-default-or-autonomous)).
 
 ### 1. Brief and project folder
 
-- Ask what the video is for: format (short 9:16 1080 × 1920 / 30 fps, or episode 16:9 1920 × 1080 / 25 fps), length
-  (reference short: 30–60 s), topic, statements, audience, captions. **Loud Society format?** Then choose the recipe
-  with the editor (`nei-episode`, `nei-short`, `short-anecdote`, `short-statement`, `host-interview`), ask its
-  briefing questions and follow [references/BRAND.md](references/BRAND.md). Write `brief.md` (with
-  "Recipe: <id>" for brand projects). The recipe is the base pattern: deviations the editor asks for are fine and are
+- Ask what the video is for (autonomous: take it from the job): format (short 9:16 1080 × 1920 / 30 fps, or episode
+  16:9 1920 × 1080 / 25 fps), length (reference short: 30–60 s), topic, statements, audience, captions. **Loud Society
+  format?** Then choose the recipe with the editor (autonomous: by the job and the material) (`nei-episode`,
+  `nei-short`, `short-anecdote`, `short-statement`, `host-interview`), ask its briefing questions and follow
+  [references/BRAND.md](references/BRAND.md). Write `brief.md` (with "Recipe: <id>" for brand projects, and the
+  review mode in an autonomous run). The recipe is the base pattern: deviations the editor asks for are fine and are
   reported, never blocked.
 - Use an **empty folder per project and machine**. New project: `project_create(name, description)` (locks it for the
   user) → `darkmind-agent init <projectId>`. Existing project: `project_checkout` → `project_pull` →
@@ -137,6 +171,7 @@ originals → final render → **final approval** → sync → optional Premiere
 - `darkmind-agent review show editorial` → present the draft (numbered, with original timecodes, quotes, context) →
   wait for the editor's explicit OK → `darkmind-agent review approve editorial --hash <hash> --by "<editor>"
   --confirmation "<the editor's words>"`. Requested changes: `review reject … --comment "<what>"`, change, show again.
+  Autonomous run: check the draft yourself against the brief and the material and go on.
 - Push the approved draft (step 7) if the user wants the state saved.
 
 ### 4. Timeline, captions, proxy render
@@ -169,8 +204,10 @@ originals → final render → **final approval** → sync → optional Premiere
   `renders/proxy/vNNNN.mp4` and the final render.
 - **Cannot open it?** (no background process, the server does not start, the page cannot be opened): ask the editor
   whether you should start the preview before you render – never render silently instead. If the editor says they
-  want no preview, skip it (and stop a running one) for the rest of the session.
-- → `darkmind-agent validate --ready` → `darkmind-agent render --proxy`. The preview may keep running during renders
+  want no preview, skip it (and stop a running one) for the rest of the session. In an autonomous run nobody watches
+  the preview: skip it and check the proxy render instead.
+- → `darkmind-agent validate --ready` → `darkmind-agent render --proxy` (autonomous run without a recipe: `render --proxy
+  --unreviewed "<the user's instruction>"`, the editorial review is skipped). The preview may keep running during renders
   and `extensions run` in the same folder (it takes no render lock, writes only its browser copies in
   `renders/.cache/preview/` and reloads when extension outputs change). Only if a render or `extensions run` fails
   with `EPERM`/`EBUSY` on a file in `renders/extensions/` (an older Windows that cannot replace a file the browser is
@@ -192,6 +229,12 @@ originals → final render → **final approval** → sync → optional Premiere
   render. `render --section <fromFrame>-<toFrame>`
   stays allowed in addition – e.g. for a file the editor wants to pass on (the preview shows the matching command for
   its in/out points); sections cannot be approved.
+- **Autonomous run:** no review step. Check the proxy yourself – sync, transcription deviations (a wrong quote is a
+  content error: fix it from the material), loudness, `recipe check` – and correct before the final render. Resolve
+  pending points from the material; a point you cannot resolve keeps the project from the final render (the gate
+  blocks it even with `--unreviewed`) – leave it open and list it in the summary. Outside the duration frame, prefer
+  choosing material that fits over cutting into statements; a length that still does not fit is recorded as a skipped
+  duration exception.
 
 ### 6. Final render and approval
 
@@ -205,13 +248,20 @@ originals → final render → **final approval** → sync → optional Premiere
   `darkmind-agent cache` and remove entries with `cache prune` (e.g. `--unused`).
 - The final file is **not approved** until the editor has watched it: `review show final` → editor's explicit OK →
   `review approve final …`.
+- **Autonomous run:** download the originals without asking per video (sum up the sizes in your summary; check the
+  free disk space first and stop the downloads, not the run, when it gets short) → `darkmind-agent render --original
+  --unreviewed "<the user's instruction>"`. The output is marked "not reviewed by an editor" (render report,
+  `renders/final/vNNNN.UNREVIEWED.txt`, `review status`); a later review by the editor works as usual – after their
+  approvals `render --original` reuses the file and removes the mark.
 - Thumbnail (Phase 6 brand projects, YouTube): propose 2–4 frames as a contact sheet (brand block `thumbnail` with
   `candidates`), the editor chooses and confirms the headline → `frame`, render, `review show thumbnail` → editor's
   explicit OK → `review approve thumbnail …` → `extensions run thumbnail --original` (the deliverable PNG). Details in
-  [references/REVIEWS.md](references/REVIEWS.md#thumbnail-phase-6).
+  [references/REVIEWS.md](references/REVIEWS.md#thumbnail-phase-6). Autonomous run: choose the frame and headline
+  yourself by the recipe, then `extensions run thumbnail --original --unreviewed "<the user's instruction>"`.
 - Brand projects are **done** when `darkmind-agent recipe check --done` reports no errors and nothing pending; recipes
   with chapters also give the editor the YouTube chapter list (`darkmind-agent recipe chapters --out
-  renders/chapters.txt`).
+  renders/chapters.txt`). After an autonomous run `recipe check --done` says `delivered: unreviewed` – delivered, not
+  done until the editor's reviews.
 
 ### 7. Sync (push)
 
@@ -219,11 +269,14 @@ originals → final render → **final approval** → sync → optional Premiere
 `.darkmind/manifest.json`, `manifest --print`) → `darkmind-agent upload <ticket>` → `project_push_commit(pushId,
 "<what changed>")` → `darkmind-agent pushed <version>`. `project_release` when the work is done. `manifest` derives the
 video references from the pipeline and refuses invalid pipelines or excluded pipeline files – fix the cause; details,
-locks, conflicts and restore in [references/SYNC.md](references/SYNC.md).
+locks, conflicts and restore in [references/SYNC.md](references/SYNC.md). Autonomous run: push each finished project
+with a message like "Autonomous run, not reviewed by an editor: <the user's instruction>" (renders are not synced, so
+the message carries the mark into Dark Mind).
 
 ### 8. Optional: Premiere Pro hand-off
 
-Only after the final check and only if the editor wants to continue in Premiere: `darkmind-agent export premiere
+Only after the final check and only if the editor wants to continue in Premiere – it is manual work with the editor,
+so it always needs the editor's approvals (no `--unreviewed`, not part of autonomous runs): `darkmind-agent export premiere
 [--handles <seconds>] [--attach renders/chapters.txt]` → give the editor the folder `renders/premiere/vNNNN/` and its
 `IMPORT.md`. Changes made in Premiere are **not** transferred back. Brand projects: captions arrive only as the
 rendered overlay on a track of its own (no caption track), brand blocks as rendered media, the approved thumbnail and
@@ -247,12 +300,12 @@ how to set it in Premiere). Before the originals are downloaded (large camera ma
 
 | Code | Meaning / action |
 |------|------------------|
-| `review-required` | An approval is missing or stale, or points are pending (`details.gate.blockers`): show the subject to the editor – pending points and places to check in the preview with their times (step 5); never work around it |
+| `review-required` | An approval is missing or stale, or points are pending (`details.gate.blockers`): show the subject to the editor – pending points and places to check in the preview with their times (step 5); never work around it by changing the project or recording approvals. In an autonomous run the user asked for: `--unreviewed "<the user's instruction>"` skips missing or stale reviews; changes the editor requested, pending points, errors and rights still block |
 | `rights-missing`, `rights-unclear` (gate of the final render/export) | Third-party material without cleared rights (T14): ask the editor for holder, licence, status and scope and record them in `sources.json` `rights`; never set `cleared` yourself without the editor's statement, never swap the material silently |
 | `hash-mismatch` | The state changed since `review show`: show it again |
 | `extension-approval-required` | Your own extension: `extensions show <id>` → ask the user → `extensions approve`. A brand block (message "no unchanged brand block"): `add-block <block> --force` with the same parameters, never approve it |
 | `pipeline-invalid`, `required-files-excluded` | `manifest` refuses to archive an invalid pipeline or without needed files: fix with `validate` / `.darkmindignore`; `--allow-invalid` only on the user's wish to save work in progress |
-| `locked`, `not-locked` | Someone else holds the lock, or yours expired: keep working locally, tell the user, do not push ([SYNC](references/SYNC.md)) |
+| `locked`, `not-locked` | Someone else holds the lock, or yours expired: keep working locally, tell the user, do not push; your own expired lease you may renew with `project_checkout` (autonomous run: without asking) if nobody else took it ([SYNC](references/SYNC.md)) |
 | `version-conflict` | Someone pushed in between: do not force; follow [SYNC](references/SYNC.md) |
 | `media-facts-missing`, `media-facts-changed`, `original-changed` | Run `probe`; a changed original needs a new source revision – ask the editor |
 | `not-indexed`, `indexing-failed`, `proxy-unavailable` | No proxy: choose another copy or, with the user's consent, work with the original |
@@ -262,7 +315,7 @@ how to set it in Premiere). Before the originals are downloaded (large camera ma
 ## References
 
 - [references/FORMAT.md](references/FORMAT.md) – project files, time rules, timeline/caption rules, validator codes
-- [references/REVIEWS.md](references/REVIEWS.md) – reviews and approvals: never approve, which change needs which review
+- [references/REVIEWS.md](references/REVIEWS.md) – reviews and approvals: never approve, which change needs which review, autonomous runs
 - [references/EXTENSIONS.md](references/EXTENSIONS.md) – extensions: declare inputs, local approval, contract
 - [references/SYNC.md](references/SYNC.md) – Dark Mind sync: locks, base version, video references, conflicts, restore
 - [references/RESEARCH.md](references/RESEARCH.md) – efficient research, review player, research basket, choosing sources

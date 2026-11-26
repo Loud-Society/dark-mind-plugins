@@ -14,14 +14,18 @@ Reference for the editing skill: how the project folder and the Dark Mind archiv
    pull in the new one.
 3. **Push at milestones, not silently.** Push when the user asks, after an approved draft, an approved preview, the
    final approval and before ending the work – each with a message that says what changed ("Draft approved by Jan",
-   "Crop of s02 corrected"). Tell the user the new version number.
+   "Crop of s02 corrected"). Tell the user the new version number. In an autonomous run, push each project when it is
+   finished, with a message that says it was not reviewed ("Autonomous run, not reviewed by an editor: <the user's
+   instruction>"), and list the versions in your summary.
 4. **Lost the lock? Keep working locally, but do not push.** `not-locked` (the lease expired) or `locked` (someone else
    holds it) on `project_push_begin`/`project_push_commit`/`project_checkout`: stop the push, keep the local files and
-   tell the user who holds the lock and until when (`details.lock`). With the user's OK, `project_checkout` renews an
-   expired lease if nobody else took it. Never release or take over someone else's lock – that is an admin action in
-   the Main App.
+   tell the user who holds the lock and until when (`details.lock`). With the user's OK – in an autonomous run without
+   asking – `project_checkout` renews an expired lease if nobody else took it. For long runs plan the renewal yourself
+   (`project_checkout` before the 12 hours run out; every push also extends it). Never release or take over someone
+   else's lock – that is an admin action in the Main App.
 5. **Never force over other work.** `version-conflict` means a newer version exists (`details.currentVersion`). Do not
-   push again with another base version and do not `download --force` over local changes without the user's consent.
+   push again with another base version and do not `download --force` over local changes without the user's consent
+   (in an autonomous run: leave that project unpushed and report it).
    Recommended: pull the current version into a **new empty folder**, show the user the differences (both folders'
    `edit.json`/`timeline.json`, `darkmind-agent review` state), re-apply the wanted changes there together with the
    user, then push from the new folder. Alternative: `project_duplicate` into a new project.
