@@ -241,9 +241,11 @@ node agents/editing-skill/brand/tools/add-block.mjs caption_word --project <proj
 node agents/editing-skill/brand/tools/add-block.mjs lower_third --project <project> --params '{"people":[{"name":"Gustavo Hill","role":"@gustahill"}]}'
 # 2. captions.json: "style": "brand-word"; word timings from the MCP tool get_word_timings (saved per video):
 darkmind-agent captions-words words-int-a.json
-# 3. place the printed timeline clip on an "overlay" track, then render – no run approval and no npm step:
+# 3. place the printed timeline clip on an "overlay" track, then preview and render – no run approval and no npm step:
 #    darkmind-agent compares the block with this brand pack (byte-identical → trusted) and installs playwright-core in
 #    extensions/ by itself (npm ci --ignore-scripts from package-lock.json)
+darkmind-agent extensions run
+darkmind-agent preview      # agents: in the background, the printed URL in a panel (SKILL.md step 4)
 darkmind-agent render --proxy
 ```
 

@@ -32,15 +32,9 @@ The user decides which material counts; let them watch it instead of describing 
   (`links[]`: `n`, `videoId`, `start`, `end`, `label`, `url`) plus `basketUrl`. Each link shows exactly that one video.
 - **Result list in the chat:** answer with a numbered list, one line per hit: label, file name, range and a Markdown
   link "Watch" to its `url`. Do not paste the encoded URLs as plain text.
-- **Open a link in a panel inside the client, next to the chat** – the user should not have to switch windows. Open
-  the first hit right away, and another hit's link when the user asks for it ("show me 3"). Use the first option the
-  client offers:
-  - GitHub Copilot app: the **browser canvas** (open it with the URL; reuse the same canvas instance for the next link);
-  - Claude desktop app (Code tab; built-in browser tools `mcp__Claude_Browser__*`): the **built-in browser pane** –
-    `preview_start` with `url` opens the page in a new tab and returns its `tabId`; for the next link in the same
-    session `navigate` that `tabId` instead of opening another tab;
-  - only Claude Code or Copilot CLI in a terminal (none of these tools): the **system browser** – PowerShell
-    `Start-Process "<url>"` (macOS `open "<url>"`). Always quote the URL.
+- **Open a link in a panel inside the client, next to the chat** – the first hit right away, and another hit's link
+  when the user asks for it ("show me 3"), by the rule [Open in a panel](../SKILL.md#open-in-a-panel) (browser canvas,
+  the Claude desktop app's built-in browser pane, or the system browser in a terminal).
   - The first time the user signs in to Dark Mind in that browser (the built-in browser of the Claude desktop app keeps
     the sign-in across sessions); the page then returns to the video. If the page cannot be opened, give the user the
     URL.

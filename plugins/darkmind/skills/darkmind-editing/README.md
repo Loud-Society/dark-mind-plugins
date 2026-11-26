@@ -109,8 +109,9 @@ What to expect:
 
 - The agent shows you a **draft** (statements with original timecodes, quotes, context) and records your approval only
   when you confirm explicitly – your words are stored with the review.
-- It renders a **proxy preview** (`renders/proxy/vNNNN.mp4`) with automatic checks and can open a live browser
-  preview; you approve the preview and the caption text, or request changes.
+- It opens a **live browser preview** in a panel next to the chat before it renders (no approval needed; say "no
+  preview" to skip it), then renders a **proxy preview** (`renders/proxy/vNNNN.mp4`) with automatic checks; you
+  approve that file and the caption text, or request changes.
 - Before it runs a script it wrote (title cards, graphics) it shows you the code and asks – that approval stays on your
   computer. The Loud Society brand blocks run without asking as long as they are unchanged copies of the skill's brand
   pack (`darkmind-agent` checks that byte for byte).

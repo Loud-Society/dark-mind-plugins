@@ -63,7 +63,8 @@ darkmind-agent pushed <version>                           → the folder's new b
 2. `darkmind-agent status` (clean) and `darkmind-agent validate --ready`; `darkmind-agent review` shows the approvals –
    they stay valid as long as the state is unchanged.
 3. Media are not part of the archive: load proxies (`plan` lists them) and, for the final render, originals
-   (`get_media_sources` → `media`). Media facts are already in `sources.json`.
+   (`get_media_sources` → `media`). Media this computer loaded before (another folder or session) come from the
+   local media cache `~/.darkmind/media` without a transfer. Media facts are already in `sources.json`.
 4. Your own extensions need a **new local approval** in this folder (`extensions show` → user agrees → `extensions
    approve`); unchanged brand blocks of this skill need none. Pulling never runs code. Saved AI media come from the
    archive; never regenerate them.
@@ -73,5 +74,6 @@ darkmind-agent pushed <version>                           → the folder's new b
    the blocks. Only then does `darkmind-agent preview` show the brand elements and captions; until then it draws
    placeholders and lists exactly these steps. Brand assets in the skill folder (`brand-assets`) are needed only to add
    or re-vendor blocks – a pulled project carries its own `extensions/brand-pack/`.
-6. Render again: the same pipeline and tool versions reproduce cuts, length, sound and design; the render reports are
-   new (they are not synced).
+6. **Preview, then render again.** Start the preview in the background and open it in a panel
+   ([SKILL.md](../SKILL.md) step 4) before the first render in the new folder. The same pipeline and tool versions
+   reproduce cuts, length, sound and design; the render reports are new (they are not synced).

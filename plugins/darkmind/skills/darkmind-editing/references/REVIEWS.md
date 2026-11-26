@@ -20,6 +20,10 @@ Reference for the editing skill ([SKILL.md](../SKILL.md)). Full format reference
    exception instead.
 5. **Requested changes** are recorded with `review reject … --comment "<what to change>"`; change the project, then
    show the subject again.
+6. **The live preview is no review.** `darkmind-agent preview` (opened before every render, [SKILL.md](../SKILL.md)
+   step 4) lets the editor check the cut, captions and brand elements, but nothing seen there is approved: preview and
+   final approvals name a rendered file (`renders/proxy/vNNNN.mp4`, the final render) and need the editor's explicit
+   words after they watched that file.
 
 ## Which change needs which review
 
@@ -49,6 +53,7 @@ the deliverable and needs this approval; any new frame, headline or contrast nee
 ```powershell
 darkmind-agent review show editorial        # present the draft, wait for the editor's explicit OK
 darkmind-agent review approve editorial --hash <hash> --by "<editor>" --confirmation "<the editor's words>"
+darkmind-agent preview                      # in the background; open the printed URL in a panel, editor checks
 darkmind-agent render --proxy
 darkmind-agent review show preview          # present the file and its checks; same for captions-text
 darkmind-agent review approve preview --hash <hash> --by "<editor>" --confirmation "<the editor's words>"

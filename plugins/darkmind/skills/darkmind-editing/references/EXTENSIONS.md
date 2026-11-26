@@ -91,5 +91,7 @@ darkmind-agent validate                     # inputs declared, no cycles, output
 darkmind-agent extensions                   # state: current, restorable, stale ("approval"), blocked
 darkmind-agent extensions show title-card   # show command and scripts to the user, wait for the agreement
 darkmind-agent extensions approve title-card --hash <hash> --yes
-darkmind-agent extensions run               # or directly: darkmind-agent render --proxy
+darkmind-agent extensions run               # render the outputs (render --proxy would run them too)
+darkmind-agent preview                      # in the background, opened in a panel before rendering (SKILL.md step 4)
+darkmind-agent render --proxy
 ```

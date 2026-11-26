@@ -58,7 +58,8 @@ project stays a plain Phase 4 project (no recipe, no brand blocks).
 The archive holds the pipeline and `extensions/brand-pack/`, but no media and no rendered blocks. Before you open the
 preview or render: `darkmind-agent plan` → proxies → `darkmind-agent extensions run` (installs `playwright-core`, runs
 the unchanged brand blocks without approval; only your own episode extensions need `extensions show` → the user
-agrees → `extensions approve`) → `darkmind-agent preview`. A project vendored with an older brand pack is no unchanged
+agrees → `extensions approve`) → `darkmind-agent preview` (in the background, opened in a panel – SKILL.md step 4)
+→ only then render. A project vendored with an older brand pack is no unchanged
 brand block of this skill: re-vendor its blocks (`add-block --force`; `darkmind-agent recipe check` reports
 `brand-pack-outdated`).
 The live preview shows brand captions and blocks only from these rendered outputs (alpha overlays get a browser copy
@@ -107,7 +108,8 @@ The recipes come from the Dark Mind catalog (`recipe_list`); the formats of Loud
    either way list each one in the review report. **Hints** are recommended rules not followed. The result also lists
    the editorial rules and what the review report must contain.
 7. **First pass:** recipe projects render the first full proxy without the editorial review; the editor approves the
-   content together with the preview (mandatory before the final render). Present the draft and the deviations anyway.
+   content together with the preview (mandatory before the final render). Before that render, `extensions run` and
+   open the live preview (SKILL.md step 4) and present the draft and the deviations with their times in the video.
 8. **Loudness:** first level the dialogue – `darkmind-agent levels --apply` after the timeline is built (and again after
    cut changes): festival and camera sound is often 10–35 dB quieter than the brand sounds; the command writes clip gains
    (a level change, preview review only); report its quiet-source warning (distant camera microphone) to the editor.

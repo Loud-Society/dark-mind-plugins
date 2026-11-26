@@ -63,10 +63,25 @@ This contract is the same in GitHub Copilot and Claude Code. Windows is the supp
 - Keep tool answers small: `--json` output, `type: "segment"` searches with a small `top`, transcripts with
   `from`/`to` ([references/RESEARCH.md](references/RESEARCH.md)).
 
+## Open in a panel
+
+Pages for the editor – the review links of research hits and the local preview (`darkmind-agent preview`) – open **in
+a panel next to the chat**, never in an external window when the client has one; the user should not have to switch
+windows. Use the first option the client offers:
+
+- GitHub Copilot app: the **browser canvas** – open it with the URL; reuse the same canvas instance for the next URL
+  (one instance for review links, one for the preview).
+- Claude desktop app (built-in browser tools `mcp__Claude_Browser__*`): the **built-in browser pane** –
+  `preview_start` with `url` opens the page in a new tab and returns its `tabId`; keep it and `navigate` that tab next
+  time instead of opening another one (one tab for review links, one for the preview).
+- Only Claude Code or Copilot CLI in a terminal (none of these tools): the **system browser** – PowerShell
+  `Start-Process "<url>"` (macOS `open "<url>"`). Always quote the URL.
+- If the page cannot be opened, give the user the URL.
+
 ## Workflow
 
-Brief → research → draft → **editorial review** → proxy → **preview review** → corrections → originals → final
-render → **final approval** → sync → optional Premiere export. Push after each approved milestone.
+Brief → research → draft → **editorial review** → live preview → proxy → **preview review** → corrections →
+originals → final render → **final approval** → sync → optional Premiere export. Push after each approved milestone.
 
 ### 1. Brief and project folder
 
@@ -83,9 +98,10 @@ render → **final approval** → sync → optional Premiere export. Push after 
 - **After a pull, before the preview or a render** (the archive holds no media and no rendered extension outputs, and
   pulling never runs code): `darkmind-agent plan` → load the listed proxies → `darkmind-agent extensions run` (brand
   blocks: no approval, it installs `playwright-core` itself; your own extensions: `extensions show <id>` → the user
-  agrees → `extensions approve <id> --hash <hash> --yes` first) → then `darkmind-agent preview`. The preview lists
-  whatever is still missing (banner and terminal) with these steps;
-  brand captions and overlays appear only from their rendered outputs. Details: [references/SYNC.md](references/SYNC.md#restore-in-a-fresh-folder).
+  agrees → `extensions approve <id> --hash <hash> --yes` first) → then start and open the preview as in step 4
+  ("Preview before rendering") – before any render. The preview lists whatever is still missing (banner and
+  terminal) with these steps; brand captions and overlays appear only from their rendered outputs. Details:
+  [references/SYNC.md](references/SYNC.md#restore-in-a-fresh-folder).
 - Write `project.json`, `sources.json` and `edit.json` yourself; start from
   [examples/interview-short](examples/interview-short/) and [references/FORMAT.md](references/FORMAT.md). JSON Schemas
   are in `schemas/`. With a recipe: `recipe_get(slug)` → `darkmind-agent recipe use <ticket>` freezes it into
@@ -98,12 +114,9 @@ render → **final approval** → sync → optional Premiere export. Push after 
   metadata. Prefer the smallest suitable copy of a scene ([references/RESEARCH.md](references/RESEARCH.md)).
 - **Let the user watch the hits.** `get_review_link(hits, title)` with the best candidates (range and a short label
   each) returns **one link per hit** (`links[].url`; each shows exactly that one video). Answer with a numbered result
-  list – per hit the label, file, range and its link – and open the first link **in a panel next to the chat**, never
-  in an external window when the client has one: GitHub Copilot app – browser canvas; Claude desktop app (tools
-  `mcp__Claude_Browser__*`) – built-in browser pane with `preview_start` and `url` (keep the returned `tabId`; another
-  hit: `navigate` that tab to its link); only Claude Code or Copilot CLI in a terminal without these tools – the system
-  browser (PowerShell `Start-Process "<url>"`). When the user asks for another result ("show me 3"), open its link in
-  the same panel. The player shows the video with transcript and insights; the user keeps it in the **research
+  list – per hit the label, file, range and its link – and open the first link **in a panel**
+  ([Open in a panel](#open-in-a-panel)). When the user asks for another result ("show me 3"), open its link in the same
+  panel. The player shows the video with transcript and insights; the user keeps it in the **research
   basket** (basket button with counter in the player's header). Never claim what the user saw – read it with
   `basket_list`.
 - **Research basket** (per user, shared with the Dark Mind web app): `basket_list` before you propose a project (the
@@ -140,12 +153,28 @@ render → **final approval** → sync → optional Premiere export. Push after 
   `brand-16x9`, word timings via `get_word_timings` → `darkmind-agent captions-words`), and
   `darkmind-agent recipe check` after every timeline change – errors block, deviations go into the review report
   ([references/BRAND.md](references/BRAND.md)).
-- `darkmind-agent validate --ready` → `darkmind-agent plan` (lists missing proxies with a ready `media --range` hint)
-  → load them → `darkmind-agent levels --apply` (dialogue clip gains from the measured loudness; again after every cut
-  change)
-  → load them → optionally `darkmind-agent preview` (browser preview at `http://127.0.0.1:4610/`, runs until stopped;
-  offer it for iterating; it shows extension outputs – brand blocks, brand captions – only once they are rendered in
-  this folder: run `darkmind-agent extensions run` first, see "After a pull" in step 1) → `darkmind-agent render --proxy`.
+- Prepare: `darkmind-agent validate` (no errors) → `darkmind-agent plan` (lists missing proxies with a ready
+  `media --range` hint) → load them → `darkmind-agent levels --apply` (dialogue clip gains from the measured loudness;
+  again after every cut change) → with extensions (brand blocks, brand captions, your own): `darkmind-agent extensions
+  run`, so that the preview shows them (after a pull: the order in step 1).
+- **Preview before rendering (the default).** Before the first `render --proxy` or `render --section` in the session,
+  and after every change of timeline or captions while no preview is running, start `darkmind-agent preview` **in the
+  background** (it runs until it is stopped and would block the session in the foreground – Claude Code: the shell
+  tool's background mode; GitHub Copilot: an async shell). Its first line on stderr, `Dark Mind preview: <url>`, names
+  the URL – `http://127.0.0.1:4610/`, or another free port when 4610 is taken; open exactly that URL **in a panel**
+  ([Open in a panel](#open-in-a-panel)). A running preview reloads by itself on every file change and keeps the
+  playhead: keep it and its panel, never start a second one for the folder. Then present the points to check with
+  their times in the video (e.g. "0:12 cut to the second speaker, 0:31 caption 'five years'"). The preview needs no
+  approval and also works with pending points – and it **is no approval**: reviews refer only to
+  `renders/proxy/vNNNN.mp4` and the final render.
+- **Cannot open it?** (no background process, the server does not start, the page cannot be opened): ask the editor
+  whether you should start the preview before you render – never render silently instead. If the editor says they
+  want no preview, skip it (and stop a running one) for the rest of the session.
+- → `darkmind-agent validate --ready` → `darkmind-agent render --proxy`. The preview may keep running during renders
+  and `extensions run` in the same folder (it takes no render lock, writes only its browser copies in
+  `renders/.cache/preview/` and reloads when extension outputs change). Only if a render or `extensions run` fails
+  with `EPERM`/`EBUSY` on a file in `renders/extensions/` (an older Windows that cannot replace a file the browser is
+  playing): stop the preview, run again, start it again. Stop the preview when the work in this folder is done.
 
 ### 5. Preview review and corrections
 
@@ -155,14 +184,25 @@ render → **final approval** → sync → optional Premiere export. Push after 
   video to fit – the editor decides). Record each approval only after the editor's explicit OK.
 - Corrections: classify each change (content → editorial review again; caption text → caption-text review; crop, gain,
   timing, style → only a new proxy and its preview review) – table in [references/REVIEWS.md](references/REVIEWS.md).
-  `render --section <fromFrame>-<toFrame>` renders a part quickly for checking; sections cannot be approved.
+  Let the editor check each correction in the running preview first (step 4).
+- **Proxy render blocked** (`review-required`, e.g. blocker `project-not-ready` with pending points such as
+  `quote-unverified`, or a missing editorial review): the preview is the first way to let the editor check those
+  places – open it (step 4) and name each point with its time in the video and what to check (quote, cut point,
+  caption). Remove a point's `unresolved` code only when the material or the editor's statement confirms it, then
+  render. `render --section <fromFrame>-<toFrame>`
+  stays allowed in addition – e.g. for a file the editor wants to pass on (the preview shows the matching command for
+  its in/out points); sections cannot be approved.
 
 ### 6. Final render and approval
 
 - `darkmind-agent plan --original` shows the originals needed. Tell the user the download size
   (`get_media_sources(kind "original")` returns `bytes` before anything is downloaded; camera masters can be > 10 GB)
   → `darkmind-agent media <ticket>` → `darkmind-agent render --original` (gate: editorial, caption text, preview and,
-  if needed, duration exception).
+  if needed, duration exception). Originals and complete proxies this computer already loaded (any session or
+  folder) come from the media cache `~/.darkmind/media` without a transfer (`status: cached`); still call
+  `get_media_sources` – the ticket is the access check. If `media` warns that it copied from the cache (other drive),
+  tell the user about `DARKMIND_MEDIA_CACHE`. The cache has no size limit: on the user's request show it with
+  `darkmind-agent cache` and remove entries with `cache prune` (e.g. `--unused`).
 - The final file is **not approved** until the editor has watched it: `review show final` → editor's explicit OK →
   `review approve final …`.
 - Thumbnail (Phase 6 brand projects, YouTube): propose 2–4 frames as a contact sheet (brand block `thumbnail` with
@@ -197,13 +237,14 @@ how to set it in Premiere). Details in [references/PREMIERE.md](references/PREMI
 - **Reasoning level:** **medium** for corrections and routine steps; **higher** for building a project, a new format,
   new extensions or difficult research.
 - Read `darkmind-agent` JSON output selectively; use `review show`, `status`, `plan` instead of opening large files.
-- One render per folder at a time; Ctrl+C stops only the own processes and a re-run resumes.
+- One render per folder at a time (`render-running` otherwise); Ctrl+C stops only the own processes and a re-run
+  resumes. The preview is no render and may keep running (step 4).
 
 ## Errors and what to do
 
 | Code | Meaning / action |
 |------|------------------|
-| `review-required` | An approval is missing or stale (`details.gate.blockers`): show the subject to the editor; never work around it |
+| `review-required` | An approval is missing or stale, or points are pending (`details.gate.blockers`): show the subject to the editor – pending points and places to check in the preview with their times (step 5); never work around it |
 | `rights-missing`, `rights-unclear` (gate of the final render/export) | Third-party material without cleared rights (T14): ask the editor for holder, licence, status and scope and record them in `sources.json` `rights`; never set `cleared` yourself without the editor's statement, never swap the material silently |
 | `hash-mismatch` | The state changed since `review show`: show it again |
 | `extension-approval-required` | Your own extension: `extensions show <id>` → ask the user → `extensions approve`. A brand block (message "no unchanged brand block"): `add-block <block> --force` with the same parameters, never approve it |

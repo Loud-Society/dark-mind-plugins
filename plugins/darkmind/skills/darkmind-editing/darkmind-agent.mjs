@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// darkmind-agent 0.16.0+5a995ba9d262 (built 2026-11-25T11:19:04.425Z)
+// darkmind-agent 0.17.0+766d314eecc3 (built 2026-11-26T08:11:23.811Z)
 // Local helper for AI agents working on Dark Mind cut projects. Requires Node >= 20 and ffmpeg in PATH.
 // Usage: node darkmind-agent.mjs --help
 var __defProp = Object.defineProperty;
@@ -9,7 +9,7 @@ var __export = (target, all) => {
 };
 
 // src/cli.ts
-import path32 from "node:path";
+import path33 from "node:path";
 import { parseArgs } from "node:util";
 
 // src/commands/brand-assets.ts
@@ -598,8 +598,8 @@ function getErrorMap() {
 
 // ../shared/node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
-  const { data, path: path33, errorMaps, issueData } = params;
-  const fullPath = [...path33, ...issueData.path || []];
+  const { data, path: path34, errorMaps, issueData } = params;
+  const fullPath = [...path34, ...issueData.path || []];
   const fullIssue = {
     ...issueData,
     path: fullPath
@@ -715,11 +715,11 @@ var errorUtil;
 
 // ../shared/node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
-  constructor(parent, value2, path33, key) {
+  constructor(parent, value2, path34, key) {
     this._cachedPath = [];
     this.parent = parent;
     this.data = value2;
-    this._path = path33;
+    this._path = path34;
     this._key = key;
   }
   get path() {
@@ -4167,19 +4167,19 @@ var SHA256_PATTERN = "^[0-9a-f]{64}$";
 var PATH_PATTERN = '^(?!/)(?!.*//)(?!.*/$)(?!(?:.*/)?\\.{1,2}(?:/|$))[^\\\\<>:"|?*\\u0000-\\u001f\\u007f]+$';
 var INVALID_SEGMENT_CHARS = /[\\<>:"|?*\u0000-\u001f\u007f]/;
 var RESERVED_NAMES = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])$/i;
-function getCutProjectPathError(path33) {
-  if (typeof path33 !== "string" || path33.length === 0)
+function getCutProjectPathError(path34) {
+  if (typeof path34 !== "string" || path34.length === 0)
     return "path is empty";
-  if (path33.length > CUT_PROJECT_MANIFEST_LIMITS.maxPathLength) {
+  if (path34.length > CUT_PROJECT_MANIFEST_LIMITS.maxPathLength) {
     return `path is longer than ${CUT_PROJECT_MANIFEST_LIMITS.maxPathLength} characters`;
   }
-  if (path33.normalize("NFC") !== path33)
+  if (path34.normalize("NFC") !== path34)
     return "path is not Unicode NFC normalized";
-  if (path33.includes("\\"))
+  if (path34.includes("\\"))
     return 'path must use "/" as separator';
-  if (path33.startsWith("/"))
+  if (path34.startsWith("/"))
     return "path must be relative";
-  const segments = path33.split("/");
+  const segments = path34.split("/");
   for (const segment of segments) {
     if (segment.length === 0)
       return "path contains an empty segment";
@@ -5120,7 +5120,7 @@ function timelineDraftMismatches(documents) {
 }
 function diffProjections(before, after, max = 200) {
   const changes = [];
-  const walk2 = (a, b, path33) => {
+  const walk2 = (a, b, path34) => {
     if (changes.length >= max)
       return;
     const objectA = a !== null && typeof a === "object" && !Array.isArray(a);
@@ -5128,11 +5128,11 @@ function diffProjections(before, after, max = 200) {
     if (objectA && objectB) {
       const keys = [.../* @__PURE__ */ new Set([...Object.keys(a), ...Object.keys(b)])].sort();
       for (const key of keys)
-        walk2(a[key], b[key], path33 ? `${path33}.${key}` : key);
+        walk2(a[key], b[key], path34 ? `${path34}.${key}` : key);
       return;
     }
     if (canonicalJson(a ?? null) !== canonicalJson(b ?? null))
-      changes.push({ path: path33, before: a ?? null, after: b ?? null });
+      changes.push({ path: path34, before: a ?? null, after: b ?? null });
   };
   walk2(before, after, "");
   return changes;
@@ -5459,8 +5459,8 @@ function satisfiesVersionRange(version, range2) {
     return op === ">=" ? d >= 0 : op === ">" ? d > 0 : op === "<=" ? d <= 0 : op === "<" ? d < 0 : d === 0;
   });
 }
-function zodPath(path33) {
-  return path33.map((part, i) => typeof part === "number" ? `[${part}]` : i === 0 ? part : `.${part}`).join("");
+function zodPath(path34) {
+  return path34.map((part, i) => typeof part === "number" ? `[${part}]` : i === 0 ? part : `.${part}`).join("");
 }
 function duplicates(values) {
   const seen = /* @__PURE__ */ new Set();
@@ -5473,7 +5473,7 @@ function validateRecipe(document, catalog) {
   }
   const recipe = parsed.data;
   const issues = [];
-  const add = (path33, code, message) => issues.push({ path: path33, code, message });
+  const add = (path34, code, message) => issues.push({ path: path34, code, message });
   const { structure, technical } = recipe;
   const blocks = structure.blocks;
   const known = (name) => Object.prototype.hasOwnProperty.call(blocks, name);
@@ -5725,26 +5725,26 @@ var Issues = class {
   constructor() {
     this.list = [];
   }
-  add(severity, code, file, path33, message, ref) {
-    this.list.push({ severity, code, file, path: path33, message, ...ref ? { ref } : {} });
+  add(severity, code, file, path34, message, ref) {
+    this.list.push({ severity, code, file, path: path34, message, ...ref ? { ref } : {} });
   }
-  error(code, file, path33, message, ref) {
-    this.add("error", code, file, path33, message, ref);
+  error(code, file, path34, message, ref) {
+    this.add("error", code, file, path34, message, ref);
   }
-  pending(code, file, path33, message, ref) {
-    this.add("pending", code, file, path33, message, ref);
+  pending(code, file, path34, message, ref) {
+    this.add("pending", code, file, path34, message, ref);
   }
-  warning(code, file, path33, message, ref) {
-    this.add("warning", code, file, path33, message, ref);
+  warning(code, file, path34, message, ref) {
+    this.add("warning", code, file, path34, message, ref);
   }
 };
-function formatIssuePath(path33) {
-  return path33.reduce((text3, part) => typeof part === "number" ? `${text3}[${part}]` : text3 ? `${text3}.${part}` : String(part), "");
+function formatIssuePath(path34) {
+  return path34.reduce((text3, part) => typeof part === "number" ? `${text3}[${part}]` : text3 ? `${text3}.${part}` : String(part), "");
 }
-function refAt(value2, path33) {
+function refAt(value2, path34) {
   let current = value2;
   let ref;
-  for (const part of path33) {
+  for (const part of path34) {
     if (current === null || typeof current !== "object")
       break;
     current = current[part];
@@ -5790,15 +5790,15 @@ async function loadArtifact(reader, issues, kind, file) {
   }
   return { status: "ok", value: result.data, raw };
 }
-function topFolder(path33) {
-  return path33.split("/")[0].toLowerCase();
+function topFolder(path34) {
+  return path34.split("/")[0].toLowerCase();
 }
-function unsyncedFolderError(path33) {
-  const top = topFolder(path33);
+function unsyncedFolderError(path34) {
+  const top = topFolder(path34);
   if (top === EDIT_FOLDERS.renders || top === EDIT_FOLDERS.media || top === EDIT_FOLDERS.localState) {
     return `must not be in ${top}/ (not part of the project sync)`;
   }
-  if (path33.toLowerCase() === "darkmind.json")
+  if (path34.toLowerCase() === "darkmind.json")
     return "darkmind.json is local sync state, not a pipeline artefact";
   return null;
 }
@@ -5933,15 +5933,15 @@ async function validateEditProject(reader, options = {}) {
     await validateRecipeLock(reader, issues, projectFile, project.recipe);
   const artifactEntries = Object.entries(project.artifacts);
   const seenArtifactPaths = /* @__PURE__ */ new Map();
-  for (const [key, path33] of artifactEntries) {
-    if (!path33)
+  for (const [key, path34] of artifactEntries) {
+    if (!path34)
       continue;
-    const folderError = unsyncedFolderError(path33);
+    const folderError = unsyncedFolderError(path34);
     if (folderError)
-      issues.error("path-not-synced", projectFile, `artifacts.${key}`, `"${path33}" ${folderError}`);
-    const lower = path33.toLowerCase();
+      issues.error("path-not-synced", projectFile, `artifacts.${key}`, `"${path34}" ${folderError}`);
+    const lower = path34.toLowerCase();
     if (seenArtifactPaths.has(lower))
-      issues.error("duplicate-path", projectFile, `artifacts.${key}`, `"${path33}" is also artifacts.${seenArtifactPaths.get(lower)}`);
+      issues.error("duplicate-path", projectFile, `artifacts.${key}`, `"${path34}" is also artifacts.${seenArtifactPaths.get(lower)}`);
     else
       seenArtifactPaths.set(lower, key);
   }
@@ -6061,55 +6061,55 @@ async function validateEditProject(reader, options = {}) {
   const extensionById = /* @__PURE__ */ new Map();
   const extensionPaths = /* @__PURE__ */ new Set();
   const outputPaths = /* @__PURE__ */ new Map();
-  for (const [index, path33] of project.extensions.entries()) {
+  for (const [index, path34] of project.extensions.entries()) {
     const where = `extensions[${index}]`;
-    if (topFolder(path33) !== EDIT_FOLDERS.extensions || !path33.toLowerCase().endsWith(".json")) {
-      issues.error("extension-path", projectFile, where, `"${path33}" must be a .json file under ${EDIT_FOLDERS.extensions}/`);
+    if (topFolder(path34) !== EDIT_FOLDERS.extensions || !path34.toLowerCase().endsWith(".json")) {
+      issues.error("extension-path", projectFile, where, `"${path34}" must be a .json file under ${EDIT_FOLDERS.extensions}/`);
       continue;
     }
-    if (extensionPaths.has(path33.toLowerCase())) {
-      issues.error("duplicate-path", projectFile, where, `"${path33}" is listed twice`);
+    if (extensionPaths.has(path34.toLowerCase())) {
+      issues.error("duplicate-path", projectFile, where, `"${path34}" is listed twice`);
       continue;
     }
-    extensionPaths.add(path33.toLowerCase());
-    const loaded = await loadArtifact(reader, issues, "extension", path33);
+    extensionPaths.add(path34.toLowerCase());
+    const loaded = await loadArtifact(reader, issues, "extension", path34);
     if (loaded.status === "missing")
-      issues.error("missing-file", projectFile, where, `"${path33}" does not exist`);
+      issues.error("missing-file", projectFile, where, `"${path34}" does not exist`);
     if (loaded.status !== "ok")
       continue;
     const extension = loaded.value;
     if (extensionById.has(extension.id)) {
-      issues.error("duplicate-id", path33, "id", `extension "${extension.id}" is also defined in ${extensionById.get(extension.id).file}`, extension.id);
+      issues.error("duplicate-id", path34, "id", `extension "${extension.id}" is also defined in ${extensionById.get(extension.id).file}`, extension.id);
       continue;
     }
-    extensionById.set(extension.id, { extension, file: path33 });
+    extensionById.set(extension.id, { extension, file: path34 });
     const out = extension.output;
     if (!out.path.toLowerCase().startsWith(`${EDIT_EXTENSION_OUTPUT_FOLDER}/`)) {
-      issues.error("extension-output-path", path33, "output.path", `"${out.path}" must be under ${EDIT_EXTENSION_OUTPUT_FOLDER}/ (reproducible, not synced, separate from the render outputs)`, extension.id);
+      issues.error("extension-output-path", path34, "output.path", `"${out.path}" must be under ${EDIT_EXTENSION_OUTPUT_FOLDER}/ (reproducible, not synced, separate from the render outputs)`, extension.id);
     } else if (outputPaths.has(out.path.toLowerCase())) {
-      issues.error("duplicate-path", path33, "output.path", `"${out.path}" is also the output of extension "${outputPaths.get(out.path.toLowerCase())}"`, extension.id);
+      issues.error("duplicate-path", path34, "output.path", `"${out.path}" is also the output of extension "${outputPaths.get(out.path.toLowerCase())}"`, extension.id);
     } else
       outputPaths.set(out.path.toLowerCase(), extension.id);
     const extFps = rq(out.fps);
     if (extFps.d !== 1n || extFps.n < 1n || extFps.n > BigInt(EDIT_MAX_FPS)) {
-      issues.error("unsupported-fps", path33, "output.fps", `must be a whole frame rate between 1 and ${EDIT_MAX_FPS}`, extension.id);
+      issues.error("unsupported-fps", path34, "output.fps", `must be a whole frame rate between 1 and ${EDIT_MAX_FPS}`, extension.id);
     }
     for (const [inputIndex, input] of extension.inputs.entries()) {
       const inputWhere = `inputs[${inputIndex}]`;
       if (input.kind === "file") {
         const folderError = unsyncedFolderError(input.path);
         if (folderError)
-          issues.error("undeclared-input-path", path33, `${inputWhere}.path`, `"${input.path}" ${folderError}; declare rendered inputs as kind "extension"`, extension.id);
+          issues.error("undeclared-input-path", path34, `${inputWhere}.path`, `"${input.path}" ${folderError}; declare rendered inputs as kind "extension"`, extension.id);
         else if (!await reader.exists(input.path)) {
-          issues.error("missing-file", path33, `${inputWhere}.path`, `"${input.path}" does not exist (restore it from the project archive; saved inputs such as AI media are never regenerated automatically)`, extension.id);
+          issues.error("missing-file", path34, `${inputWhere}.path`, `"${input.path}" does not exist (restore it from the project archive; saved inputs such as AI media are never regenerated automatically)`, extension.id);
         }
       } else if (input.kind === "source") {
         if (!sourceById.has(input.sourceId) && sources)
-          issues.error("unknown-source", path33, `${inputWhere}.sourceId`, `source "${input.sourceId}" is not in ${sourcesFile}`, extension.id);
+          issues.error("unknown-source", path34, `${inputWhere}.sourceId`, `source "${input.sourceId}" is not in ${sourcesFile}`, extension.id);
       }
     }
     if (extension.sceneId && !sceneById.has(extension.sceneId) && edit) {
-      issues.error("unknown-item", path33, "sceneId", `"${extension.sceneId}" is not a scene in ${editFile}`, extension.id);
+      issues.error("unknown-item", path34, "sceneId", `"${extension.sceneId}" is not a scene in ${editFile}`, extension.id);
     }
   }
   for (const { extension, file } of extensionById.values()) {
@@ -7259,7 +7259,7 @@ import http from "node:http";
 import https from "node:https";
 
 // src/version.ts
-var AGENT_VERSION = true ? "0.16.0+5a995ba9d262" : "0.0.0-dev";
+var AGENT_VERSION = true ? "0.17.0+766d314eecc3" : "0.0.0-dev";
 var MIN_NODE_MAJOR = 20;
 function nodeMajor(version = process.versions.node) {
   return Number.parseInt(version.split(".")[0], 10);
@@ -7579,14 +7579,424 @@ async function brandAssetsCommand(ctx, ticket, options) {
   };
 }
 
-// src/commands/doctor.ts
+// src/commands/cache.ts
 import { promises as fs5 } from "node:fs";
-import path7 from "node:path";
+
+// src/context.ts
+function capList(items, max = 100) {
+  return items.length > max ? { items: items.slice(0, max), truncated: items.length - max } : { items };
+}
+
+// src/media-cache.ts
+import { promises as fs4 } from "node:fs";
+import os2 from "node:os";
+import path5 from "node:path";
+
+// src/hash.ts
+import { createHash as createHash2 } from "node:crypto";
+import { createReadStream } from "node:fs";
+async function hashFile(absolutePath, options = {}) {
+  const sha2 = createHash2("sha256");
+  const md5 = options.md5 ? createHash2("md5") : null;
+  let size = 0;
+  const stream = createReadStream(absolutePath, { start: options.start, end: options.end, highWaterMark: 1024 * 1024 });
+  for await (const chunk of stream) {
+    const buffer = chunk;
+    sha2.update(buffer);
+    md5?.update(buffer);
+    size += buffer.length;
+  }
+  return { sha256: sha2.digest("hex"), size, ...md5 ? { md5: md5.digest("base64") } : {} };
+}
+function sha256Hex(data) {
+  return createHash2("sha256").update(data).digest("hex");
+}
+var RACY_WINDOW_MS = 2e3;
+var HashCache = class _HashCache {
+  constructor(file, entries) {
+    this.file = file;
+    this.entries = entries;
+  }
+  used = /* @__PURE__ */ new Map();
+  dirty = false;
+  static async load(file) {
+    let data = null;
+    try {
+      data = await readJsonFile(file);
+    } catch {
+      data = null;
+    }
+    const entries = new Map(data?.version === 1 ? Object.entries(data.entries ?? {}) : []);
+    return new _HashCache(file, entries);
+  }
+  /** Cached SHA-256, or null if the file may have changed since it was hashed. */
+  lookup(path34, size, mtimeMs) {
+    const entry = this.entries.get(path34);
+    if (!entry || entry.size !== size || entry.mtimeMs !== mtimeMs) return null;
+    if (entry.hashedAt - mtimeMs < RACY_WINDOW_MS) return null;
+    this.used.set(path34, entry);
+    return entry.sha256;
+  }
+  record(path34, size, mtimeMs, sha2563, hashedAt) {
+    const entry = { size, mtimeMs, sha256: sha2563, hashedAt };
+    this.entries.set(path34, entry);
+    this.used.set(path34, entry);
+    this.dirty = true;
+  }
+  /** Hash of a file via the cache; hashes and records it on a miss. */
+  async hash(path34, absolutePath, size, mtimeMs) {
+    const cached = this.lookup(path34, size, mtimeMs);
+    if (cached) return cached;
+    const hashedAt = Date.now();
+    const result = await hashFile(absolutePath);
+    if (result.size === size) this.record(path34, size, mtimeMs, result.sha256, hashedAt);
+    return result.sha256;
+  }
+  /** Writes the cache; `prune` (after a full scan) keeps only the entries used in this run. */
+  async save(options = {}) {
+    if (options.prune) {
+      if (!this.dirty && this.used.size === this.entries.size) return;
+    } else if (!this.dirty) {
+      return;
+    }
+    const source = options.prune ? this.used : this.entries;
+    const entries = {};
+    for (const [path34, entry] of [...source].sort(([a], [b]) => a < b ? -1 : 1)) entries[path34] = entry;
+    await writeJsonFile(this.file, { version: 1, entries });
+  }
+};
+
+// src/media-cache.ts
+var CACHE_KINDS = ["original", "proxy"];
+function mediaCacheDir(env, platform = process.platform) {
+  const value2 = env.DARKMIND_MEDIA_CACHE?.trim();
+  if (value2) return /^(off|none|0|false|no)$/i.test(value2) ? { dir: null, reason: "DARKMIND_MEDIA_CACHE=off" } : { dir: path5.resolve(value2) };
+  const home = platform === "win32" ? env.USERPROFILE || env.HOME : env.HOME;
+  return home ? { dir: path5.join(home, ".darkmind", "media") } : { dir: null, reason: "no home folder (USERPROFILE/HOME) in the environment" };
+}
+function cacheKey(identity) {
+  const canonical2 = (value2) => value2 && typeof value2 === "object" && !Array.isArray(value2) ? Object.fromEntries(Object.keys(value2).sort().map((k) => [k, canonical2(value2[k])])) : value2;
+  return sha256Hex(JSON.stringify(canonical2(identity))).slice(0, 20);
+}
+function isAlive(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return error.code === "EPERM";
+  }
+}
+async function removeFile(file) {
+  await fs4.rm(file, { force: true });
+}
+async function placeFromCache(source, target) {
+  await fs4.mkdir(path5.dirname(target), { recursive: true });
+  await removeFile(target);
+  try {
+    await fs4.link(source, target);
+    return "hardlink";
+  } catch {
+  }
+  try {
+    await fs4.symlink(source, target, "file");
+    return "symlink";
+  } catch {
+  }
+  const temp = `${target}.copy.part`;
+  await fs4.copyFile(source, temp);
+  await renameWithRetry(temp, target);
+  return "copy";
+}
+var MediaCache = class {
+  constructor(dir) {
+    this.dir = dir;
+  }
+  videoDir(kind, videoId) {
+    return path5.join(this.dir, kind, normalizeCutProjectVideoId(videoId));
+  }
+  paths(kind, videoId, key, ext) {
+    const dir = this.videoDir(kind, videoId);
+    return { dir, file: path5.join(dir, `${key}${ext}`), entry: path5.join(dir, `${key}.json`), lock: path5.join(dir, `${key}.lock`) };
+  }
+  /** The cached content, if complete (entry present, size as recorded). */
+  async lookup(kind, videoId, key) {
+    const dir = this.videoDir(kind, videoId);
+    const entry = await readJsonFile(path5.join(dir, `${key}.json`)).catch(() => null);
+    if (entry?.version !== 1 || entry.key !== key || typeof entry.file !== "string") return null;
+    const file = path5.join(dir, path5.basename(entry.file));
+    const stat = await fs4.stat(file).catch(() => null);
+    if (!stat?.isFile() || stat.size !== entry.size) return null;
+    return { entry, file };
+  }
+  /**
+   * The cached content, filled by `fill(target)` under a lock if missing. Another darkmind-agent filling the same
+   * entry is waited for; a lock of a process that no longer runs is taken over (the download resumes).
+   */
+  async obtain(kind, videoId, key, ext, meta, fill, options = {}) {
+    const p = this.paths(kind, videoId, key, ext);
+    if (!options.force) {
+      const hit = await this.lookup(kind, videoId, key);
+      if (hit) return { ...hit, stored: false };
+    }
+    await fs4.mkdir(p.dir, { recursive: true });
+    return this.withLock(p.lock, options, async () => {
+      if (!options.force) {
+        const hit = await this.lookup(kind, videoId, key);
+        if (hit) return { ...hit, stored: false };
+      } else {
+        await removeFile(p.entry);
+        await removeFile(p.file);
+      }
+      await fill(p.file);
+      const stat = await fs4.stat(p.file);
+      const now = (/* @__PURE__ */ new Date()).toISOString();
+      const entry = {
+        version: 1,
+        kind,
+        videoId: normalizeCutProjectVideoId(videoId),
+        key,
+        file: path5.basename(p.file),
+        size: stat.size,
+        identity: meta.identity,
+        fileName: meta.fileName,
+        createdAt: now,
+        lastUsedAt: now,
+        agentVersion: AGENT_VERSION
+      };
+      await writeJsonFile(p.entry, entry);
+      return { entry, file: p.file, stored: true };
+    });
+  }
+  /** Records use (and optionally the SHA-256) of an entry; failures are ignored (the cache stays usable). */
+  async update(entry, change = {}) {
+    const next = { ...entry, ...change, lastUsedAt: (/* @__PURE__ */ new Date()).toISOString() };
+    await writeJsonFile(path5.join(this.videoDir(entry.kind, entry.videoId), `${entry.key}.json`), next).catch(() => void 0);
+    return next;
+  }
+  /** Adds an existing complete file (e.g. an original loaded before the cache existed) by hard link only. */
+  async adopt(kind, videoId, key, ext, meta, source) {
+    if (await this.lookup(kind, videoId, key)) return false;
+    const p = this.paths(kind, videoId, key, ext);
+    await fs4.mkdir(p.dir, { recursive: true });
+    try {
+      await removeFile(p.file);
+      await fs4.link(source, p.file);
+    } catch {
+      return false;
+    }
+    const stat = await fs4.stat(p.file);
+    const now = (/* @__PURE__ */ new Date()).toISOString();
+    await writeJsonFile(p.entry, {
+      version: 1,
+      kind,
+      videoId: normalizeCutProjectVideoId(videoId),
+      key,
+      file: path5.basename(p.file),
+      size: stat.size,
+      identity: meta.identity,
+      fileName: meta.fileName,
+      createdAt: now,
+      lastUsedAt: now,
+      agentVersion: AGENT_VERSION
+    });
+    return true;
+  }
+  /** Every entry and interrupted download. */
+  async list() {
+    const items = [];
+    for (const kind of CACHE_KINDS) {
+      const kindDir = path5.join(this.dir, kind);
+      for (const video of await fs4.readdir(kindDir).catch(() => [])) {
+        const dir = path5.join(kindDir, video);
+        const names = await fs4.readdir(dir).catch(() => []);
+        const covered = /* @__PURE__ */ new Set();
+        for (const name of names.filter((n) => n.endsWith(".json") && !n.endsWith(".part.json"))) {
+          const entry = await readJsonFile(path5.join(dir, name)).catch(() => null);
+          if (entry?.version !== 1) continue;
+          const file = path5.join(dir, path5.basename(entry.file));
+          const stat = await fs4.stat(file).catch(() => null);
+          if (!stat) continue;
+          covered.add(path5.basename(entry.file).toLowerCase());
+          items.push({ kind, videoId: entry.videoId, key: entry.key, fileName: entry.fileName, path: file, size: stat.size, links: stat.nlink || 1, createdAt: entry.createdAt, lastUsedAt: entry.lastUsedAt, partial: false });
+        }
+        for (const name of names.filter((n) => n.endsWith(".part"))) {
+          const stat = await fs4.stat(path5.join(dir, name)).catch(() => null);
+          if (!stat) continue;
+          const key = name.split(".")[0];
+          items.push({ kind, videoId: video, key, fileName: null, path: path5.join(dir, name), size: stat.size, links: 1, createdAt: null, lastUsedAt: stat.mtime.toISOString(), partial: true });
+        }
+      }
+    }
+    return items.sort((a, b) => a.kind === b.kind ? a.videoId === b.videoId ? a.key < b.key ? -1 : 1 : a.videoId < b.videoId ? -1 : 1 : a.kind < b.kind ? -1 : 1);
+  }
+  /** Removes an entry (content, entry file and partial download). Project hard links keep their data. */
+  async remove(item) {
+    const dir = this.videoDir(item.kind, item.videoId);
+    const lock = path5.join(dir, `${item.key}.lock`);
+    const holder = await readJsonFile(lock).catch(() => null);
+    if (holder && (holder.host !== os2.hostname() || isAlive(holder.pid))) {
+      throw new CliError("media-cache-locked", `${item.videoId} is being loaded into the media cache by another darkmind-agent (process ${holder.pid}); try again later.`);
+    }
+    await removeFile(item.path);
+    if (item.partial) await removeFile(`${item.path}.json`);
+    else {
+      await removeFile(path5.join(dir, `${item.key}.json`));
+      for (const name of await fs4.readdir(dir).catch(() => [])) {
+        if (name.startsWith(`${item.key}.`) && (name.endsWith(".part") || name.endsWith(".part.json"))) await removeFile(path5.join(dir, name));
+      }
+    }
+    await removeFile(lock);
+    await fs4.rmdir(dir).catch(() => void 0);
+  }
+  async withLock(lock, options, fn) {
+    const deadline = Date.now() + (options.lockTimeoutMs ?? 6 * 36e5);
+    let announced = false;
+    for (; ; ) {
+      try {
+        const handle = await fs4.open(lock, "wx");
+        try {
+          await handle.writeFile(JSON.stringify({ pid: process.pid, host: os2.hostname(), since: (/* @__PURE__ */ new Date()).toISOString() }));
+        } finally {
+          await handle.close();
+        }
+        break;
+      } catch (error) {
+        if (error.code !== "EEXIST") throw error;
+        const holder = await readJsonFile(lock).catch(() => null);
+        const age = Date.now() - ((await fs4.stat(lock).catch(() => null))?.mtimeMs ?? 0);
+        const stale = holder ? holder.host === os2.hostname() ? !isAlive(holder.pid) : age > 24 * 36e5 : age > 3e4;
+        if (stale) {
+          await removeFile(lock);
+          continue;
+        }
+        if (Date.now() > deadline) {
+          throw new CliError("media-cache-locked", `Another darkmind-agent${holder ? ` (process ${holder.pid})` : ""} is still loading this video into the media cache (${lock}).`);
+        }
+        if (!announced) {
+          options.progress?.(`waiting for another darkmind-agent${holder ? ` (process ${holder.pid})` : ""} that loads the same video into the media cache`);
+          announced = true;
+        }
+        await sleep(options.pollMs ?? 2e3);
+      }
+    }
+    try {
+      return await fn();
+    } finally {
+      await removeFile(lock);
+    }
+  }
+};
+function openMediaCache(env) {
+  const { dir } = mediaCacheDir(env);
+  return dir ? new MediaCache(dir) : null;
+}
+
+// src/commands/cache.ts
+function summary(items) {
+  const total = (list2) => list2.reduce((sum, item) => sum + item.size, 0);
+  return Object.fromEntries(
+    CACHE_KINDS.map((kind) => {
+      const complete = items.filter((item) => item.kind === kind && !item.partial);
+      const partial = items.filter((item) => item.kind === kind && item.partial);
+      const linked = complete.filter((item) => item.links > 1);
+      return [kind, { entries: complete.length, bytes: total(complete), linkedEntries: linked.length, partialDownloads: partial.length, partialBytes: total(partial) }];
+    })
+  );
+}
+function describe(item) {
+  return {
+    kind: item.kind,
+    videoId: item.videoId,
+    fileName: item.fileName,
+    bytes: item.size,
+    projectLinks: Math.max(0, item.links - 1),
+    lastUsedAt: item.lastUsedAt,
+    ...item.partial ? { partial: true } : {}
+  };
+}
+async function freeBytes(dir) {
+  let probe2 = dir;
+  for (; ; ) {
+    const stat = await fs5.statfs(probe2).catch(() => null);
+    if (stat) return Number(stat.bavail) * Number(stat.bsize);
+    const parent = probe2.replace(/[\\/][^\\/]+[\\/]?$/, "");
+    if (!parent || parent === probe2) return null;
+    probe2 = parent;
+  }
+}
+async function cacheCommand(ctx, sub, options = {}) {
+  const { dir, reason } = mediaCacheDir(ctx.env);
+  if (!dir) {
+    return { data: { dir: null, enabled: false, reason }, text: `media cache: off (${reason})` };
+  }
+  const cache = new MediaCache(dir);
+  const items = await cache.list();
+  if (!sub || sub === "status") {
+    const kinds = summary(items);
+    const free = await freeBytes(dir);
+    const listed2 = capList(items.map(describe));
+    return {
+      data: { dir, enabled: true, ...kinds, freeBytes: free, items: listed2.items, ...listed2.truncated ? { truncated: listed2.truncated } : {} },
+      text: [
+        `media cache: ${dir}${free !== null ? ` (${formatBytes(free)} free on the drive)` : ""}`,
+        ...CACHE_KINDS.map((kind) => {
+          const k = kinds[kind];
+          return `  ${kind.padEnd(8)} ${k.entries} file(s), ${formatBytes(k.bytes)}; ${k.linkedEntries} linked into project folders${k.partialDownloads ? `; ${k.partialDownloads} interrupted download(s), ${formatBytes(k.partialBytes)}` : ""}`;
+        }),
+        ...listed2.items.map((item) => `  ${item.kind.padEnd(8)} ${item.videoId} ${formatBytes(item.bytes).padStart(8)} ${item.partial ? "interrupted" : `${item.projectLinks} link(s)`}  last used ${item.lastUsedAt ?? "\u2013"}  ${item.fileName ?? ""}`),
+        ...listed2.truncated ? [`  \u2026 ${listed2.truncated} more (--json)`] : [],
+        'Remove entries with "darkmind-agent cache prune" (--unused, --older-than <days>, --video <id>, --all).'
+      ].join("\n")
+    };
+  }
+  if (sub !== "prune") throw new CliError("usage", "Usage: darkmind-agent cache [status] | cache prune [--unused] [--older-than <days>] [--video <id>]... [--kind original|proxy] [--all] [--print]");
+  if (options.kind !== void 0 && !CACHE_KINDS.includes(options.kind)) throw new CliError("usage", "--kind must be original or proxy");
+  const videos = (options.videos ?? []).map(normalizeCutProjectVideoId);
+  if (!options.all && !options.unused && options.olderThanDays === void 0 && videos.length === 0) {
+    throw new CliError("usage", "cache prune needs a selection: --unused, --older-than <days>, --video <id> or --all (with --kind for one kind).");
+  }
+  const cutoff = options.olderThanDays === void 0 ? null : Date.now() - options.olderThanDays * 864e5;
+  const selected = items.filter((item) => {
+    if (options.kind && item.kind !== options.kind) return false;
+    if (videos.length && !videos.includes(normalizeCutProjectVideoId(item.videoId))) return false;
+    if (options.unused && item.links > 1) return false;
+    if (cutoff !== null && Date.parse(item.lastUsedAt ?? "") > cutoff) return false;
+    return true;
+  });
+  const removed = [];
+  const failed = [];
+  if (!options.print) {
+    for (const item of selected) {
+      try {
+        await cache.remove(item);
+        removed.push(item);
+      } catch (error) {
+        failed.push({ videoId: item.videoId, kind: item.kind, message: error.message });
+      }
+    }
+  }
+  const affected = options.print ? selected : removed;
+  const freed = affected.filter((item) => item.links <= 1).reduce((sum, item) => sum + item.size, 0);
+  const stillLinked = affected.filter((item) => item.links > 1);
+  return {
+    data: { dir, dryRun: Boolean(options.print), removed: affected.map(describe), freedBytes: freed, stillLinkedInProjects: stillLinked.length, failed },
+    text: [
+      `${options.print ? "would remove" : "removed"} ${affected.length} cache entr${affected.length === 1 ? "y" : "ies"} from ${dir}, ${formatBytes(freed)} ${options.print ? "would be freed" : "freed"}${stillLinked.length ? `; ${stillLinked.length} stay on disk as long as project folders link to them` : ""}.`,
+      ...affected.map((item) => `  ${item.kind.padEnd(8)} ${item.videoId} ${formatBytes(item.size)}${item.links > 1 ? ` (${item.links - 1} project link(s))` : ""}`),
+      ...failed.map((failure) => `  failed   ${failure.videoId}: ${failure.message}`)
+    ].join("\n"),
+    exitCode: failed.length ? 1 : 0
+  };
+}
+
+// src/commands/doctor.ts
+import { promises as fs7 } from "node:fs";
+import path8 from "node:path";
 
 // src/ffmpeg.ts
 import { spawn } from "node:child_process";
 import { statSync } from "node:fs";
-import path5 from "node:path";
+import path6 from "node:path";
 var AbortedError = class extends Error {
   constructor() {
     super("aborted");
@@ -7650,12 +8060,12 @@ function defaultTools(env = process.env) {
 }
 function resolveOnPath(program, env = process.env) {
   const key = Object.keys(env).find((k) => k.toUpperCase() === "PATH");
-  const dirs = (key ? env[key] ?? "" : "").split(path5.delimiter).map((d) => d.replace(/^"|"$/g, "")).filter((d) => d && path5.isAbsolute(d));
+  const dirs = (key ? env[key] ?? "" : "").split(path6.delimiter).map((d) => d.replace(/^"|"$/g, "")).filter((d) => d && path6.isAbsolute(d));
   const windows = process.platform === "win32";
   const suffixes = windows ? [".exe", ".com"] : [""];
   for (const dir of dirs) {
     for (const suffix of suffixes) {
-      const candidate = path5.join(dir, `${program}${suffix}`);
+      const candidate = path6.join(dir, `${program}${suffix}`);
       try {
         if (statSync(candidate).isFile()) return candidate;
       } catch {
@@ -7692,84 +8102,8 @@ async function probe(tools, file) {
 
 // src/pipeline/brand-trust.ts
 import { spawn as spawn2 } from "node:child_process";
-import { promises as fs4 } from "node:fs";
-import path6 from "node:path";
-
-// src/hash.ts
-import { createHash as createHash2 } from "node:crypto";
-import { createReadStream } from "node:fs";
-async function hashFile(absolutePath, options = {}) {
-  const sha2 = createHash2("sha256");
-  const md5 = options.md5 ? createHash2("md5") : null;
-  let size = 0;
-  const stream = createReadStream(absolutePath, { start: options.start, end: options.end, highWaterMark: 1024 * 1024 });
-  for await (const chunk of stream) {
-    const buffer = chunk;
-    sha2.update(buffer);
-    md5?.update(buffer);
-    size += buffer.length;
-  }
-  return { sha256: sha2.digest("hex"), size, ...md5 ? { md5: md5.digest("base64") } : {} };
-}
-function sha256Hex(data) {
-  return createHash2("sha256").update(data).digest("hex");
-}
-var RACY_WINDOW_MS = 2e3;
-var HashCache = class _HashCache {
-  constructor(file, entries) {
-    this.file = file;
-    this.entries = entries;
-  }
-  used = /* @__PURE__ */ new Map();
-  dirty = false;
-  static async load(file) {
-    let data = null;
-    try {
-      data = await readJsonFile(file);
-    } catch {
-      data = null;
-    }
-    const entries = new Map(data?.version === 1 ? Object.entries(data.entries ?? {}) : []);
-    return new _HashCache(file, entries);
-  }
-  /** Cached SHA-256, or null if the file may have changed since it was hashed. */
-  lookup(path33, size, mtimeMs) {
-    const entry = this.entries.get(path33);
-    if (!entry || entry.size !== size || entry.mtimeMs !== mtimeMs) return null;
-    if (entry.hashedAt - mtimeMs < RACY_WINDOW_MS) return null;
-    this.used.set(path33, entry);
-    return entry.sha256;
-  }
-  record(path33, size, mtimeMs, sha2563, hashedAt) {
-    const entry = { size, mtimeMs, sha256: sha2563, hashedAt };
-    this.entries.set(path33, entry);
-    this.used.set(path33, entry);
-    this.dirty = true;
-  }
-  /** Hash of a file via the cache; hashes and records it on a miss. */
-  async hash(path33, absolutePath, size, mtimeMs) {
-    const cached = this.lookup(path33, size, mtimeMs);
-    if (cached) return cached;
-    const hashedAt = Date.now();
-    const result = await hashFile(absolutePath);
-    if (result.size === size) this.record(path33, size, mtimeMs, result.sha256, hashedAt);
-    return result.sha256;
-  }
-  /** Writes the cache; `prune` (after a full scan) keeps only the entries used in this run. */
-  async save(options = {}) {
-    if (options.prune) {
-      if (!this.dirty && this.used.size === this.entries.size) return;
-    } else if (!this.dirty) {
-      return;
-    }
-    const source = options.prune ? this.used : this.entries;
-    const entries = {};
-    for (const [path33, entry] of [...source].sort(([a], [b]) => a < b ? -1 : 1)) entries[path33] = entry;
-    await writeJsonFile(this.file, { version: 1, entries });
-  }
-};
-
-// src/pipeline/brand-trust.ts
+import { promises as fs6 } from "node:fs";
+import path7 from "node:path";
 var BRAND_VENDOR = "extensions/brand-pack";
 var RUNNER = `${BRAND_VENDOR}/lib/render.mjs`;
 var ENTRY = /^extensions\/brand-pack\/blocks\/([a-z0-9_]+)\/(?:scene\.html|block\.json)$/;
@@ -7782,50 +8116,50 @@ function envValue(env, name) {
 }
 async function walk(dir, base = dir) {
   const out = [];
-  for (const entry of await fs4.readdir(dir, { withFileTypes: true }).catch(() => [])) {
-    const full = path6.join(dir, entry.name);
+  for (const entry of await fs6.readdir(dir, { withFileTypes: true }).catch(() => [])) {
+    const full = path7.join(dir, entry.name);
     if (entry.isDirectory()) out.push(...await walk(full, base));
-    else if (entry.isFile()) out.push(path6.relative(base, full).split(path6.sep).join("/"));
+    else if (entry.isFile()) out.push(path7.relative(base, full).split(path7.sep).join("/"));
   }
   return out;
 }
 var sha = async (file) => (await hashFile(file).catch(() => null))?.sha256 ?? null;
 async function loadBrandPack(env, scriptPath = process.argv[1]) {
   const explicit = envValue(env, "DARKMIND_BRAND_PACK");
-  const dir = explicit ? path6.resolve(explicit) : await detectSkill(scriptPath).then((skill) => skill ? path6.join(skill.folder, "brand") : null);
+  const dir = explicit ? path7.resolve(explicit) : await detectSkill(scriptPath).then((skill) => skill ? path7.join(skill.folder, "brand") : null);
   if (!dir) return null;
-  const brand = await readJsonFile(path6.join(dir, "brand.json")).catch(() => null);
+  const brand = await readJsonFile(path7.join(dir, "brand.json")).catch(() => null);
   if (brand?.kind !== "darkmind-brand-pack") return null;
-  const manifest = await readJsonFile(path6.join(dir, "package.json")).catch(() => null);
+  const manifest = await readJsonFile(path7.join(dir, "package.json")).catch(() => null);
   const files = /* @__PURE__ */ new Map();
-  for (const rel3 of ["brand.json", ...(await walk(path6.join(dir, "lib"))).map((f) => `lib/${f}`), ...(await walk(path6.join(dir, "blocks"))).map((f) => `blocks/${f}`)]) {
-    const hash = await sha(path6.join(dir, ...rel3.split("/")));
+  for (const rel3 of ["brand.json", ...(await walk(path7.join(dir, "lib"))).map((f) => `lib/${f}`), ...(await walk(path7.join(dir, "blocks"))).map((f) => `blocks/${f}`)]) {
+    const hash = await sha(path7.join(dir, ...rel3.split("/")));
     if (hash) files.set(rel3, hash);
   }
   const assetDirs = [];
-  for (const candidate of [envValue(env, "DARKMIND_BRAND_ASSETS"), brandAssetsHome({ ...env, DARKMIND_BRAND_ASSETS: "" }), path6.join(dir, "assets")]) {
-    if (candidate && (await fs4.stat(candidate).catch(() => null))?.isDirectory()) assetDirs.push(path6.resolve(candidate));
+  for (const candidate of [envValue(env, "DARKMIND_BRAND_ASSETS"), brandAssetsHome({ ...env, DARKMIND_BRAND_ASSETS: "" }), path7.join(dir, "assets")]) {
+    if (candidate && (await fs6.stat(candidate).catch(() => null))?.isDirectory()) assetDirs.push(path7.resolve(candidate));
   }
   return {
     dir,
     version: typeof brand.version === "string" ? brand.version : null,
     playwright: manifest?.dependencies?.["playwright-core"] ?? null,
     files,
-    packageJson: await sha(path6.join(dir, "package.json")),
-    packageLock: await sha(path6.join(dir, "package-lock.json")),
+    packageJson: await sha(path7.join(dir, "package.json")),
+    packageLock: await sha(path7.join(dir, "package-lock.json")),
     assetDirs,
     assetHashes: /* @__PURE__ */ new Map()
   };
 }
 async function isBrandAsset(pack, file, hash) {
-  const size = (await fs4.stat(file).catch(() => null))?.size;
+  const size = (await fs6.stat(file).catch(() => null))?.size;
   if (size === void 0) return false;
   if (!pack.assetIndex) {
     pack.assetIndex = /* @__PURE__ */ new Map();
     for (const dir of pack.assetDirs) {
       for (const rel3 of await walk(dir)) {
-        const absolute = path6.join(dir, ...rel3.split("/"));
-        const stat = await fs4.stat(absolute).catch(() => null);
+        const absolute = path7.join(dir, ...rel3.split("/"));
+        const stat = await fs6.stat(absolute).catch(() => null);
         if (stat) pack.assetIndex.set(stat.size, [...pack.assetIndex.get(stat.size) ?? [], absolute]);
       }
     }
@@ -7865,7 +8199,7 @@ async function brandBlockTrust(pack, root, extension, execution) {
     if (!file.startsWith(`${BRAND_VENDOR}/`)) return no(`${file} is not part of the brand pack`);
     const rel3 = file.slice(BRAND_VENDOR.length + 1);
     if (rel3.startsWith("assets/")) {
-      if (!await isBrandAsset(pack, path6.join(root, ...file.split("/")), hash)) return no(`${file} is not one of the installed brand assets`);
+      if (!await isBrandAsset(pack, path7.join(root, ...file.split("/")), hash)) return no(`${file} is not one of the installed brand assets`);
       continue;
     }
     const expected = pack.files.get(rel3);
@@ -7875,22 +8209,22 @@ async function brandBlockTrust(pack, root, extension, execution) {
   return { trusted: true, block: block2, reason: null };
 }
 async function npmCli(env) {
-  const nodeDir = path6.dirname(process.execPath);
+  const nodeDir = path7.dirname(process.execPath);
   const execPath = envValue(env, "npm_execpath");
   const candidates = [
     ...execPath && /npm-cli\.js$/i.test(execPath) ? [execPath] : [],
-    path6.join(nodeDir, "node_modules", "npm", "bin", "npm-cli.js"),
-    path6.join(nodeDir, "..", "lib", "node_modules", "npm", "bin", "npm-cli.js")
+    path7.join(nodeDir, "node_modules", "npm", "bin", "npm-cli.js"),
+    path7.join(nodeDir, "..", "lib", "node_modules", "npm", "bin", "npm-cli.js")
   ];
-  for (const candidate of candidates) if ((await fs4.stat(candidate).catch(() => null))?.isFile()) return candidate;
+  for (const candidate of candidates) if ((await fs6.stat(candidate).catch(() => null))?.isFile()) return candidate;
   return null;
 }
 async function ensureBrandPackModules(root, pack, env, progress = () => {
 }) {
-  const dir = path6.join(root, "extensions");
+  const dir = path7.join(root, "extensions");
   if (!pack?.packageJson || !pack.packageLock) return { status: "not-brand-pack" };
-  if (await sha(path6.join(dir, "package.json")) !== pack.packageJson || await sha(path6.join(dir, "package-lock.json")) !== pack.packageLock) return { status: "not-brand-pack" };
-  if ((await fs4.stat(path6.join(dir, "node_modules", "playwright-core", "package.json")).catch(() => null))?.isFile()) return { status: "present" };
+  if (await sha(path7.join(dir, "package.json")) !== pack.packageJson || await sha(path7.join(dir, "package-lock.json")) !== pack.packageLock) return { status: "not-brand-pack" };
+  if ((await fs6.stat(path7.join(dir, "node_modules", "playwright-core", "package.json")).catch(() => null))?.isFile()) return { status: "present" };
   const cli = await npmCli(env);
   const windows = process.platform === "win32";
   const [program, args, shell] = cli ? [process.execPath, [cli, "ci", "--ignore-scripts", "--no-audit", "--no-fund"], false] : ["npm", ["ci", "--ignore-scripts", "--no-audit", "--no-fund"], windows];
@@ -7917,8 +8251,8 @@ async function ensureBrandPackModules(root, pack, env, progress = () => {
 }
 async function findEdge(env, platform = process.platform) {
   const explicit = envValue(env, "DARKMIND_TOOL_MSEDGE");
-  const candidates = explicit ? [explicit] : platform === "win32" ? [envValue(env, "ProgramFiles(x86)"), envValue(env, "ProgramFiles"), envValue(env, "LOCALAPPDATA")].filter((d) => Boolean(d)).map((d) => path6.join(d, "Microsoft", "Edge", "Application", "msedge.exe")) : platform === "darwin" ? ["/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"] : ["/usr/bin/microsoft-edge", "/usr/bin/microsoft-edge-stable", "/opt/microsoft/msedge/msedge"];
-  for (const candidate of candidates) if ((await fs4.stat(candidate).catch(() => null))?.isFile()) return candidate;
+  const candidates = explicit ? [explicit] : platform === "win32" ? [envValue(env, "ProgramFiles(x86)"), envValue(env, "ProgramFiles"), envValue(env, "LOCALAPPDATA")].filter((d) => Boolean(d)).map((d) => path7.join(d, "Microsoft", "Edge", "Application", "msedge.exe")) : platform === "darwin" ? ["/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"] : ["/usr/bin/microsoft-edge", "/usr/bin/microsoft-edge-stable", "/opt/microsoft/msedge/msedge"];
+  for (const candidate of candidates) if ((await fs6.stat(candidate).catch(() => null))?.isFile()) return candidate;
   return null;
 }
 
@@ -7960,7 +8294,7 @@ async function doctorCommand(ctx, tools = defaultTools(ctx.env), scriptPath = pr
   const notes = [];
   let brandAssets = null;
   let edge = null;
-  if (skill && await fs5.stat(path7.join(skill.folder, "brand", "brand.json")).catch(() => null)) {
+  if (skill && await fs7.stat(path8.join(skill.folder, "brand", "brand.json")).catch(() => null)) {
     const assets = await migrateBrandAssets(ctx.env, scriptPath).catch(() => ({ dir: brandAssetsHome(ctx.env), marker: null, migratedFrom: void 0 }));
     brandAssets = { dir: assets.dir, installed: Boolean(assets.marker), sha256: assets.marker?.sha256 ?? null, ...assets.migratedFrom ? { migratedFrom: assets.migratedFrom } : {} };
     if (assets.migratedFrom) notes.push(`Brand assets moved from ${assets.migratedFrom} to ${assets.dir} (they now survive plugin updates).`);
@@ -7968,11 +8302,17 @@ async function doctorCommand(ctx, tools = defaultTools(ctx.env), scriptPath = pr
     edge = await findEdge(ctx.env);
     if (!edge) notes.push("Microsoft Edge was not found: the picture blocks of the brand pack render with headless Edge \u2013 install Edge or set DARKMIND_TOOL_MSEDGE to msedge(.exe).");
   }
+  const cacheDir2 = mediaCacheDir(ctx.env);
+  let mediaCache = { dir: null, reason: cacheDir2.reason };
+  if (cacheDir2.dir) {
+    const items = (await new MediaCache(cacheDir2.dir).list().catch(() => [])).filter((item) => !item.partial);
+    mediaCache = { dir: cacheDir2.dir, entries: items.length, bytes: items.reduce((sum, item) => sum + item.size, 0) };
+  }
   const updateAvailable = serverAgentVersion !== null && serverAgentVersion !== AGENT_VERSION;
   notes.push(...await extensionOutputNotes(ctx.root));
   if (updateAvailable) {
     notes.push(
-      skill?.install === "plugin" ? `Dark Mind serves darkmind-agent ${serverAgentVersion}: the user updates the Dark Mind plugin with: node "${path7.join(skill.folder, "darkmind-agent.mjs")}" plugin update (then a new session).` : skill ? `Dark Mind serves darkmind-agent ${serverAgentVersion}: update the editing skill (download ${server}/downloads/${SKILL_ZIP_NAME} and replace the skill folder ${skill.folder}) \u2013 or switch to the Dark Mind plugin (${server}/downloads/darkmind-plugin.md).` : `Dark Mind serves darkmind-agent ${serverAgentVersion}: download ${server}/downloads/darkmind-agent.mjs again.`
+      skill?.install === "plugin" ? `Dark Mind serves darkmind-agent ${serverAgentVersion}: the user updates the Dark Mind plugin with: node "${path8.join(skill.folder, "darkmind-agent.mjs")}" plugin update (then a new session).` : skill ? `Dark Mind serves darkmind-agent ${serverAgentVersion}: update the editing skill (download ${server}/downloads/${SKILL_ZIP_NAME} and replace the skill folder ${skill.folder}) \u2013 or switch to the Dark Mind plugin (${server}/downloads/darkmind-plugin.md).` : `Dark Mind serves darkmind-agent ${serverAgentVersion}: download ${server}/downloads/darkmind-agent.mjs again.`
     );
   }
   return {
@@ -7989,6 +8329,7 @@ async function doctorCommand(ctx, tools = defaultTools(ctx.env), scriptPath = pr
       skill: skill ? { name: skill.name, version: skill.version, folder: skill.folder, install: skill.install } : null,
       brandAssets,
       ...brandAssets ? { edge } : {},
+      mediaCache,
       problems,
       notes
     },
@@ -7998,6 +8339,7 @@ async function doctorCommand(ctx, tools = defaultTools(ctx.env), scriptPath = pr
       ...brandAssets ? [`brand assets: ${brandAssets.installed ? `installed (${brandAssets.dir})` : "not installed (get_brand_assets \u2192 darkmind-agent brand-assets <ticket>)"}`, `Microsoft Edge (brand picture blocks): ${edge ?? "not found"}`] : [],
       `ffmpeg: ${ffmpeg2 ?? "missing"}`,
       `ffprobe: ${ffprobe ?? "missing"}`,
+      `media cache: ${mediaCache.dir ? `${mediaCache.dir} (${mediaCache.entries} file(s), ${formatBytes(mediaCache.bytes ?? 0)}; "darkmind-agent cache" for details)` : `off (${mediaCache.reason})`}`,
       `project: ${project ? `${project.projectId} (base version ${project.baseVersion})` : "none in this folder"}`,
       `server: ${server ?? "unknown"}${reachable === null ? "" : reachable ? " (reachable)" : " (not reachable)"}${serverAgentVersion ? `, serves darkmind-agent ${serverAgentVersion}` : ""}`,
       ...problems.map((problem) => `problem: ${problem}`),
@@ -8007,16 +8349,16 @@ async function doctorCommand(ctx, tools = defaultTools(ctx.env), scriptPath = pr
   };
 }
 async function extensionOutputNotes(root) {
-  const project = await readJsonFile(path7.join(root, "project.json")).catch(() => null);
+  const project = await readJsonFile(path8.join(root, "project.json")).catch(() => null);
   const files = Array.isArray(project?.extensions) ? project.extensions.filter((file) => typeof file === "string") : [];
   const missing = [];
   for (const file of files) {
-    const extension = await readJsonFile(path7.join(root, ...file.split("/"))).catch(() => null);
+    const extension = await readJsonFile(path8.join(root, ...file.split("/"))).catch(() => null);
     if (!extension?.output?.path || extension.output.image) continue;
-    if (!await fs5.stat(path7.join(root, ...extension.output.path.split("/"))).catch(() => null)) missing.push(extension.id ?? file);
+    if (!await fs7.stat(path8.join(root, ...extension.output.path.split("/"))).catch(() => null)) missing.push(extension.id ?? file);
   }
   const notes = [];
-  const npmMissing = await fs5.stat(path7.join(root, "extensions", "package.json")).catch(() => null) && !await fs5.stat(path7.join(root, "extensions", "node_modules")).catch(() => null);
+  const npmMissing = await fs7.stat(path8.join(root, "extensions", "package.json")).catch(() => null) && !await fs7.stat(path8.join(root, "extensions", "node_modules")).catch(() => null);
   if (npmMissing) notes.push(`extensions/node_modules is missing (a pull does not bring it): "darkmind-agent extensions run" installs playwright-core by itself when extensions/package.json and package-lock.json are those of the brand pack; other packages need "npm ci" in extensions/ \u2013 the user's step.`);
   if (missing.length) {
     notes.push(
@@ -8037,12 +8379,12 @@ async function fetchServerAgentVersion(server) {
 }
 
 // src/commands/download.ts
-import { promises as fs13 } from "node:fs";
-import path13 from "node:path";
+import { promises as fs15 } from "node:fs";
+import path14 from "node:path";
 
 // src/blob.ts
 import { createHash as createHash3 } from "node:crypto";
-import { createReadStream as createReadStream2, createWriteStream, promises as fs6 } from "node:fs";
+import { createReadStream as createReadStream2, createWriteStream, promises as fs8 } from "node:fs";
 import { pipeline } from "node:stream/promises";
 var BLOCK_API_VERSION = "2026-04-06";
 var DEFAULT_PUT_BLOB_MAX_BYTES = 256 * 1024 * 1024;
@@ -8050,8 +8392,8 @@ var DEFAULT_BLOCK_BYTES = 32 * 1024 * 1024;
 function withQuery(url, query) {
   return `${url}${url.includes("?") ? "&" : "?"}${query}`;
 }
-function fileChanged(path33) {
-  return new CliError("file-changed", `${path33} changed since "darkmind-agent manifest"; run manifest and project_push_begin again.`);
+function fileChanged(path34) {
+  return new CliError("file-changed", `${path34} changed since "darkmind-agent manifest"; run manifest and project_push_begin again.`);
 }
 function isAlreadyThere(error) {
   return error instanceof HttpError && (error.status === 409 || error.status === 403 && error.code === "AuthorizationPermissionMismatch");
@@ -8096,7 +8438,7 @@ async function putBlob(url, file) {
 async function putBlocks(url, file, blockBytes) {
   const ids = [];
   const sha2 = createHash3("sha256");
-  const handle = await fs6.open(file.absolutePath, "r");
+  const handle = await fs8.open(file.absolutePath, "r");
   try {
     for (let offset = 0, index = 0; offset < file.size; offset += blockBytes, index++) {
       const length2 = Math.min(blockBytes, file.size - offset);
@@ -8138,24 +8480,59 @@ async function putBlocks(url, file, blockBytes) {
     await expectCreated(response, `Upload of ${file.path} (block list)`);
   });
 }
+var DEFAULT_DOWNLOAD_STREAMS = 4;
+var DEFAULT_CHUNK_BYTES = 16 * 1024 * 1024;
 function incomplete(message) {
   const error = new Error(message);
   error.code = "ECONNRESET";
   return error;
 }
+var retryDownload = (error) => isRetryable(error) || error?.code === "ERR_STREAM_PREMATURE_CLOSE";
+async function verifyPart(part, expected) {
+  const size = (await fs8.stat(part)).size;
+  if (size !== expected.size) {
+    await fs8.rm(part, { force: true });
+    throw new CliError("size-mismatch", `${expected.label}: expected ${expected.size} bytes, got ${size}`);
+  }
+  if (expected.sha256) {
+    const { sha256: sha2563 } = await hashFile(part);
+    if (sha2563 !== expected.sha256) {
+      await fs8.rm(part, { force: true });
+      throw new CliError("hash-mismatch", `${expected.label}: content does not match its SHA-256`);
+    }
+  }
+}
 async function downloadFile(url, target, expected, options = {}) {
+  const streams = Math.max(1, options.streams ?? DEFAULT_DOWNLOAD_STREAMS);
+  const chunkBytes = Math.max(64 * 1024, options.chunkBytes ?? DEFAULT_CHUNK_BYTES);
+  if (streams > 1 && expected.size >= 2 * chunkBytes) {
+    try {
+      return await downloadChunks(url, target, expected, { ...options, streams, chunkBytes });
+    } catch (error) {
+      if (!(error instanceof CliError && error.code === "range-unsupported")) throw error;
+      await fs8.rm(`${target}.part`, { force: true });
+      await fs8.rm(`${target}.part.json`, { force: true });
+    }
+  }
+  return downloadSequential(url, target, expected, options);
+}
+async function downloadSequential(url, target, expected, options) {
   const part = `${target}.part`;
+  if (await fs8.stat(`${part}.json`).catch(() => null)) {
+    await fs8.rm(part, { force: true });
+    await fs8.rm(`${part}.json`, { force: true });
+  }
   let resumedBytes = -1;
   await withRetry(
     async () => {
       let offset = 0;
       try {
-        offset = (await fs6.stat(part)).size;
+        offset = (await fs8.stat(part)).size;
       } catch {
         offset = 0;
       }
       if (offset > expected.size) {
-        await fs6.rm(part, { force: true });
+        await fs8.rm(part, { force: true });
         offset = 0;
       }
       if (resumedBytes < 0) resumedBytes = offset;
@@ -8168,40 +8545,95 @@ async function downloadFile(url, target, expected, options = {}) {
         if (status2 !== 200 && status2 !== 206) throw await toHttpError(response, `Download of ${expected.label}`);
         const append = offset > 0 && status2 === 206;
         await pipeline(response, createWriteStream(part, { flags: append ? "a" : "w" }));
-        const size2 = (await fs6.stat(part)).size;
-        if (size2 < expected.size) throw incomplete(`Download of ${expected.label} stopped at ${size2} of ${expected.size} bytes`);
+        const size = (await fs8.stat(part)).size;
+        if (size < expected.size) throw incomplete(`Download of ${expected.label} stopped at ${size} of ${expected.size} bytes`);
       }
-      const size = (await fs6.stat(part)).size;
-      if (size !== expected.size) {
-        await fs6.rm(part, { force: true });
-        throw new CliError("size-mismatch", `${expected.label}: expected ${expected.size} bytes, got ${size}`);
-      }
-      if (expected.sha256) {
-        const { sha256: sha2563 } = await hashFile(part);
-        if (sha2563 !== expected.sha256) {
-          await fs6.rm(part, { force: true });
-          throw new CliError("hash-mismatch", `${expected.label}: content does not match its SHA-256`);
-        }
-      }
+      await verifyPart(part, expected);
     },
-    { attempts: options.attempts ?? 6, retryIf: (error) => isRetryable(error) || error?.code === "ERR_STREAM_PREMATURE_CLOSE" }
+    { attempts: options.attempts ?? 6, retryIf: retryDownload }
   );
   await renameWithRetry(part, target);
-  return { bytes: expected.size, resumedBytes: Math.max(0, resumedBytes) };
+  return { bytes: expected.size, resumedBytes: Math.max(0, resumedBytes), streams: 1 };
 }
-
-// src/context.ts
-function capList(items, max = 100) {
-  return items.length > max ? { items: items.slice(0, max), truncated: items.length - max } : { items };
+async function downloadChunks(url, target, expected, options) {
+  const part = `${target}.part`;
+  const mapFile = `${part}.json`;
+  const { size } = expected;
+  const { chunkBytes } = options;
+  const count2 = Math.ceil(size / chunkBytes);
+  const chunkLength = (index) => Math.min(size, (index + 1) * chunkBytes) - index * chunkBytes;
+  const partStat = await fs8.stat(part).catch(() => null);
+  const map = await readJsonFile(mapFile).catch(() => null);
+  const done = /* @__PURE__ */ new Set();
+  if (partStat && map) {
+    if (map.version === 1 && map.size === size && map.chunkBytes === chunkBytes) map.done.filter((i) => Number.isInteger(i) && i >= 0 && i < count2).forEach((i) => done.add(i));
+  } else if (partStat && partStat.size <= size) {
+    for (let i = 0; (i + 1) * chunkBytes <= partStat.size || i === count2 - 1 && partStat.size === size; i++) done.add(i);
+  }
+  if (partStat && done.size === 0) await fs8.rm(part, { force: true });
+  const resumedBytes = [...done].reduce((sum, i) => sum + chunkLength(i), 0);
+  let saving = Promise.resolve();
+  const save = () => {
+    const snapshot2 = { version: 1, size, chunkBytes, done: [...done].sort((a, b) => a - b) };
+    saving = saving.then(() => writeJsonFile(mapFile, snapshot2));
+    return saving;
+  };
+  const handle = await fs8.open(part, done.size > 0 ? "r+" : "w+");
+  try {
+    await handle.truncate(size);
+    await save();
+    const todo = Array.from({ length: count2 }, (_, i) => i).filter((i) => !done.has(i));
+    let failure = null;
+    await runPool(todo, options.streams, async (index) => {
+      if (failure) return;
+      const start = index * chunkBytes;
+      const end = start + chunkLength(index) - 1;
+      try {
+        await withRetry(
+          async () => {
+            const response = await httpRequest(url, { headers: { Range: `bytes=${start}-${end}` }, timeoutMs: 12e4 });
+            const status2 = response.statusCode ?? 0;
+            if (status2 === 200) {
+              response.destroy();
+              throw new CliError("range-unsupported", `${expected.label}: the server ignores Range requests`);
+            }
+            if (status2 !== 206) throw await toHttpError(response, `Download of ${expected.label}`);
+            let position = start;
+            for await (const chunk of response) {
+              const buffer = chunk;
+              if (position + buffer.length > end + 1) throw incomplete(`Download of ${expected.label}: chunk ${index + 1} is longer than requested`);
+              await handle.write(buffer, 0, buffer.length, position);
+              position += buffer.length;
+            }
+            if (position !== end + 1) throw incomplete(`Download of ${expected.label}: chunk ${index + 1} stopped at ${position - start} of ${end - start + 1} bytes`);
+          },
+          { attempts: options.attempts ?? 6, retryIf: retryDownload }
+        );
+      } catch (error) {
+        failure ??= error;
+        return;
+      }
+      done.add(index);
+      await save();
+    });
+    await saving;
+    if (failure) throw failure;
+  } finally {
+    await handle.close();
+  }
+  await verifyPart(part, expected);
+  await fs8.rm(mapFile, { force: true });
+  await renameWithRetry(part, target);
+  return { bytes: size, resumedBytes, streams: options.streams };
 }
 
 // src/commands/project.ts
-import { promises as fs12 } from "node:fs";
-import path12 from "node:path";
+import { promises as fs14 } from "node:fs";
+import path13 from "node:path";
 
 // src/ignore.ts
-import { promises as fs7 } from "node:fs";
-import path8 from "node:path";
+import { promises as fs9 } from "node:fs";
+import path9 from "node:path";
 var DEFAULT_IGNORE_TEXT = `# darkmind-agent: files and folders that are never pushed to Dark Mind (gitignore syntax).
 # Pushed are text artefacts and AI media that cannot be reproduced; renderings, proxies and originals are not.
 
@@ -8327,7 +8759,7 @@ function createIgnoreMatcher(text3) {
 }
 async function loadIgnoreMatcher(root) {
   try {
-    const text3 = await fs7.readFile(path8.join(root, IGNORE_FILE), "utf8");
+    const text3 = await fs9.readFile(path9.join(root, IGNORE_FILE), "utf8");
     return { matcher: createIgnoreMatcher(text3), source: "file" };
   } catch (error) {
     if (error.code !== "ENOENT") throw error;
@@ -8336,11 +8768,11 @@ async function loadIgnoreMatcher(root) {
 }
 
 // src/local-state.ts
-import { promises as fs9 } from "node:fs";
-import path9 from "node:path";
+import { promises as fs11 } from "node:fs";
+import path10 from "node:path";
 
 // src/classify.ts
-import { promises as fs8 } from "node:fs";
+import { promises as fs10 } from "node:fs";
 var TEXT_EXTENSIONS = new Set(
   "txt md markdown rst adoc tex json jsonc json5 ndjson jsonl yaml yml toml ini cfg conf env properties csv tsv xml html htm xhtml css scss sass less svg js mjs cjs ts mts cts tsx jsx vue py ipynb rb go rs java kt cs fs swift lua r sql sh bash zsh ps1 psm1 psd1 bat cmd srt vtt ass ssa sub sbv lrc edl fcpxml xmeml otio xmp cube log gitignore gitattributes darkmindignore editorconfig".split(/\s+/)
 );
@@ -8380,7 +8812,7 @@ function looksLikeText(sample) {
   }
 }
 async function readSample(absolutePath, bytes = 8192) {
-  const handle = await fs8.open(absolutePath, "r");
+  const handle = await fs10.open(absolutePath, "r");
   try {
     const buffer = Buffer.alloc(bytes);
     const { bytesRead } = await handle.read(buffer, 0, bytes, 0);
@@ -8399,15 +8831,15 @@ async function scanFolder(root, matcher) {
   const files = [];
   const skipped = [];
   async function walk2(directory, prefix) {
-    const entries = await fs9.readdir(directory, { withFileTypes: true });
+    const entries = await fs11.readdir(directory, { withFileTypes: true });
     for (const entry of entries) {
       const relative = `${prefix}${entry.name.normalize("NFC")}`;
-      const absolutePath = path9.join(directory, entry.name);
+      const absolutePath = path10.join(directory, entry.name);
       if (entry.isDirectory()) {
         if (!matcher.ignores(relative, true)) await walk2(absolutePath, `${relative}/`);
       } else if (entry.isFile()) {
         if (matcher.ignores(relative, false)) continue;
-        const stat = await fs9.stat(absolutePath);
+        const stat = await fs11.stat(absolutePath);
         files.push({ path: relative, absolutePath, size: stat.size, mtimeMs: stat.mtimeMs });
       } else if (!matcher.ignores(relative, false)) {
         skipped.push({ path: relative, reason: entry.isSymbolicLink() ? "symbolic link (not followed)" : "not a regular file" });
@@ -8504,12 +8936,12 @@ function isEmptyDiff(diff) {
 }
 
 // src/project-refs.ts
-import { promises as fs11 } from "node:fs";
-import path11 from "node:path";
+import { promises as fs13 } from "node:fs";
+import path12 from "node:path";
 
 // src/commands/pipeline.ts
-import { promises as fs10 } from "node:fs";
-import path10 from "node:path";
+import { promises as fs12 } from "node:fs";
+import path11 from "node:path";
 var PROFILE_ALIASES = {
   vertical: "vertical-1080x1920-30",
   "9x16": "vertical-1080x1920-30",
@@ -8519,11 +8951,11 @@ var PROFILE_ALIASES = {
   "landscape-1920x1080-25": "landscape-1920x1080-25"
 };
 function projectReader(root) {
-  const resolve = (file) => path10.join(root, ...file.split("/"));
+  const resolve = (file) => path11.join(root, ...file.split("/"));
   return {
     async readText(file) {
       try {
-        return await fs10.readFile(resolve(file), "utf8");
+        return await fs12.readFile(resolve(file), "utf8");
       } catch (error) {
         const code = error.code;
         if (code === "ENOENT" || code === "ENOTDIR" || code === "EISDIR") return null;
@@ -8532,7 +8964,7 @@ function projectReader(root) {
     },
     async exists(file) {
       try {
-        return (await fs10.stat(resolve(file))).isFile();
+        return (await fs12.stat(resolve(file))).isFile();
       } catch {
         return false;
       }
@@ -8541,7 +8973,7 @@ function projectReader(root) {
       const { matcher } = await loadIgnoreMatcher(root);
       const files = [];
       const walk2 = async (rel3) => {
-        const entries = await fs10.readdir(resolve(rel3), { withFileTypes: true }).catch(() => []);
+        const entries = await fs12.readdir(resolve(rel3), { withFileTypes: true }).catch(() => []);
         for (const entry of entries.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)) {
           const child = `${rel3}/${entry.name.normalize("NFC")}`;
           if (entry.isDirectory()) {
@@ -8598,7 +9030,7 @@ async function importCutlistCommand(ctx, options) {
     if (!profile) throw new CliError("invalid-input", `--profile must be one of ${Object.keys(PROFILE_ALIASES).join(", ")}`);
   }
   const reader = projectReader(ctx.root);
-  const content = await fs10.readFile(path10.join(ctx.root, ...from.split("/"))).catch((error) => {
+  const content = await fs12.readFile(path11.join(ctx.root, ...from.split("/"))).catch((error) => {
     if (error.code === "ENOENT") throw new CliError("not-found", `${from} does not exist in ${ctx.root} (pull the Explore import project first)`);
     throw error;
   });
@@ -8632,10 +9064,10 @@ async function importCutlistCommand(ctx, options) {
   }
   const json2 = (value2) => `${JSON.stringify(value2, null, 2)}
 `;
-  await writeFileAtomic(path10.join(ctx.root, EDIT_DEFAULT_FILES.project), json2(converted.files.project));
-  await writeFileAtomic(path10.join(ctx.root, EDIT_DEFAULT_FILES.sources), json2(converted.files.sources));
-  await writeFileAtomic(path10.join(ctx.root, EDIT_DEFAULT_FILES.edit), json2(converted.files.edit));
-  await writeFileAtomic(path10.join(ctx.root, EDIT_DEFAULT_FILES.brief), converted.files.brief);
+  await writeFileAtomic(path11.join(ctx.root, EDIT_DEFAULT_FILES.project), json2(converted.files.project));
+  await writeFileAtomic(path11.join(ctx.root, EDIT_DEFAULT_FILES.sources), json2(converted.files.sources));
+  await writeFileAtomic(path11.join(ctx.root, EDIT_DEFAULT_FILES.edit), json2(converted.files.edit));
+  await writeFileAtomic(path11.join(ctx.root, EDIT_DEFAULT_FILES.brief), converted.files.brief);
   const result = await validateEditProject(reader);
   const c = converted.counts;
   return {
@@ -8674,8 +9106,8 @@ async function captionsWordsCommand(ctx, files, options) {
   if (!files.length) throw new CliError("usage", "captions-words needs at least one file with saved get_word_timings results");
   const timings = [];
   for (const file of files) {
-    const absolute = path10.resolve(ctx.root, file);
-    const content = await fs10.readFile(absolute, "utf8").catch((error) => {
+    const absolute = path11.resolve(ctx.root, file);
+    const content = await fs12.readFile(absolute, "utf8").catch((error) => {
       if (error.code === "ENOENT") throw new CliError("not-found", `${file} does not exist`);
       throw error;
     });
@@ -8699,7 +9131,7 @@ async function captionsWordsCommand(ctx, files, options) {
   const captionsFile = docs.project.artifacts.captions;
   const text3 = `${JSON.stringify(result.captions, null, 2)}
 `;
-  if (!options.print && assigned.length) await writeFileAtomic(path10.join(ctx.root, ...captionsFile.split("/")), text3);
+  if (!options.print && assigned.length) await writeFileAtomic(path11.join(ctx.root, ...captionsFile.split("/")), text3);
   const after = options.print ? before : await validateEditProject(reader);
   const lines = [
     `${options.print ? "Would assign" : "Assigned"} word timings to ${assigned.length} captions (${assigned.reduce((a, r) => a + r.matched, 0)} words matched, ${assigned.reduce((a, r) => a + r.interpolated, 0)} interpolated); ${skipped.length} skipped`,
@@ -8725,11 +9157,11 @@ ${lines.join("\n")}` : lines.join("\n"),
 // src/project-refs.ts
 var sortRefs = (refs) => [...new Set([...refs].map(normalizeCutProjectVideoId))].sort();
 async function isFile(file) {
-  return (await fs11.stat(file).catch(() => null))?.isFile() ?? false;
+  return (await fs13.stat(file).catch(() => null))?.isFile() ?? false;
 }
 async function resolveVideoRefs(root, config) {
   const configured = sortRefs(config.videoRefs);
-  if (!await isFile(path11.join(root, EDIT_DEFAULT_FILES.project))) {
+  if (!await isFile(path12.join(root, EDIT_DEFAULT_FILES.project))) {
     return { source: "darkmind.json", videoRefs: configured, added: [], dropped: [], pipeline: null, documents: null };
   }
   const result = await validateEditProject(projectReader(root));
@@ -8755,7 +9187,7 @@ async function resolveVideoRefs(root, config) {
 async function walkFiles(root, folder) {
   const files = [];
   const walk2 = async (rel3) => {
-    const entries = await fs11.readdir(path11.join(root, ...rel3.split("/")), { withFileTypes: true }).catch(() => []);
+    const entries = await fs13.readdir(path12.join(root, ...rel3.split("/")), { withFileTypes: true }).catch(() => []);
     for (const entry of entries) {
       const child = `${rel3}/${entry.name.normalize("NFC")}`;
       if (entry.isDirectory()) await walk2(child);
@@ -8781,7 +9213,7 @@ async function requiredPipelineFiles(root, documents) {
   candidates.add(EDIT_RECIPE_FILES.material);
   for (const file of await walkFiles(root, EDIT_FOLDERS.reviews)) candidates.add(file);
   const existing = [];
-  for (const file of candidates) if (await isFile(path11.join(root, ...file.split("/")))) existing.push(file);
+  for (const file of candidates) if (await isFile(path12.join(root, ...file.split("/")))) existing.push(file);
   return existing.sort();
 }
 function missingFromManifest(required, manifest) {
@@ -8793,7 +9225,7 @@ function missingFromManifest(required, manifest) {
 async function readManifestFile(file) {
   let text3;
   try {
-    text3 = await fs12.readFile(file, "utf8");
+    text3 = await fs14.readFile(file, "utf8");
   } catch (error) {
     if (error.code === "ENOENT") return null;
     throw error;
@@ -8816,7 +9248,7 @@ async function readBaseManifest(root, config) {
 async function initCommand(ctx, projectIdArg, options) {
   if (!projectIdArg) throw new CliError("invalid-input", "Usage: darkmind-agent init <projectId>");
   const projectId = normalizeProjectId(projectIdArg);
-  await fs12.mkdir(ctx.root, { recursive: true });
+  await fs14.mkdir(ctx.root, { recursive: true });
   const existing = await readConfig(ctx.root);
   if (existing && existing.projectId !== projectId && !options.force) {
     throw new CliError(
@@ -8828,10 +9260,10 @@ async function initCommand(ctx, projectIdArg, options) {
   const server = serverCandidate ? normalizeServer(serverCandidate) : void 0;
   const sameProject = existing?.projectId === projectId;
   const config = sameProject ? { ...existing, ...server ? { server } : {} } : { projectId, ...server ? { server } : {}, baseVersion: 0, videoRefs: [] };
-  if (!sameProject) await fs12.rm(statePaths(ctx.root).state, { recursive: true, force: true });
+  if (!sameProject) await fs14.rm(statePaths(ctx.root).state, { recursive: true, force: true });
   await writeConfig(ctx.root, config);
   const created = [CONFIG_FILE];
-  const ignorePath = path12.join(ctx.root, IGNORE_FILE);
+  const ignorePath = path13.join(ctx.root, IGNORE_FILE);
   if (!await exists(ignorePath)) {
     await writeFileAtomic(ignorePath, DEFAULT_IGNORE_TEXT);
     created.push(IGNORE_FILE);
@@ -8896,9 +9328,9 @@ async function manifestCommand(ctx, options) {
   await writeFileAtomic(paths.manifest, serialized);
   const base = await readBaseManifest(ctx.root, config);
   const diff = diffManifests(base, state.manifest);
-  const summary2 = summarizeCutProjectManifest(state.manifest);
+  const summary3 = summarizeCutProjectManifest(state.manifest);
   const changed = !isEmptyDiff(diff);
-  const relative = path12.relative(ctx.root, paths.manifest).split(path12.sep).join("/");
+  const relative = path13.relative(ctx.root, paths.manifest).split(path13.sep).join("/");
   if (options.print) {
     return { data: JSON.parse(serialized), text: serialized.trimEnd() };
   }
@@ -8907,10 +9339,10 @@ async function manifestCommand(ctx, options) {
       manifestPath: relative,
       projectId: config.projectId,
       baseVersion: config.baseVersion,
-      fileCount: summary2.fileCount,
-      totalBytes: summary2.totalBytes,
-      generatedMediaBytes: summary2.generatedMediaBytes,
-      objectCount: summary2.objectCount,
+      fileCount: summary3.fileCount,
+      totalBytes: summary3.totalBytes,
+      generatedMediaBytes: summary3.generatedMediaBytes,
+      objectCount: summary3.objectCount,
       videoRefs: state.manifest.videoRefs.length,
       changes: {
         added: diff.added.length,
@@ -8924,7 +9356,7 @@ async function manifestCommand(ctx, options) {
       warnings,
       next: changed ? `project_push_begin(projectId "${config.projectId}", baseVersion ${config.baseVersion}, manifest = content of ${relative})` : `Nothing changed since version ${config.baseVersion}.`
     },
-    text: `Wrote ${relative}: ${summary2.fileCount} files, ${formatBytes(summary2.totalBytes)} (+${diff.added.length} ~${diff.modified.length} -${diff.deleted.length} since version ${config.baseVersion}); ${state.manifest.videoRefs.length} video references (${refs.source})` + (refs.dropped.length ? `, not used by the pipeline: ${refs.dropped.join(", ")}` : "") + "." + warnings.map((warning) => `
+    text: `Wrote ${relative}: ${summary3.fileCount} files, ${formatBytes(summary3.totalBytes)} (+${diff.added.length} ~${diff.modified.length} -${diff.deleted.length} since version ${config.baseVersion}); ${state.manifest.videoRefs.length} video references (${refs.source})` + (refs.dropped.length ? `, not used by the pipeline: ${refs.dropped.join(", ")}` : "") + "." + warnings.map((warning) => `
 warning: ${warning}`).join("")
   };
 }
@@ -8991,7 +9423,7 @@ async function pushedCommand(ctx, versionArg, options) {
 // src/commands/download.ts
 async function downloadCommand(ctx, ticket, options = {}) {
   if (!ticket) throw new CliError("invalid-input", "Usage: darkmind-agent download <ticket> [--force]");
-  await fs13.mkdir(ctx.root, { recursive: true });
+  await fs15.mkdir(ctx.root, { recursive: true });
   const config = await readConfig(ctx.root);
   const server = resolveServer(ctx.server, config, ctx.env);
   const transfer = expectKind(await redeemTicket(server, ticket), "pull", "download");
@@ -9020,7 +9452,7 @@ async function downloadCommand(ctx, ticket, options = {}) {
   async function localHash(file) {
     const absolute = toAbsolute(ctx.root, file);
     try {
-      const stat = await fs13.stat(absolute);
+      const stat = await fs15.stat(absolute);
       if (stat.isDirectory()) return "directory";
       return await cache.hash(file, absolute, stat.size, stat.mtimeMs);
     } catch (error) {
@@ -9065,35 +9497,35 @@ async function downloadCommand(ctx, ticket, options = {}) {
     );
   }
   const needed = [...new Map(writes.map((file) => [file.sha256, file])).values()];
-  const objectDir = path13.join(paths.tmp, "objects");
-  await fs13.mkdir(objectDir, { recursive: true });
+  const objectDir = path14.join(paths.tmp, "objects");
+  await fs15.mkdir(objectDir, { recursive: true });
   let done = 0;
   const downloads = await runPool(needed, options.concurrency ?? 4, async (file) => {
     const object = urls.get(file.sha256);
-    const result = await downloadFile(object.url, path13.join(objectDir, file.sha256), { size: file.size, sha256: file.sha256, label: file.path });
+    const result = await downloadFile(object.url, path14.join(objectDir, file.sha256), { size: file.size, sha256: file.sha256, label: file.path });
     ctx.progress(`downloaded ${++done}/${needed.length} ${file.path} (${formatBytes(file.size)})`);
     return result;
   });
-  for (const file of deletes) await fs13.rm(toAbsolute(ctx.root, file), { force: true });
+  for (const file of deletes) await fs15.rm(toAbsolute(ctx.root, file), { force: true });
   const remainingUses = /* @__PURE__ */ new Map();
   for (const file of writes) remainingUses.set(file.sha256, (remainingUses.get(file.sha256) ?? 0) + 1);
   for (const file of writes) {
     const absolute = toAbsolute(ctx.root, file.path);
-    const source = path13.join(objectDir, file.sha256);
-    await fs13.mkdir(path13.dirname(absolute), { recursive: true });
-    const stat = await fs13.stat(absolute).catch(() => null);
-    if (stat?.isDirectory()) await fs13.rm(absolute, { recursive: true, force: true });
+    const source = path14.join(objectDir, file.sha256);
+    await fs15.mkdir(path14.dirname(absolute), { recursive: true });
+    const stat = await fs15.stat(absolute).catch(() => null);
+    if (stat?.isDirectory()) await fs15.rm(absolute, { recursive: true, force: true });
     const uses = remainingUses.get(file.sha256) - 1;
     remainingUses.set(file.sha256, uses);
     if (uses > 0) {
       const temp = `${absolute}.darkmind-tmp`;
-      await fs13.copyFile(source, temp);
+      await fs15.copyFile(source, temp);
       await renameWithRetry(temp, absolute);
     } else {
       await renameWithRetry(source, absolute);
     }
   }
-  await fs13.rm(objectDir, { recursive: true, force: true });
+  await fs15.rm(objectDir, { recursive: true, force: true });
   const baseRefs = new Set(base?.videoRefs ?? []);
   const localAdditions = sameProject && !options.force ? (config?.videoRefs ?? []).filter((ref) => !baseRefs.has(ref)) : [];
   const videoRefs = [...new Set([...target.videoRefs, ...localAdditions].map(normalizeCutProjectVideoId))];
@@ -9131,20 +9563,20 @@ next:${prepare}` : ""}`
 }
 
 // src/commands/export.ts
-import path24 from "node:path";
+import path25 from "node:path";
 
 // src/pipeline/premiere.ts
-import { promises as fs24 } from "node:fs";
-import path23 from "node:path";
+import { promises as fs26 } from "node:fs";
+import path24 from "node:path";
 
 // src/pipeline/extensions.ts
 import { spawn as spawn3 } from "node:child_process";
-import { promises as fs18 } from "node:fs";
+import { promises as fs20 } from "node:fs";
 import { createRequire } from "node:module";
-import path17 from "node:path";
+import path18 from "node:path";
 
 // src/pipeline/facts.ts
-import { promises as fs14 } from "node:fs";
+import { promises as fs16 } from "node:fs";
 function probeRational(value2) {
   if (value2 === void 0 || value2 === null) return null;
   const text3 = String(value2).trim();
@@ -9245,7 +9677,7 @@ function isVariableFrameRate(pts) {
   return false;
 }
 async function fileByteReader(file) {
-  const handle = await fs14.open(file, "r");
+  const handle = await fs16.open(file, "r");
   return {
     size: async () => (await handle.stat()).size,
     async read(offset, length2) {
@@ -9422,12 +9854,12 @@ function describeProbeError(error) {
 }
 
 // src/pipeline/media-index.ts
-import { promises as fs15 } from "node:fs";
-import path14 from "node:path";
+import { promises as fs17 } from "node:fs";
+import path15 from "node:path";
 var PROXY_INDEX_FILE = "index.json";
 var NOTE = "darkmind-agent proxy index (rule E1): original time = offset + file time. Local state, not synced.";
 async function readProxyIndex(dir) {
-  const data = await readJsonFile(path14.join(dir, PROXY_INDEX_FILE)).catch(() => null);
+  const data = await readJsonFile(path15.join(dir, PROXY_INDEX_FILE)).catch(() => null);
   return data?.version === 1 && Array.isArray(data.files) ? data : { version: 1, note: NOTE, files: [] };
 }
 async function updateProxyIndex(dir, entries, now = /* @__PURE__ */ new Date()) {
@@ -9438,15 +9870,15 @@ async function updateProxyIndex(dir, entries, now = /* @__PURE__ */ new Date()) 
   }
   const files = [];
   for (const entry of byName.values()) {
-    if (await fs15.stat(path14.join(dir, entry.file)).catch(() => null)) files.push(entry);
+    if (await fs17.stat(path15.join(dir, entry.file)).catch(() => null)) files.push(entry);
   }
   files.sort((a, b) => a.file < b.file ? -1 : 1);
-  await writeJsonFile(path14.join(dir, PROXY_INDEX_FILE), { version: 1, note: NOTE, files });
+  await writeJsonFile(path15.join(dir, PROXY_INDEX_FILE), { version: 1, note: NOTE, files });
 }
 async function proxyCandidates(dir, videoId) {
   const id2 = normalizeCutProjectVideoId(videoId);
   const index = await readProxyIndex(dir);
-  const names = await fs15.readdir(dir).catch(() => []);
+  const names = await fs17.readdir(dir).catch(() => []);
   const candidates = [];
   const unknown = [];
   for (const name of names) {
@@ -9456,9 +9888,9 @@ async function proxyCandidates(dir, videoId) {
     if (entry) {
       const offset = parseRational(entry.offset);
       const end = entry.durationSeconds ? addQ(offset, parseRational(entry.durationSeconds)) : null;
-      candidates.push({ file: path14.join(dir, name), kind: entry.kind, offset, end });
+      candidates.push({ file: path15.join(dir, name), kind: entry.kind, offset, end });
     } else if (name.toUpperCase() === `${id2}.MP4`) {
-      candidates.push({ file: path14.join(dir, name), kind: "full", offset: { n: 0n, d: 1n }, end: null });
+      candidates.push({ file: path15.join(dir, name), kind: "full", offset: { n: 0n, d: 1n }, end: null });
     } else {
       unknown.push(name);
     }
@@ -9467,24 +9899,24 @@ async function proxyCandidates(dir, videoId) {
 }
 
 // src/pipeline/plan.ts
-import { promises as fs16 } from "node:fs";
-import path15 from "node:path";
+import { promises as fs18 } from "node:fs";
+import path16 from "node:path";
 var MEDIA_HASH_CACHE = "media-hashes.json";
 function mediaHashCachePath(root) {
-  return path15.join(root, EDIT_FOLDERS.localState, MEDIA_HASH_CACHE);
+  return path16.join(root, EDIT_FOLDERS.localState, MEDIA_HASH_CACHE);
 }
 function toRel(root, file) {
-  return path15.relative(root, file).split(path15.sep).join("/");
+  return path16.relative(root, file).split(path16.sep).join("/");
 }
 async function findOriginal(root, videoId) {
-  const dir = path15.join(root, "media", "original");
+  const dir = path16.join(root, "media", "original");
   const id2 = normalizeCutProjectVideoId(videoId);
-  const names = await fs16.readdir(dir).catch(() => []);
+  const names = await fs18.readdir(dir).catch(() => []);
   const match = names.find((name) => {
     const upper = name.toUpperCase();
     return upper.startsWith(`${id2}.`) && !/\.(PART|TMP)$/.test(upper) && !upper.endsWith(".JSON");
   });
-  return match ? path15.join(dir, match) : null;
+  return match ? path16.join(dir, match) : null;
 }
 function mergeRanges(windows, gap = 5) {
   const sorted = [...windows].sort((a, b) => a.from - b.from);
@@ -9532,7 +9964,7 @@ async function buildExecutionPlan(options) {
     const known = fileByPath.get(key);
     if (known) return known;
     if (failedPaths.has(key)) return null;
-    const stat = await fs16.stat(abs2).catch(() => null);
+    const stat = await fs18.stat(abs2).catch(() => null);
     if (!stat?.isFile()) {
       failedPaths.add(key);
       error("media-missing", `${toRel(root, abs2)} does not exist`, ref);
@@ -9596,7 +10028,7 @@ async function buildExecutionPlan(options) {
     const source = sources.get(sourceId);
     if (!source) continue;
     if (source.kind === "asset") {
-      const abs2 = path15.join(root, ...source.path.split("/"));
+      const abs2 = path16.join(root, ...source.path.split("/"));
       const file = await addFile(abs2, "asset", { sourceId }, sourceId);
       if (!file) continue;
       if (file.size !== source.size) error("asset-changed", `${source.path} has ${file.size} bytes, sources.json records ${source.size}; a changed asset needs a new source revision`, sourceId);
@@ -9642,7 +10074,7 @@ async function buildExecutionPlan(options) {
       for (const w of list2) clipFile.set(w.clipId, file);
       continue;
     }
-    const { candidates, unknown } = await proxyCandidates(path15.join(root, "media", "proxy"), videoId);
+    const { candidates, unknown } = await proxyCandidates(path16.join(root, "media", "proxy"), videoId);
     for (const name of unknown) warning("proxy-offset-unknown", `media/proxy/${name} has no entry in media/proxy/index.json (rule E1: unknown offset); it is ignored \u2013 load excerpts again with this darkmind-agent version`, sourceId);
     const missing = [];
     let fellBack = false;
@@ -9672,8 +10104,8 @@ async function buildExecutionPlan(options) {
     if (!clip.extensionId || clipFile.has(clip.id)) continue;
     const extension = extensions.get(clip.extensionId);
     if (!extension || options.withoutExtensionOutputs) continue;
-    const abs2 = path15.join(root, ...extension.output.path.split("/"));
-    const exists2 = await fs16.stat(abs2).catch(() => null);
+    const abs2 = path16.join(root, ...extension.output.path.split("/"));
+    const exists2 = await fs18.stat(abs2).catch(() => null);
     if (!exists2) {
       if (!issues.some((i) => i.code === "extension-output-missing" && i.ref === extension.id)) {
         (options.allowMissingExtensionOutputs ? warning : error)("extension-output-missing", `${extension.output.path} does not exist; run "darkmind-agent extensions run ${extension.id}" (render runs approved extensions itself)`, extension.id);
@@ -9824,8 +10256,8 @@ function extensionContractProblems(info, out, frames) {
 }
 
 // src/pipeline/preview-readiness.ts
-import { promises as fs17 } from "node:fs";
-import path16 from "node:path";
+import { promises as fs19 } from "node:fs";
+import path17 from "node:path";
 var BROWSER_VIDEO_CODECS = /* @__PURE__ */ new Set(["h264", "vp8", "vp9", "av1"]);
 function browserPlayable(file) {
   if (!file.video) return true;
@@ -9853,11 +10285,11 @@ function browserCopyArgs(input, output, file) {
   ];
 }
 async function npmInstallDir(root, extensionDir) {
-  for (let dir = extensionDir; ; dir = path16.dirname(dir)) {
-    if ((await fs17.stat(path16.join(dir, "package.json")).catch(() => null))?.isFile()) return path16.relative(root, dir).split(path16.sep).join("/") || ".";
-    if (path16.relative(root, dir) === "" || dir === path16.dirname(dir)) break;
+  for (let dir = extensionDir; ; dir = path17.dirname(dir)) {
+    if ((await fs19.stat(path17.join(dir, "package.json")).catch(() => null))?.isFile()) return path17.relative(root, dir).split(path17.sep).join("/") || ".";
+    if (path17.relative(root, dir) === "" || dir === path17.dirname(dir)) break;
   }
-  return path16.relative(root, extensionDir).split(path16.sep).join("/") || ".";
+  return path17.relative(root, extensionDir).split(path17.sep).join("/") || ".";
 }
 async function previewReadiness(root, states, needs, captionExtensions) {
   const used = states.filter((s) => s.needed);
@@ -9874,7 +10306,7 @@ async function previewReadiness(root, states, needs, captionExtensions) {
   for (const state of used) {
     for (const problem of state.problems.filter((p) => p.code === "extension-tool-missing")) {
       if (/tool "npm:/.test(problem.message)) {
-        const dir = await npmInstallDir(root, path16.dirname(path16.join(root, ...state.file.split("/"))));
+        const dir = await npmInstallDir(root, path17.dirname(path17.join(root, ...state.file.split("/"))));
         npmDirs.set(dir, [...npmDirs.get(dir) ?? [], state.id]);
       } else {
         otherTools.set(problem.message, [...otherTools.get(problem.message) ?? [], state.id]);
@@ -9926,13 +10358,13 @@ var MAX_APPROVALS = 200;
 var CACHE_KEEP = 10;
 var DEFAULT_TIMEOUT_MS = 60 * 6e4;
 var TAIL_BYTES = 16 * 1024;
-var rel = (root, file) => path17.relative(root, file).split(path17.sep).join("/");
-var abs = (root, file) => path17.join(root, ...file.split("/"));
+var rel = (root, file) => path18.relative(root, file).split(path18.sep).join("/");
+var abs = (root, file) => path18.join(root, ...file.split("/"));
 function cacheDir(root, extensionId) {
-  return path17.join(root, "renders", ".cache", "extensions", extensionId);
+  return path18.join(root, "renders", ".cache", "extensions", extensionId);
 }
 function approvalsPath(root) {
-  return path17.join(root, EDIT_FOLDERS.localState, APPROVALS_FILE);
+  return path18.join(root, EDIT_FOLDERS.localState, APPROVALS_FILE);
 }
 function envValue2(env, name) {
   if (env[name] !== void 0) return env[name];
@@ -9940,24 +10372,24 @@ function envValue2(env, name) {
   return key ? env[key] : void 0;
 }
 async function isFile2(file) {
-  return (await fs18.stat(file).catch(() => null))?.isFile() ?? false;
+  return (await fs20.stat(file).catch(() => null))?.isFile() ?? false;
 }
 async function resolveProgram(program, root, env) {
   if (/[\\/]/.test(program)) {
     const normalised = program.replace(/\\/g, "/").replace(/^(\.\/)+/, "");
-    if (path17.isAbsolute(program) || /^[A-Za-z]:/.test(program) || normalised.split("/").includes("..")) {
+    if (path18.isAbsolute(program) || /^[A-Za-z]:/.test(program) || normalised.split("/").includes("..")) {
       return { resolved: null, problem: { code: "extension-path-outside", message: `program "${program}" lies outside the project folder; use a program from PATH (node, ffmpeg \u2026) or a declared script in the project` } };
     }
     const file = abs(root, normalised);
     return await isFile2(file) ? { resolved: file } : { resolved: null, problem: { code: "extension-input-missing", message: `program "${normalised}" does not exist in the project` } };
   }
-  const dirs = (envValue2(env, "PATH") ?? "").split(path17.delimiter).map((d) => d.replace(/^"|"$/g, "")).filter((d) => d && path17.isAbsolute(d));
+  const dirs = (envValue2(env, "PATH") ?? "").split(path18.delimiter).map((d) => d.replace(/^"|"$/g, "")).filter((d) => d && path18.isAbsolute(d));
   const windows = process.platform === "win32";
   const suffixes = windows ? ["", ...(envValue2(env, "PATHEXT") ?? ".COM;.EXE;.BAT;.CMD").split(";").filter(Boolean)] : [""];
   for (const dir of dirs) {
     for (const suffix of suffixes) {
-      if (windows && suffix === "" && !path17.extname(program)) continue;
-      const candidate = path17.join(dir, `${program}${suffix}`);
+      if (windows && suffix === "" && !path18.extname(program)) continue;
+      const candidate = path18.join(dir, `${program}${suffix}`);
       if (await isFile2(candidate)) {
         if (windows && /\.(cmd|bat)$/i.test(candidate)) {
           return {
@@ -9994,21 +10426,21 @@ function versionSatisfies(version, required) {
 }
 async function findPackage(name, startDir, root, env) {
   const dirs = [];
-  for (let dir = startDir; ; dir = path17.dirname(dir)) {
-    dirs.push(path17.join(dir, "node_modules"));
-    if (path17.relative(root, dir) === "" || dir === path17.dirname(dir)) break;
+  for (let dir = startDir; ; dir = path18.dirname(dir)) {
+    dirs.push(path18.join(dir, "node_modules"));
+    if (path18.relative(root, dir) === "" || dir === path18.dirname(dir)) break;
   }
-  dirs.push(...(envValue2(env, "NODE_PATH") ?? "").split(path17.delimiter).filter(Boolean));
+  dirs.push(...(envValue2(env, "NODE_PATH") ?? "").split(path18.delimiter).filter(Boolean));
   for (const dir of dirs) {
-    const manifest = path17.join(dir, ...name.split("/"), "package.json");
+    const manifest = path18.join(dir, ...name.split("/"), "package.json");
     const data = await readJsonFile(manifest).catch(() => null);
-    if (data?.version) return { resolved: path17.dirname(manifest), version: data.version, digest: (await hashFile(manifest)).sha256 };
+    if (data?.version) return { resolved: path18.dirname(manifest), version: data.version, digest: (await hashFile(manifest)).sha256 };
   }
   try {
-    const require2 = createRequire(path17.join(startDir, "noop.js"));
+    const require2 = createRequire(path18.join(startDir, "noop.js"));
     const manifest = require2.resolve(`${name}/package.json`);
     const data = await readJsonFile(manifest);
-    if (data?.version) return { resolved: path17.dirname(manifest), version: data.version, digest: (await hashFile(manifest)).sha256 };
+    if (data?.version) return { resolved: path18.dirname(manifest), version: data.version, digest: (await hashFile(manifest)).sha256 };
   } catch {
   }
   return null;
@@ -10084,7 +10516,7 @@ async function syncProblem(root, matcher, file) {
     const partial = parts.slice(0, i).join("/");
     const directory = i < parts.length;
     if (matcher.ignores(partial, directory)) return `${file} is excluded from the project sync (.darkmindignore); the archive would not contain it \u2013 move it or remove the exclusion`;
-    if ((await fs18.lstat(abs(root, partial)).catch(() => null))?.isSymbolicLink()) return `${partial} is a symbolic link, which the project sync does not follow; use a real file in the project`;
+    if ((await fs20.lstat(abs(root, partial)).catch(() => null))?.isSymbolicLink()) return `${partial} is a symbolic link, which the project sync does not follow; use a real file in the project`;
   }
   return null;
 }
@@ -10106,7 +10538,7 @@ function namedFiles(extension) {
 async function packageManifests(root, files) {
   const found = /* @__PURE__ */ new Set();
   for (const file of files) {
-    for (let dir = path17.posix.dirname(file); ; dir = path17.posix.dirname(dir)) {
+    for (let dir = path18.posix.dirname(file); ; dir = path18.posix.dirname(dir)) {
       const manifest = dir === "." ? "package.json" : `${dir}/package.json`;
       if (await isFile2(abs(root, manifest))) found.add(manifest);
       if (dir === "." || dir === "/") break;
@@ -10115,7 +10547,7 @@ async function packageManifests(root, files) {
   return [...found].sort();
 }
 async function readRecord(root, extensionId, key) {
-  const record = await readJsonFile(path17.join(cacheDir(root, extensionId), `${key}.json`)).catch(() => null);
+  const record = await readJsonFile(path18.join(cacheDir(root, extensionId), `${key}.json`)).catch(() => null);
   return record?.kind === "darkmind-extension-run" && record.key === key ? record : null;
 }
 function neededExtensions(docs) {
@@ -10128,7 +10560,7 @@ async function inspectOne(ctx, docs, extension, file, needed, options) {
   const problems = [];
   const warnings = [];
   const sources = new Map((docs.sources?.sources ?? []).map((s) => [s.id, s]));
-  const extensionDir = path17.dirname(abs(root, file));
+  const extensionDir = path18.dirname(abs(root, file));
   const artefacts = new Set([EDIT_DEFAULT_FILES.project, ...Object.values(docs.project.artifacts).filter((p) => Boolean(p))].map((p) => p.toLowerCase()));
   const inputs = { files: {}, sources: {}, extensions: {} };
   const fileHashes = {};
@@ -10139,7 +10571,7 @@ async function inspectOne(ctx, docs, extension, file, needed, options) {
   for (const input of extension.inputs) {
     if (input.kind === "file") {
       const absolute = abs(root, input.path);
-      const stat2 = await fs18.stat(absolute).catch(() => null);
+      const stat2 = await fs20.stat(absolute).catch(() => null);
       if (!stat2?.isFile()) {
         problems.push({ code: "extension-input-missing", message: `${input.path} does not exist; restore it from the project archive (darkmind-agent download) \u2013 saved inputs such as AI media are never regenerated automatically` });
         fileHashes[input.path] = null;
@@ -10157,7 +10589,7 @@ async function inspectOne(ctx, docs, extension, file, needed, options) {
       }
       if (source.kind === "asset") {
         const absolute = abs(root, source.path);
-        const stat3 = await fs18.stat(absolute).catch(() => null);
+        const stat3 = await fs20.stat(absolute).catch(() => null);
         if (!stat3?.isFile()) {
           problems.push({ code: "extension-input-missing", message: `asset ${source.path} (source "${source.id}") does not exist; restore it from the project archive \u2013 AI media is never regenerated automatically` });
           continue;
@@ -10174,7 +10606,7 @@ async function inspectOne(ctx, docs, extension, file, needed, options) {
       const videoId = normalizeCutProjectVideoId(source.videoId);
       const original = await findOriginal(root, videoId);
       if (original) {
-        const stat3 = await fs18.stat(original);
+        const stat3 = await fs20.stat(original);
         const originalPath = rel(root, original);
         const sha2 = await options.hashCache.hash(originalPath, original, stat3.size, Math.round(stat3.mtimeMs));
         if (source.original?.size !== void 0 && source.original.size !== stat3.size || source.original?.sha256 && source.original.sha256 !== sha2) {
@@ -10188,14 +10620,14 @@ async function inspectOne(ctx, docs, extension, file, needed, options) {
         problems.push({ code: "extension-input-missing", message: `the original of source "${source.id}" (${videoId}) is not in media/original/; load it with get_media_sources(kind original, ${videoId}) \u2192 darkmind-agent media <ticket>` });
         continue;
       }
-      const { candidates } = await proxyCandidates(path17.join(root, "media", "proxy"), videoId);
+      const { candidates } = await proxyCandidates(path18.join(root, "media", "proxy"), videoId);
       const span = (c) => c.end === null ? Number.POSITIVE_INFINITY : toNumberQ(subQ(c.end, c.offset));
       const best = [...candidates].sort((a, b) => span(b) - span(a) || toNumberQ(subQ(a.offset, b.offset)))[0];
       if (!best) {
         problems.push({ code: "extension-input-missing", message: `no proxy or original of source "${source.id}" (${videoId}) is local; load it with get_media_sources(kind proxy, ${videoId}) \u2192 darkmind-agent media <ticket>` });
         continue;
       }
-      const stat2 = await fs18.stat(best.file);
+      const stat2 = await fs20.stat(best.file);
       const offset = formatRationalReadable(best.offset, 9);
       const proxyPath = rel(root, best.file);
       inputs.sources[source.id] = { path: proxyPath, file: best.file, role: "proxy", offset };
@@ -10220,10 +10652,10 @@ async function inspectOne(ctx, docs, extension, file, needed, options) {
   const named = namedFiles(extension);
   const code = {};
   for (const [file2, hash2] of Object.entries(fileHashes)) if (isCode(file2, artefacts, named)) code[file2] = hash2;
-  for (const manifest of await packageManifests(root, [...Object.keys(code), rel(root, path17.join(extensionDir, "x"))])) {
+  for (const manifest of await packageManifests(root, [...Object.keys(code), rel(root, path18.join(extensionDir, "x"))])) {
     if (!(manifest in code)) {
       const absolute = abs(root, manifest);
-      const manifestStat = await fs18.stat(absolute);
+      const manifestStat = await fs20.stat(absolute);
       code[manifest] = await options.hashCache.hash(manifest, absolute, manifestStat.size, Math.round(manifestStat.mtimeMs));
     }
   }
@@ -10241,7 +10673,7 @@ async function inspectOne(ctx, docs, extension, file, needed, options) {
   const approved = basis !== null;
   const changes = approved ? [] : executionChanges(approvals[approvals.length - 1]?.execution ?? null, execution);
   const outputAbs = abs(root, extension.output.path);
-  const stat = await fs18.stat(outputAbs).catch(() => null);
+  const stat = await fs20.stat(outputAbs).catch(() => null);
   const outputSha = stat?.isFile() ? await options.hashCache.hash(extension.output.path, outputAbs, stat.size, Math.round(stat.mtimeMs)) : null;
   const key = problems.length || waitingFor ? null : sha256Hex(
     canonicalJson({
@@ -10268,7 +10700,7 @@ async function inspectOne(ctx, docs, extension, file, needed, options) {
   } else if (record && outputSha === record.sha256) {
     status2 = "current";
     reason = "output matches the cached run of this state";
-  } else if (record && (await fs18.stat(path17.join(cacheDir(root, extension.id), record.cached)).catch(() => null))?.size === record.size) {
+  } else if (record && (await fs20.stat(path18.join(cacheDir(root, extension.id), record.cached)).catch(() => null))?.size === record.size) {
     status2 = "restorable";
     reason = "an earlier run of exactly this state is cached; it is restored without running the command";
   } else {
@@ -10399,15 +10831,15 @@ function snapshotChanges(before, after) {
 }
 async function pruneCache(dir, keep) {
   const records = [];
-  for (const name of await fs18.readdir(dir).catch(() => [])) {
+  for (const name of await fs20.readdir(dir).catch(() => [])) {
     if (!name.endsWith(".json")) continue;
-    const record = await readJsonFile(path17.join(dir, name)).catch(() => null);
+    const record = await readJsonFile(path18.join(dir, name)).catch(() => null);
     if (record?.key) records.push({ key: record.key, createdAt: record.createdAt, cached: record.cached });
   }
   records.sort((a, b) => a.createdAt < b.createdAt ? 1 : -1);
   for (const old of records.filter((r) => r.key !== keep).slice(CACHE_KEEP - 1)) {
-    await fs18.rm(path17.join(dir, old.cached), { force: true });
-    await fs18.rm(path17.join(dir, `${old.key}.json`), { force: true });
+    await fs20.rm(path18.join(dir, old.cached), { force: true });
+    await fs20.rm(path18.join(dir, `${old.key}.json`), { force: true });
   }
 }
 var ExtensionRunError = class extends CliError {
@@ -10428,11 +10860,11 @@ async function execute(ctx, extension, state) {
   const { root } = ctx;
   const output = abs(root, extension.output.path);
   const dir = cacheDir(root, extension.id);
-  const tmp = path17.join(root, "renders", ".tmp", `ext-${extension.id}-${process.pid}-${Date.now()}`);
-  await fs18.mkdir(path17.dirname(output), { recursive: true });
-  await fs18.mkdir(tmp, { recursive: true });
-  await fs18.rm(output, { force: true });
-  const inputsFile = path17.join(tmp, "inputs.json");
+  const tmp = path18.join(root, "renders", ".tmp", `ext-${extension.id}-${process.pid}-${Date.now()}`);
+  await fs20.mkdir(path18.dirname(output), { recursive: true });
+  await fs20.mkdir(tmp, { recursive: true });
+  await fs20.rm(output, { force: true });
+  const inputsFile = path18.join(tmp, "inputs.json");
   await writeJsonFile(inputsFile, {
     kind: "darkmind-extension-inputs",
     version: 1,
@@ -10460,12 +10892,12 @@ async function execute(ctx, extension, state) {
   if (state.modeDependent) env.DARKMIND_RENDER_MODE = ctx.mode;
   const fail = async (code, message, keep = false) => {
     if (keep && await isFile2(output)) {
-      const rejected = path17.join(dir, `rejected${path17.extname(output)}`);
-      await fs18.mkdir(dir, { recursive: true });
-      await fs18.rm(rejected, { force: true });
-      await fs18.rename(output, rejected).catch(() => fs18.rm(output, { force: true }));
+      const rejected = path18.join(dir, `rejected${path18.extname(output)}`);
+      await fs20.mkdir(dir, { recursive: true });
+      await fs20.rm(rejected, { force: true });
+      await fs20.rename(output, rejected).catch(() => fs20.rm(output, { force: true }));
       message += ` (kept for inspection: ${rel(root, rejected)})`;
-    } else await fs18.rm(output, { force: true });
+    } else await fs20.rm(output, { force: true });
     throw new ExtensionRunError(code, message);
   };
   const before = await snapshot(root, ctx.matcher);
@@ -10476,7 +10908,7 @@ async function execute(ctx, extension, state) {
       result = await runCommand(state.trust.execution.program.resolved, extension.command.args, { cwd: root, env, signal: ctx.signal, timeoutMs: ctx.timeoutMs });
     } catch (error) {
       if (error instanceof AbortedError) {
-        await fs18.rm(output, { force: true });
+        await fs20.rm(output, { force: true });
         throw error;
       }
       return await fail("extension-failed", `the command could not be started: ${errorMessage(error)}`);
@@ -10489,7 +10921,7 @@ async function execute(ctx, extension, state) {
       const reason = result.stderr.trim().split(/\r?\n/).slice(-5).join(" | ") || result.stdout.trim().split(/\r?\n/).slice(-3).join(" | ") || "no output";
       return await fail("extension-failed", `the command exited with code ${result.code}: ${reason}`);
     }
-    const stat = await fs18.stat(output).catch(() => null);
+    const stat = await fs20.stat(output).catch(() => null);
     if (!stat?.isFile()) return await fail("extension-output-missing", `the command succeeded but did not write ${extension.output.path}`);
     let info;
     try {
@@ -10513,9 +10945,9 @@ async function execute(ctx, extension, state) {
     }
     const v = info.video;
     const { sha256: sha2563, size } = await hashFile(output);
-    await fs18.mkdir(dir, { recursive: true });
-    const cached = `${state.key}${path17.extname(output).toLowerCase()}`;
-    await fs18.copyFile(output, path17.join(dir, cached));
+    await fs20.mkdir(dir, { recursive: true });
+    const cached = `${state.key}${path18.extname(output).toLowerCase()}`;
+    await fs20.copyFile(output, path18.join(dir, cached));
     const record = {
       kind: "darkmind-extension-run",
       version: 1,
@@ -10543,24 +10975,24 @@ async function execute(ctx, extension, state) {
       runner: EXTENSION_RUNNER_VERSION,
       agentVersion: AGENT_VERSION
     };
-    await writeJsonFile(path17.join(dir, `${state.key}.json`), record);
+    await writeJsonFile(path18.join(dir, `${state.key}.json`), record);
     await pruneCache(dir, state.key);
     return record;
   } finally {
-    await fs18.rm(tmp, { recursive: true, force: true });
+    await fs20.rm(tmp, { recursive: true, force: true });
   }
 }
 async function restore(root, state) {
   const record = state.record;
-  const cached = path17.join(cacheDir(root, state.id), record.cached);
+  const cached = path18.join(cacheDir(root, state.id), record.cached);
   const { sha256: sha2563 } = await hashFile(cached).catch(() => ({ sha256: "" }));
   if (sha2563 !== record.sha256) return false;
   const output = abs(root, state.output.path);
-  await fs18.mkdir(path17.dirname(output), { recursive: true });
+  await fs20.mkdir(path18.dirname(output), { recursive: true });
   const temp = `${output}.restore-${process.pid}.tmp`;
-  await fs18.copyFile(cached, temp);
-  await fs18.rm(output, { force: true });
-  await fs18.rename(temp, output);
+  await fs20.copyFile(cached, temp);
+  await fs20.rm(output, { force: true });
+  await fs20.rename(temp, output);
   return true;
 }
 async function runExtensions(options) {
@@ -10643,25 +11075,25 @@ async function runExtensions(options) {
   }
   return { ok: failed.size === 0, mode: options.mode, results };
 }
-function extensionsError(summary2) {
-  const bad = summary2.results.filter((r) => r.action === "blocked" || r.action === "failed" || r.action === "skipped");
+function extensionsError(summary3) {
+  const bad = summary3.results.filter((r) => r.action === "blocked" || r.action === "failed" || r.action === "skipped");
   const approvals = bad.filter((r) => r.approval);
   const lines = bad.map((r) => `${r.id}: ${r.problems.map((p) => p.message).join("; ")}`);
   if (approvals.length) {
     return new CliError("extension-approval-required", `Extensions need a local approval before they run: ${lines.join(" | ")}`, {
       extensions: approvals.map((r) => ({ id: r.id, hash: r.approval.hash, changes: r.approval.changes, show: `darkmind-agent extensions show ${r.id}` })),
-      results: summary2.results
+      results: summary3.results
     });
   }
   return new CliError("extensions-failed", `Extensions are not up to date: ${lines.join(" | ")}`, {
     issues: bad.flatMap((r) => r.problems.map((p) => ({ severity: "error", code: p.code, message: p.message, ref: r.id }))),
-    results: summary2.results
+    results: summary3.results
   });
 }
 
 // src/pipeline/graph.ts
-import { promises as fs19 } from "node:fs";
-import path18 from "node:path";
+import { promises as fs21 } from "node:fs";
+import path19 from "node:path";
 var RENDER_RECIPES = {
   proxy: {
     id: "proxy-x264-veryfast-crf23-v1",
@@ -10887,20 +11319,20 @@ function duckFilter(spans, t0, seconds2, ducking) {
 async function withGraphFile(args, workDir, ffmpegMajor2, name) {
   const index = args.indexOf("-filter_complex");
   if (index < 0 || args[index + 1].length < 16e3) return args;
-  const file = path18.join(workDir, `${name}.graph.txt`);
-  await fs19.writeFile(file, args[index + 1]);
+  const file = path19.join(workDir, `${name}.graph.txt`);
+  await fs21.writeFile(file, args[index + 1]);
   const copy = [...args];
   copy.splice(index, 2, ffmpegMajor2 >= 7 ? "-/filter_complex" : "-filter_complex_script", file);
   return copy;
 }
 
 // src/pipeline/render.ts
-import { promises as fs23 } from "node:fs";
-import path22 from "node:path";
+import { promises as fs25 } from "node:fs";
+import path23 from "node:path";
 
 // src/pipeline/checks.ts
-import { promises as fs20 } from "node:fs";
-import path19 from "node:path";
+import { promises as fs22 } from "node:fs";
+import path20 from "node:path";
 var ANALYSIS_RATE = 8e3;
 async function decodeMono(tools, file, options = {}) {
   const rate = options.rate ?? ANALYSIS_RATE;
@@ -11002,7 +11434,7 @@ async function psnrPerFrame(tools, current, previous, workDir, options = {}) {
     signal: options.signal
   });
   if (result.code !== 0) throw new Error(`psnr comparison failed: ${result.stderr.trim().split(/\r?\n/).pop() ?? ""}`);
-  const text3 = await fs20.readFile(path19.join(workDir, stats), "utf8");
+  const text3 = await fs22.readFile(path20.join(workDir, stats), "utf8");
   const values = [];
   for (const line of text3.split(/\r?\n/)) {
     const match = /psnr_y:(\S+)/.exec(line);
@@ -11175,9 +11607,9 @@ async function transcriptionCheck(tools, plan, renderedFile, stt, workDir, optio
       timeoutMs: 60 * 6e4,
       signal: options.signal
     });
-    if (run2.code !== 0) throw new Error(`${path19.basename(stt.program)} failed: ${(run2.stderr || run2.stdout).trim().split(/\r?\n/).pop() ?? `exit ${run2.code}`}`);
-    const words = parseWhisperJson(await fs20.readFile(path19.join(workDir, "stt.json"), "utf8"));
-    return { status: "compared", tool: `whisper.cpp ${path19.basename(stt.model)}`, ...compareTranscript(plan, words), words };
+    if (run2.code !== 0) throw new Error(`${path20.basename(stt.program)} failed: ${(run2.stderr || run2.stdout).trim().split(/\r?\n/).pop() ?? `exit ${run2.code}`}`);
+    const words = parseWhisperJson(await fs22.readFile(path20.join(workDir, "stt.json"), "utf8"));
+    return { status: "compared", tool: `whisper.cpp ${path20.basename(stt.model)}`, ...compareTranscript(plan, words), words };
   } catch (error) {
     if (error.name === "AbortedError") throw error;
     return { status: "failed", reason: errorMessage(error), ...base };
@@ -11201,9 +11633,9 @@ async function ffmpeg(tools, args, signal) {
 async function measureLoudness(tools, file, options = {}) {
   const range2 = options.range ? ["-ss", options.range.from.toFixed(6), "-t", options.range.seconds.toFixed(6)] : [];
   const stderr = await ffmpeg(tools, ["-nostats", ...range2, "-i", file, "-map", "0:a:0", "-af", "ebur128=peak=true:framelog=quiet", "-f", "null", "-"], options.signal);
-  const summary2 = stderr.slice(stderr.lastIndexOf("Summary:"));
+  const summary3 = stderr.slice(stderr.lastIndexOf("Summary:"));
   const read = (pattern) => {
-    const match = pattern.exec(summary2);
+    const match = pattern.exec(summary3);
     return match ? value(match[1]) : Number.NaN;
   };
   return { integratedLufs: read(/I:\s+(-?[\d.]+|-inf) LUFS/), truePeakDbtp: read(/Peak:\s+(-?[\d.]+|-inf) dBFS/), lra: read(/LRA:\s+(-?[\d.]+) LU/), threshold: read(/Threshold:\s+(-?[\d.]+|-inf) LUFS/) };
@@ -11261,22 +11693,22 @@ function dialogGain(measuredLufs, referenceLufs) {
 }
 
 // src/pipeline/review.ts
-import { promises as fs21 } from "node:fs";
-import path20 from "node:path";
+import { promises as fs23 } from "node:fs";
+import path21 from "node:path";
 var REVIEWS_DIR = EDIT_FOLDERS.reviews;
 var MIN_HASH_PREFIX = 12;
 var hashOf = (value2) => sha256Hex(canonicalJson(value2));
-var toPosix = (value2) => value2.split(path20.sep).join("/");
+var toPosix = (value2) => value2.split(path21.sep).join("/");
 async function loadReviewRecords(root) {
-  const dir = path20.join(root, REVIEWS_DIR);
-  const names = (await fs21.readdir(dir).catch(() => [])).filter((name) => name.toLowerCase().endsWith(".json")).sort();
+  const dir = path21.join(root, REVIEWS_DIR);
+  const names = (await fs23.readdir(dir).catch(() => [])).filter((name) => name.toLowerCase().endsWith(".json")).sort();
   const records = [];
   const problems = [];
   for (const name of names) {
     const file = `${REVIEWS_DIR}/${name}`;
     let value2;
     try {
-      value2 = JSON.parse((await fs21.readFile(path20.join(dir, name), "utf8")).replace(/^\uFEFF/, ""));
+      value2 = JSON.parse((await fs23.readFile(path21.join(dir, name), "utf8")).replace(/^\uFEFF/, ""));
     } catch (error) {
       problems.push({ file, code: "review-record-invalid", message: `is not valid JSON (${error.message}); the record is ignored` });
       continue;
@@ -11297,17 +11729,17 @@ async function loadReviewRecords(root) {
   return { records, problems };
 }
 async function renderReports(root, dir) {
-  const names = await fs21.readdir(path20.join(root, "renders", dir)).catch(() => []);
+  const names = await fs23.readdir(path21.join(root, "renders", dir)).catch(() => []);
   return names.filter((name) => /^v\d{4,}\.json$/.test(name)).sort((a, b) => Number(b.slice(1, -5)) - Number(a.slice(1, -5))).map((name) => `renders/${dir}/${name}`);
 }
 async function readReport(root, rel3) {
-  const report = await readJsonFile(path20.join(root, ...rel3.split("/"))).catch(() => null);
+  const report = await readJsonFile(path21.join(root, ...rel3.split("/"))).catch(() => null);
   return report?.kind === "darkmind-render-report" ? report : null;
 }
 function resolveReportPath(root, value2) {
-  const abs2 = path20.resolve(root, value2);
-  const rel3 = toPosix(path20.relative(root, abs2));
-  if (rel3.startsWith("..") || path20.isAbsolute(rel3)) throw new CliError("invalid-input", `--render ${value2} is not inside the project folder`);
+  const abs2 = path21.resolve(root, value2);
+  const rel3 = toPosix(path21.relative(root, abs2));
+  if (rel3.startsWith("..") || path21.isAbsolute(rel3)) throw new CliError("invalid-input", `--render ${value2} is not inside the project folder`);
   return rel3.toLowerCase().endsWith(".mp4") ? `${rel3.slice(0, -4)}.json` : rel3;
 }
 async function checkRender(root, state, rel3, mode) {
@@ -11327,8 +11759,8 @@ async function checkRender(root, state, rel3, mode) {
   if (report.checks?.sync?.status === "fail") warnings.push(`sync check failed (max ${report.checks.sync.maxDeviationMs ?? "?"} ms)`);
   const loudness = report.checks?.loudness;
   if (loudness?.status === "fail" && "problems" in loudness) warnings.push(`loudness check failed: ${loudness.problems.join("; ")}`);
-  const output = path20.join(root, ...report.output.split("/"));
-  if (!await fs21.stat(output).catch(() => null)) problems.push(`${report.output} does not exist (anymore)`);
+  const output = path21.join(root, ...report.output.split("/"));
+  if (!await fs23.stat(output).catch(() => null)) problems.push(`${report.output} does not exist (anymore)`);
   else if ((await hashFile(output)).sha256 !== report.sha256) problems.push(`${report.output} differs from its report (SHA-256); render again`);
   return { file: rel3, report, problems, warnings };
 }
@@ -11338,15 +11770,15 @@ async function extensionFileHashes(root, validation) {
   for (const extension of validation.documents?.extensions ?? []) {
     for (const input of extension.inputs) {
       if (input.kind !== "file" || input.path in result) continue;
-      const abs2 = path20.join(root, ...input.path.split("/"));
-      result[input.path] = (await fs21.stat(abs2).catch(() => null))?.isFile() ? (await hashFile(abs2)).sha256 : null;
+      const abs2 = path21.join(root, ...input.path.split("/"));
+      result[input.path] = (await fs23.stat(abs2).catch(() => null))?.isFile() ? (await hashFile(abs2)).sha256 : null;
     }
   }
   return result;
 }
 async function fileToolchain(root, validation) {
   const rel3 = validation.documents?.project.artifacts.toolchain ?? EDIT_DEFAULT_FILES.toolchain;
-  const document = await readJsonFile(path20.join(root, ...rel3.split("/"))).catch(() => null);
+  const document = await readJsonFile(path21.join(root, ...rel3.split("/"))).catch(() => null);
   return toolchainBinding(document);
 }
 function decide(subject, hash, records, diff) {
@@ -11672,15 +12104,15 @@ async function recordReview(root, options) {
   if (!parsed.success) throw new CliError("internal-error", `review record does not match its schema: ${parsed.error.issues[0]?.message}`);
   const base = `${stamp}-${options.subject}-${target.hash.slice(0, 12)}`;
   let name = `${base}.json`;
-  for (let n = 2; await fs21.stat(path20.join(root, REVIEWS_DIR, name)).catch(() => null); n++) name = `${base}-${n}.json`;
-  await writeFileAtomic(path20.join(root, REVIEWS_DIR, name), `${JSON.stringify(record, null, 2)}
+  for (let n = 2; await fs23.stat(path21.join(root, REVIEWS_DIR, name)).catch(() => null); n++) name = `${base}-${n}.json`;
+  await writeFileAtomic(path21.join(root, REVIEWS_DIR, name), `${JSON.stringify(record, null, 2)}
 `);
   return { file: `${REVIEWS_DIR}/${name}`, record, target };
 }
 
 // src/pipeline/toolchain.ts
-import { promises as fs22 } from "node:fs";
-import path21 from "node:path";
+import { promises as fs24 } from "node:fs";
+import path22 from "node:path";
 function ffmpegMajor(version) {
   const match = /(?:version\s+)?n?(\d+)\.\d+/.exec(version);
   return match ? Number(match[1]) : 0;
@@ -11720,7 +12152,7 @@ async function detectToolchain(tools, env, options) {
   if (options.needFont) {
     const candidates = defaultFont(env);
     for (const candidate of candidates) {
-      if (await fs22.stat(candidate).catch(() => null)) {
+      if (await fs24.stat(candidate).catch(() => null)) {
         font = { path: candidate, sha256: (await hashFile(candidate)).sha256 };
         break;
       }
@@ -11730,9 +12162,9 @@ async function detectToolchain(tools, env, options) {
   let stt = null;
   const config = sttConfig(env);
   if (config) {
-    const model = await fs22.stat(config.model).catch(() => null);
+    const model = await fs24.stat(config.model).catch(() => null);
     if (!model?.isFile()) problems.push({ code: "stt-model-missing", message: `DARKMIND_WHISPER_MODEL ${config.model} does not exist` });
-    else stt = { program: config.program, model: path21.basename(config.model), modelSha256: (await hashFile(config.model)).sha256 };
+    else stt = { program: config.program, model: path22.basename(config.model), modelSha256: (await hashFile(config.model)).sha256 };
   }
   return {
     toolchain: {
@@ -11755,7 +12187,7 @@ var BRAND_PACK_FILE = "extensions/brand-pack/brand.json";
 async function detectBrandPack(root) {
   let parsed;
   try {
-    parsed = JSON.parse((await fs22.readFile(path21.join(root, ...BRAND_PACK_FILE.split("/")), "utf8")).replace(/^\uFEFF/, ""));
+    parsed = JSON.parse((await fs24.readFile(path22.join(root, ...BRAND_PACK_FILE.split("/")), "utf8")).replace(/^\uFEFF/, ""));
   } catch {
     return null;
   }
@@ -11771,7 +12203,7 @@ function toolchainDocument(toolchain, existing, skill = null, brandPack) {
     { name: "ffmpeg", version: toolchain.ffmpeg.replace(/^ffmpeg version\s+/, ""), features: [...toolchain.encoders, ...toolchain.filters] },
     { name: "ffprobe", version: toolchain.ffprobe.replace(/^ffprobe version\s+/, "") }
   ];
-  if (toolchain.font) tools.push({ name: "caption-font", version: `${path21.basename(toolchain.font.path)} sha256:${toolchain.font.sha256.slice(0, 16)}` });
+  if (toolchain.font) tools.push({ name: "caption-font", version: `${path22.basename(toolchain.font.path)} sha256:${toolchain.font.sha256.slice(0, 16)}` });
   else {
     const recorded = existing?.tools?.find((tool) => tool?.name === "caption-font");
     if (recorded) tools.push(recorded);
@@ -11787,7 +12219,7 @@ function toolchainDocument(toolchain, existing, skill = null, brandPack) {
   };
 }
 async function writeToolchain(root, relPath, toolchain, skill) {
-  const file = path21.join(root, ...relPath.split("/"));
+  const file = path22.join(root, ...relPath.split("/"));
   let existing = null;
   try {
     existing = await readJsonFile(file);
@@ -11835,18 +12267,18 @@ function audioKey(plan, range2, toolchain) {
 async function cachedEntry(file) {
   const meta = await readJsonFile(`${file}.json`).catch(() => null);
   if (!meta) return null;
-  const stat = await fs23.stat(file).catch(() => null);
+  const stat = await fs25.stat(file).catch(() => null);
   if (!stat || stat.size !== meta.size) return null;
   const { sha256: sha2563 } = await hashFile(file);
   if (sha2563 !== meta.sha256) return null;
   const now = /* @__PURE__ */ new Date();
-  await fs23.utimes(file, now, now).catch(() => {
+  await fs25.utimes(file, now, now).catch(() => {
   });
   return meta;
 }
 async function storeEntry(temp, file, frames) {
   const { sha256: sha2563, size } = await hashFile(temp);
-  await fs23.mkdir(path22.dirname(file), { recursive: true });
+  await fs25.mkdir(path23.dirname(file), { recursive: true });
   await renameWithRetry(temp, file);
   const entry = { sha256: sha2563, size, frames, createdAt: (/* @__PURE__ */ new Date()).toISOString() };
   await writeJsonFile(`${file}.json`, entry);
@@ -11896,16 +12328,16 @@ async function verifyOutput(tools, file, plan, frames) {
   return { profile, problems };
 }
 async function acquireLock(file) {
-  await fs23.mkdir(path22.dirname(file), { recursive: true });
+  await fs25.mkdir(path23.dirname(file), { recursive: true });
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      const handle = await fs23.open(file, "wx");
+      const handle = await fs25.open(file, "wx");
       await handle.writeFile(String(process.pid));
       await handle.close();
-      return () => fs23.rm(file, { force: true });
+      return () => fs25.rm(file, { force: true });
     } catch (error) {
       if (error.code !== "EEXIST") throw error;
-      const pid = Number(await fs23.readFile(file, "utf8").catch(() => ""));
+      const pid = Number(await fs25.readFile(file, "utf8").catch(() => ""));
       let alive = false;
       try {
         if (pid > 0) {
@@ -11916,13 +12348,13 @@ async function acquireLock(file) {
         alive = false;
       }
       if (alive && pid !== process.pid) throw new CliError("render-running", `another render is running in this project folder (process ${pid}); wait for it or stop it`);
-      await fs23.rm(file, { force: true });
+      await fs25.rm(file, { force: true });
     }
   }
   throw new CliError("render-running", "could not lock renders/.lock");
 }
 async function nextVersion(dir) {
-  const names = await fs23.readdir(dir).catch(() => []);
+  const names = await fs25.readdir(dir).catch(() => []);
   const numbers = names.map((name) => /^v(\d{4,})\.mp4$/.exec(name)?.[1]).filter((n) => Boolean(n)).map(Number).sort((a, b) => a - b);
   const last = numbers[numbers.length - 1] ?? 0;
   return { number: last + 1, previous: last ? `v${String(last).padStart(4, "0")}` : null };
@@ -11932,8 +12364,8 @@ async function artifactHashes(root, plan, documents) {
   for (const file of plan.files) if (file.role === "asset") paths.add(file.path);
   const result = {};
   for (const rel3 of [...paths].sort()) {
-    const abs2 = path22.join(root, ...rel3.split("/"));
-    if (await fs23.stat(abs2).catch(() => null)) result[rel3] = (await hashFile(abs2)).sha256;
+    const abs2 = path23.join(root, ...rel3.split("/"));
+    if (await fs25.stat(abs2).catch(() => null)) result[rel3] = (await hashFile(abs2)).sha256;
   }
   return result;
 }
@@ -11945,15 +12377,15 @@ function estimateBytes(plan, frames, mode) {
 }
 async function pruneCache2(dir, keep, maxAgeMs) {
   const now = Date.now();
-  for (const name of await fs23.readdir(dir).catch(() => [])) {
+  for (const name of await fs25.readdir(dir).catch(() => [])) {
     if (name.endsWith(".json")) continue;
-    const file = path22.join(dir, name);
+    const file = path23.join(dir, name);
     if (keep.has(file)) continue;
-    const stat = await fs23.stat(file).catch(() => null);
+    const stat = await fs25.stat(file).catch(() => null);
     if (stat && now - stat.mtimeMs > maxAgeMs) {
-      await fs23.rm(file, { force: true });
-      await fs23.rm(`${file}.json`, { force: true });
-      await fs23.rm(`${file}.loudness.json`, { force: true });
+      await fs25.rm(file, { force: true });
+      await fs25.rm(`${file}.json`, { force: true });
+      await fs25.rm(`${file}.loudness.json`, { force: true });
     }
   }
 }
@@ -11965,9 +12397,9 @@ async function renderProject(request) {
   const progress = request.progress ?? (() => {
   });
   const captionsEnabled = request.captions !== false;
-  const rendersDir = path22.join(root, "renders");
-  const release = await acquireLock(path22.join(rendersDir, ".lock"));
-  const workDir = path22.join(rendersDir, RENDER_DIRS.tmp, `${Date.now()}-${process.pid}`);
+  const rendersDir = path23.join(root, "renders");
+  const release = await acquireLock(path23.join(rendersDir, ".lock"));
+  const workDir = path23.join(rendersDir, RENDER_DIRS.tmp, `${Date.now()}-${process.pid}`);
   try {
     const detected = await detectToolchain(tools, request.env, { needFont: captionsEnabled });
     const hashCache = await HashCache.load(mediaHashCachePath(root));
@@ -11980,9 +12412,9 @@ async function renderProject(request) {
     if (request.reviewGates !== false) gate = (await requireReviewGate(root, action, { toolchain: override })).gate;
     let extensionResults = [];
     if (request.extensions !== false) {
-      const summary2 = await runExtensions({ root, mode, tools, env: request.env, neededOnly: true, signal: request.signal, progress });
-      if (!summary2.ok) throw extensionsError(summary2);
-      extensionResults = summary2.results.map(({ id: id2, action: action2, key, sha256: sha2564, output: output2 }) => ({ id: id2, action: action2, key, sha256: sha2564, output: output2 }));
+      const summary3 = await runExtensions({ root, mode, tools, env: request.env, neededOnly: true, signal: request.signal, progress });
+      if (!summary3.ok) throw extensionsError(summary3);
+      extensionResults = summary3.results.map(({ id: id2, action: action2, key, sha256: sha2564, output: output2 }) => ({ id: id2, action: action2, key, sha256: sha2564, output: output2 }));
     }
     const planned = await buildExecutionPlan({ root, mode, tools, hashes: { cache: hashCache, computeOriginals: mode === "original" }, signal: request.signal });
     await hashCache.save();
@@ -12020,34 +12452,34 @@ async function renderProject(request) {
     if (!(Number.isInteger(from) && Number.isInteger(to) && from >= 0 && to > from && to <= plan.totalFrames)) {
       throw new CliError("invalid-input", `--section must lie within 0-${plan.totalFrames} (frames, end exclusive)`);
     }
-    const free = await fs23.statfs(root).then((s) => Number(s.bavail) * Number(s.bsize)).catch(() => null);
+    const free = await fs25.statfs(root).then((s) => Number(s.bavail) * Number(s.bsize)).catch(() => null);
     const needed = estimateBytes(plan, to - from, mode);
     if (free !== null && free < needed) throw new PreflightError("disk-space", `Not enough free disk space for the render: about ${Math.ceil(needed / 1024 ** 2)} MB needed, ${Math.floor(free / 1024 ** 2)} MB free`);
     const recipe = request.recipe ?? RENDER_RECIPES[mode];
     const tcKey = toolchainKey(toolchain);
-    const inputPath = (file) => path22.join(root, ...file.path.split("/"));
-    await fs23.mkdir(workDir, { recursive: true });
-    if (useCaptions) await fs23.copyFile(toolchain.font.path, path22.join(workDir, CAPTION_FONT_FILE));
+    const inputPath = (file) => path23.join(root, ...file.path.split("/"));
+    await fs25.mkdir(workDir, { recursive: true });
+    if (useCaptions) await fs25.copyFile(toolchain.font.path, path23.join(workDir, CAPTION_FONT_FILE));
     const fpsQ = parseRational(plan.output.fps);
     const segmentSize = request.segmentFrames ?? Number(fpsQ.n / fpsQ.d) * 10;
     const ranges = segmentRanges(from, to, segmentSize);
-    const segmentDir = path22.join(rendersDir, RENDER_DIRS.cache, "segments");
-    const audioDir = path22.join(rendersDir, RENDER_DIRS.cache, "audio");
+    const segmentDir = path23.join(rendersDir, RENDER_DIRS.cache, "segments");
+    const audioDir = path23.join(rendersDir, RENDER_DIRS.cache, "audio");
     const segmentFiles = [];
     let reused = 0;
     const renderStart = Date.now();
     for (const [index, range2] of ranges.entries()) {
       const key = segmentKey(plan, range2, { recipe, toolchain: tcKey, captions: useCaptions });
-      const file = path22.join(segmentDir, `${key}.mp4`);
+      const file = path23.join(segmentDir, `${key}.mp4`);
       segmentFiles.push(file);
       if (await cachedEntry(file)) {
         reused++;
         continue;
       }
       progress(`segment ${index + 1}/${ranges.length} (frames ${range2.from}-${range2.to})`);
-      const temp = path22.join(workDir, `segment-${index}.mp4`);
+      const temp = path23.join(workDir, `segment-${index}.mp4`);
       const graph = videoSegmentArgs(plan, range2.from, range2.to, { recipe, captions: useCaptions, out: temp, inputPath });
-      for (const extra of graph.files) await fs23.writeFile(path22.join(workDir, extra.name), extra.content, "utf8");
+      for (const extra of graph.files) await fs25.writeFile(path23.join(workDir, extra.name), extra.content, "utf8");
       await run(tools, await withGraphFile(graph.args, workDir, toolchain.ffmpegMajor, `segment-${index}`), workDir, request.signal, `segment ${range2.from}-${range2.to}`);
       const pts = await probeFramePts(tools, temp);
       if (pts.length !== range2.to - range2.from) throw new CliError("render-verification-failed", `segment ${range2.from}-${range2.to} has ${pts.length} frames instead of ${range2.to - range2.from}`);
@@ -12055,10 +12487,10 @@ async function renderProject(request) {
     }
     const aKeyRaw = audioKey(plan, { from, to }, tcKey);
     const mixAudio = async (range2, key, float = false) => {
-      const file = path22.join(audioDir, `${key}.wav`);
+      const file = path23.join(audioDir, `${key}.wav`);
       if (await cachedEntry(file)) return { file, status: "reused" };
       progress("audio");
-      const temp = path22.join(workDir, `audio-${key.slice(0, 12)}.wav`);
+      const temp = path23.join(workDir, `audio-${key.slice(0, 12)}.wav`);
       const graph = audioArgs(plan, range2.from, range2.to, { out: temp, inputPath, float });
       await run(tools, await withGraphFile(graph.args, workDir, toolchain.ffmpegMajor, "audio"), workDir, request.signal, "audio");
       await storeEntry(temp, file, range2.to - range2.from);
@@ -12072,14 +12504,14 @@ async function renderProject(request) {
       const master = plan.audioMaster;
       const full = { from: 0, to: plan.totalFrames };
       const raw = await mixAudio(full, canonical({ mix: "f32", key: audioKey(plan, full, tcKey) }), true);
-      const mKey = canonical({ raw: path22.basename(raw.file), master, version: AUDIO_MASTER_VERSION });
-      const masterFile = path22.join(audioDir, `master-${mKey}.wav`);
+      const mKey = canonical({ raw: path23.basename(raw.file), master, version: AUDIO_MASTER_VERSION });
+      const masterFile = path23.join(audioDir, `master-${mKey}.wav`);
       const sidecar = `${masterFile}.loudness.json`;
       mastered = await cachedEntry(masterFile) ? await readJsonFile(sidecar).catch(() => null) : null;
       audioStatus = raw.status;
       if (!mastered) {
         progress("audio master (gain, peak limiter)");
-        const temp = path22.join(workDir, "audio-master.wav");
+        const temp = path23.join(workDir, "audio-master.wav");
         mastered = await masterAudio(tools, raw.file, temp, master, { sampleRate: plan.output.sampleRate, samples: Number(samplesFor(plan.totalFrames, plan)), signal: request.signal });
         await storeEntry(temp, masterFile, plan.totalFrames);
         await writeJsonFile(sidecar, mastered);
@@ -12088,9 +12520,9 @@ async function renderProject(request) {
       aKey = canonical({ master: mKey, from, to });
       if (from === 0 && to === plan.totalFrames) audioFile = masterFile;
       else {
-        audioFile = path22.join(audioDir, `${aKey}.wav`);
+        audioFile = path23.join(audioDir, `${aKey}.wav`);
         if (!await cachedEntry(audioFile)) {
-          const temp = path22.join(workDir, "audio-section.wav");
+          const temp = path23.join(workDir, "audio-section.wav");
           const [s0, s1] = [samplesFor(from, plan), samplesFor(to, plan)];
           await run(tools, ["-hide_banner", "-nostdin", "-loglevel", "error", "-y", "-i", masterFile, "-af", `atrim=start_sample=${s0}:end_sample=${s1},asetpts=PTS-STARTPTS`, "-c:a", "pcm_s24le", temp], workDir, request.signal, "audio section");
           await storeEntry(temp, audioFile, to - from);
@@ -12101,30 +12533,30 @@ async function renderProject(request) {
       audioFile = mixed.file;
       audioStatus = mixed.status;
     }
-    const renderKey = canonical({ segments: segmentFiles.map((f) => path22.basename(f)), audio: aKey, audioCodec: recipe.audioCodec, captions: useCaptions });
-    const kindDir = path22.join(rendersDir, section ? RENDER_DIRS.sections : RENDER_DIRS[mode]);
+    const renderKey = canonical({ segments: segmentFiles.map((f) => path23.basename(f)), audio: aKey, audioCodec: recipe.audioCodec, captions: useCaptions });
+    const kindDir = path23.join(rendersDir, section ? RENDER_DIRS.sections : RENDER_DIRS[mode]);
     const version = section ? null : await nextVersion(kindDir);
     if (version?.previous) {
-      const previousReport = await readJsonFile(path22.join(kindDir, `${version.previous}.json`)).catch(() => null);
-      const previousFile = path22.join(kindDir, `${version.previous}.mp4`);
+      const previousReport = await readJsonFile(path23.join(kindDir, `${version.previous}.json`)).catch(() => null);
+      const previousFile = path23.join(kindDir, `${version.previous}.mp4`);
       const previousSync = previousReport?.checks?.sync;
       const checksSatisfied = request.checks === false || !(previousSync?.status === "skipped" && previousSync.reason === "checks disabled");
-      if (previousReport?.renderKey === renderKey && checksSatisfied && await fs23.stat(previousFile).catch(() => null) && (await hashFile(previousFile)).sha256 === previousReport.sha256) {
+      if (previousReport?.renderKey === renderKey && checksSatisfied && await fs25.stat(previousFile).catch(() => null) && (await hashFile(previousFile)).sha256 === previousReport.sha256) {
         await pruneCache2(segmentDir, new Set(segmentFiles), 14 * 864e5);
         const bindings = await bindingsOfPlan();
         const reportFile2 = `renders/${RENDER_DIRS[mode]}/${version.previous}.json`;
         if (canonical(previousReport.review?.bindings ?? null) !== canonical(bindings) || gate && previousReport.review?.gate?.status !== "passed") {
           previousReport.review = { ...reviewNote(mode), bindings, gate: gate ?? previousReport.review?.gate ?? null };
-          await writeJsonFile(path22.join(root, ...reportFile2.split("/")), previousReport);
+          await writeJsonFile(path23.join(root, ...reportFile2.split("/")), previousReport);
         }
         return { status: "unchanged", output: previousReport.output, reportFile: reportFile2, report: previousReport };
       }
     }
     progress("mux");
     const list2 = segmentFiles.map((file) => `file '${file.replace(/\\/g, "/").replace(/'/g, "'\\''")}'`).join("\n");
-    await fs23.writeFile(path22.join(workDir, "segments.txt"), `${list2}
+    await fs25.writeFile(path23.join(workDir, "segments.txt"), `${list2}
 `);
-    const muxed = path22.join(workDir, "output.mp4");
+    const muxed = path23.join(workDir, "output.mp4");
     await run(
       tools,
       ["-hide_banner", "-nostdin", "-loglevel", "error", "-y", "-f", "concat", "-safe", "0", "-i", "segments.txt", "-i", audioFile, "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy", ...recipe.audioCodec, "-ar", String(plan.output.sampleRate), "-ac", "2", "-movflags", "+faststart", "output.mp4"],
@@ -12136,8 +12568,8 @@ async function renderProject(request) {
     if (verified.problems.length) throw new CliError("render-verification-failed", `The rendered file does not match the plan: ${verified.problems.join("; ")}`, { problems: verified.problems });
     const renderSeconds = (Date.now() - renderStart) / 1e3;
     const baseName = section ? `${RENDER_DIRS[mode]}-${from}-${to}` : `v${String(version.number).padStart(4, "0")}`;
-    const outputAbs = path22.join(kindDir, `${baseName}.mp4`);
-    const output = path22.relative(root, outputAbs).split(path22.sep).join("/");
+    const outputAbs = path23.join(kindDir, `${baseName}.mp4`);
+    const output = path23.relative(root, outputAbs).split(path23.sep).join("/");
     const { sha256: sha2563, size } = await hashFile(muxed);
     const checkStart = Date.now();
     const skipped = (reason) => ({ status: "skipped", reason });
@@ -12161,8 +12593,8 @@ async function renderProject(request) {
       const { words: _words, ...transcript } = await transcriptionCheck(tools, plan, muxed, stt, workDir, { signal: request.signal });
       transcription = transcript;
       progress("checks: changes");
-      const previous = version.previous ? { file: path22.join(kindDir, `${version.previous}.mp4`), report: await readJsonFile(path22.join(kindDir, `${version.previous}.json`)).catch(() => null) } : null;
-      const comparable = previous?.report && previous.report.profile.width === plan.output.width && previous.report.profile.height === plan.output.height && await fs23.stat(previous.file).catch(() => null);
+      const previous = version.previous ? { file: path23.join(kindDir, `${version.previous}.mp4`), report: await readJsonFile(path23.join(kindDir, `${version.previous}.json`)).catch(() => null) } : null;
+      const comparable = previous?.report && previous.report.profile.width === plan.output.width && previous.report.profile.height === plan.output.height && await fs25.stat(previous.file).catch(() => null);
       changes = previous && !comparable ? { status: "not-comparable", against: `renders/${RENDER_DIRS[mode]}/${version.previous}.mp4`, thresholdDb: 40, comparedFrames: 0, video: [], audio: [], changed: [], changedFrames: 0, note: "previous version missing or with another output size" } : await changeCheck(tools, { file: muxed, frames: to - from }, previous ? { file: previous.file, frames: previous.report.frames, label: `renders/${RENDER_DIRS[mode]}/${version.previous}.mp4` } : null, plan, workDir, { signal: request.signal }).catch(
         (error) => {
           if (error instanceof AbortedError) throw error;
@@ -12217,25 +12649,25 @@ async function renderProject(request) {
       review: { ...reviewNote(mode), bindings: await bindingsOfPlan(), gate },
       plan
     };
-    const reportFile = path22.join(kindDir, `${baseName}.json`);
-    await fs23.mkdir(kindDir, { recursive: true });
-    await fs23.rm(reportFile, { force: true });
-    await fs23.rm(outputAbs, { force: true });
+    const reportFile = path23.join(kindDir, `${baseName}.json`);
+    await fs25.mkdir(kindDir, { recursive: true });
+    await fs25.rm(reportFile, { force: true });
+    await fs25.rm(outputAbs, { force: true });
     await renameWithRetry(muxed, outputAbs);
     try {
       await writeJsonFile(reportFile, report);
     } catch (error) {
-      await fs23.rm(outputAbs, { force: true });
+      await fs25.rm(outputAbs, { force: true });
       throw error;
     }
     await pruneCache2(segmentDir, new Set(segmentFiles), 14 * 864e5);
     await pruneCache2(audioDir, /* @__PURE__ */ new Set([audioFile]), 14 * 864e5);
-    return { status: "rendered", output, reportFile: path22.relative(root, reportFile).split(path22.sep).join("/"), report };
+    return { status: "rendered", output, reportFile: path23.relative(root, reportFile).split(path23.sep).join("/"), report };
   } catch (error) {
     if (error instanceof AbortedError) throw new CliError("aborted", "The render was cancelled; finished segments stay cached and are reused by the next run.");
     throw error;
   } finally {
-    await fs23.rm(workDir, { recursive: true, force: true }).catch(() => {
+    await fs25.rm(workDir, { recursive: true, force: true }).catch(() => {
     });
     await release();
   }
@@ -12567,15 +12999,15 @@ function brandBlockOf(extension, pack) {
   return match ? { pack: pack?.id ?? "brand-pack", version: pack?.version ?? extension.version, block: match[1] } : null;
 }
 async function latestFinalReport(root) {
-  const dir = path23.join(root, "renders", RENDER_DIRS.original);
-  const names = (await fs24.readdir(dir).catch(() => [])).filter((name) => /^v\d{4,}\.json$/.test(name)).sort((a, b) => Number(a.slice(1, -5)) - Number(b.slice(1, -5)));
+  const dir = path24.join(root, "renders", RENDER_DIRS.original);
+  const names = (await fs26.readdir(dir).catch(() => [])).filter((name) => /^v\d{4,}\.json$/.test(name)).sort((a, b) => Number(a.slice(1, -5)) - Number(b.slice(1, -5)));
   const last = names[names.length - 1];
   if (!last) return null;
-  const report = await readJsonFile(path23.join(dir, last)).catch(() => null);
+  const report = await readJsonFile(path24.join(dir, last)).catch(() => null);
   return report?.kind === "darkmind-render-report" ? { file: `renders/${RENDER_DIRS.original}/${last}`, report } : null;
 }
 var MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024;
-var rel2 = (root, file) => path23.relative(root, file).split(path23.sep).join("/");
+var rel2 = (root, file) => path24.relative(root, file).split(path24.sep).join("/");
 function safeName(value2, fallback, max = 60) {
   let name = value2.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9._-]+/g, "_").replace(/_+/g, "_").replace(/^[._-]+|[._-]+$/g, "").slice(0, max).replace(/[._-]+$/g, "");
   if (!name) name = fallback;
@@ -12590,17 +13022,18 @@ function uuidFromHash(hex) {
   return `${s.slice(0, 8)}-${s.slice(8, 12)}-${s.slice(12, 16)}-${s.slice(16, 20)}-${s.slice(20, 32)}`;
 }
 async function placeFile(from, to) {
-  await fs24.mkdir(path23.dirname(to), { recursive: true });
+  await fs26.mkdir(path24.dirname(to), { recursive: true });
+  const source = await fs26.realpath(from).catch(() => from);
   try {
-    await fs24.link(from, to);
+    await fs26.link(source, to);
     return "hardlink";
   } catch {
-    await fs24.copyFile(from, to);
+    await fs26.copyFile(source, to);
     return "copy";
   }
 }
 async function nextPackageVersion(dir) {
-  const names = await fs24.readdir(dir).catch(() => []);
+  const names = await fs26.readdir(dir).catch(() => []);
   const numbers = names.map((name) => /^v(\d{4,})$/.exec(name)?.[1]).filter((n) => Boolean(n)).map(Number).sort((a, b) => a - b);
   const last = numbers[numbers.length - 1] ?? 0;
   return { number: last + 1, previous: last ? `v${String(last).padStart(4, "0")}` : null };
@@ -12705,12 +13138,12 @@ async function verifyConform(tools, file, spec, oriented) {
 }
 async function verifyPremierePackage(dir) {
   const problems = [];
-  const manifest = await readJsonFile(path23.join(dir, PACKAGE_MANIFEST)).catch(() => null);
+  const manifest = await readJsonFile(path24.join(dir, PACKAGE_MANIFEST)).catch(() => null);
   if (!manifest || manifest.kind !== "darkmind-premiere-package") return { dir, ok: false, manifest: null, problems: [`${PACKAGE_MANIFEST} is missing or not a Premiere package manifest`], checkedFiles: 0 };
   let checked = 0;
   for (const file of manifest.files) {
-    const abs2 = path23.join(dir, ...file.path.split("/"));
-    const stat = await fs24.stat(abs2).catch(() => null);
+    const abs2 = path24.join(dir, ...file.path.split("/"));
+    const stat = await fs26.stat(abs2).catch(() => null);
     if (!stat?.isFile()) {
       problems.push(`${file.path} is missing`);
       continue;
@@ -12722,7 +13155,7 @@ async function verifyPremierePackage(dir) {
     if ((await hashFile(abs2)).sha256 !== file.sha256) problems.push(`${file.path} differs from the manifest (SHA-256)`);
     checked++;
   }
-  const xml = await fs24.readFile(path23.join(dir, manifest.sequence.file), "utf8").catch(() => null);
+  const xml = await fs26.readFile(path24.join(dir, manifest.sequence.file), "utf8").catch(() => null);
   if (xml !== null) {
     const listed2 = new Set(manifest.files.map((f) => f.path));
     for (const match of xml.matchAll(/<pathurl>([^<]*)<\/pathurl>/g)) {
@@ -12818,9 +13251,9 @@ async function exportPremierePackage(request) {
   });
   const handleSeconds = request.handleSeconds ?? DEFAULT_CONFORM_HANDLE_SECONDS;
   if (!(Number.isFinite(handleSeconds) && handleSeconds >= 0 && handleSeconds <= 600)) throw new CliError("invalid-input", "--handles must be between 0 and 600 seconds");
-  const rendersDir = path23.join(root, "renders");
-  const release = await acquireLock(path23.join(rendersDir, ".lock"));
-  const workDir = path23.join(rendersDir, RENDER_DIRS.tmp, `premiere-${Date.now()}-${process.pid}`);
+  const rendersDir = path24.join(root, "renders");
+  const release = await acquireLock(path24.join(rendersDir, ".lock"));
+  const workDir = path24.join(rendersDir, RENDER_DIRS.tmp, `premiere-${Date.now()}-${process.pid}`);
   try {
     const detected = await detectToolchain(tools, request.env, { needFont: false });
     if (!detected.toolchain) throw new PreflightError("preflight-failed", detected.problems.map((p) => p.message).join("; "), { issues: detected.problems.map((p) => ({ severity: "error", ...p })) });
@@ -12831,9 +13264,9 @@ async function exportPremierePackage(request) {
     if (request.reviewGates !== false) gate = (await requireReviewGate(root, "export", { toolchain: override })).gate;
     let extensionResults = [];
     if (request.extensions !== false) {
-      const summary2 = await runExtensions({ root, mode: "original", tools, env: request.env, neededOnly: true, signal: request.signal, progress });
-      if (!summary2.ok) throw extensionsError(summary2);
-      extensionResults = summary2.results.map(({ id: id2, action, key, sha256: sha2563, output }) => ({ id: id2, action, key, sha256: sha2563, output }));
+      const summary3 = await runExtensions({ root, mode: "original", tools, env: request.env, neededOnly: true, signal: request.signal, progress });
+      if (!summary3.ok) throw extensionsError(summary3);
+      extensionResults = summary3.results.map(({ id: id2, action, key, sha256: sha2563, output }) => ({ id: id2, action, key, sha256: sha2563, output }));
     }
     const hashCache = await HashCache.load(mediaHashCachePath(root));
     const planned = await buildExecutionPlan({ root, mode: "original", tools, hashes: { cache: hashCache, computeOriginals: true }, signal: request.signal });
@@ -12866,25 +13299,25 @@ async function exportPremierePackage(request) {
     const rate = Number(fps.n);
     const W = plan.output.width;
     const H = plan.output.height;
-    await fs24.mkdir(workDir, { recursive: true });
-    const staging = path23.join(workDir, "package");
-    await fs24.mkdir(path23.join(staging, "media"), { recursive: true });
+    await fs26.mkdir(workDir, { recursive: true });
+    const staging = path24.join(workDir, "package");
+    await fs26.mkdir(path24.join(staging, "media"), { recursive: true });
     const sources = new Map((docs.sources?.sources ?? []).map((s) => [s.id, s]));
     const usedNames = /* @__PURE__ */ new Set();
     const unique = (name) => {
-      const ext = path23.extname(name);
+      const ext = path24.extname(name);
       const base2 = name.slice(0, name.length - ext.length);
       let candidate = name;
       for (let i = 2; usedNames.has(candidate.toLowerCase()); i++) candidate = `${base2}-${i}${ext}`;
       usedNames.add(candidate.toLowerCase());
       return candidate;
     };
-    const fileSha = async (file) => file.sha256 ?? (file.sha256 = await hashCache.hash(file.path, path23.join(root, ...file.path.split("/")), file.size, file.mtimeMs));
+    const fileSha = async (file) => file.sha256 ?? (file.sha256 = await hashCache.hash(file.path, path24.join(root, ...file.path.split("/")), file.size, file.mtimeMs));
     const allClips = [...plan.video.flatMap((t) => t.clips), ...plan.audio.flatMap((t) => t.clips)];
     const mediaByFile = /* @__PURE__ */ new Map();
     const audioByFile = /* @__PURE__ */ new Map();
     const media = [];
-    const conformDir = path23.join(rendersDir, RENDER_DIRS.cache, "conform");
+    const conformDir = path24.join(rendersDir, RENDER_DIRS.cache, "conform");
     const keepConform = /* @__PURE__ */ new Set();
     const xmemlFile = (file, name, info, timebase) => ({
       path: file,
@@ -12905,12 +13338,12 @@ async function exportPremierePackage(request) {
     const derive2 = async (file, abs2, info, sha2563, spec) => {
       const ext = spec.audioOnly ? "wav" : "mov";
       const key = sha256Hex(JSON.stringify({ version: CONFORM_VERSION, original: sha2563, spec, ffmpeg: toolchain.ffmpeg }));
-      const cached = path23.join(conformDir, `${key}.${ext}`);
+      const cached = path24.join(conformDir, `${key}.${ext}`);
       keepConform.add(cached);
       let entry = await cachedEntry(cached);
       if (!entry) {
         progress(`${spec.audioOnly ? "stereo audio" : "conform"} ${spec.sourceId} (${spec.reasons.join(", ")}, frames ${spec.fromFrame}-${spec.toFrame})`);
-        const temp = path23.join(workDir, `conform-${spec.sourceId}.${ext}`);
+        const temp = path24.join(workDir, `conform-${spec.sourceId}.${ext}`);
         const result = await tools.run(tools.ffmpeg, conformArgs(spec, abs2, info, temp), { cwd: workDir, signal: request.signal, timeoutMs: 6 * 60 * 6e4 });
         if (result.code !== 0) throw new CliError("ffmpeg-failed", `conform of source "${spec.sourceId}" failed: ${result.stderr.trim().split(/\r?\n/).slice(-3).join(" | ")}`);
         const problems = await verifyConform(tools, temp, spec, info.video ? { width: info.video.width, height: info.video.height } : null);
@@ -12918,7 +13351,7 @@ async function exportPremierePackage(request) {
         entry = await storeEntry(temp, cached, spec.toFrame - spec.fromFrame);
       }
       const name = unique(`${safeName(spec.sourceId, "source", 40)}-${spec.audioOnly ? "stereo-audio" : `conform-${rate}p`}-${spec.fromFrame}-${spec.toFrame}.${ext}`);
-      const target2 = path23.join(staging, "media", name);
+      const target2 = path24.join(staging, "media", name);
       const placed = await placeFile(cached, target2);
       const derivedInfo = await probeStreams(tools, target2, { signal: request.signal });
       const packageMedia = {
@@ -12949,7 +13382,7 @@ async function exportPremierePackage(request) {
     };
     for (const file of plan.files) {
       if (!allClips.some((clip) => clip.file === file.id)) continue;
-      const abs2 = path23.join(root, ...file.path.split("/"));
+      const abs2 = path24.join(root, ...file.path.split("/"));
       const info = await probeStreams(tools, abs2, { signal: request.signal });
       const sha2563 = await fileSha(file);
       const sourceId = file.sourceId;
@@ -12970,10 +13403,10 @@ async function exportPremierePackage(request) {
         continue;
       }
       if (clips.some((clip) => clip.kind === "video")) {
-        const ext = path23.extname(file.path).toLowerCase();
-        const baseName = file.role === "extension" ? `rendered-${safeName(file.extensionId ?? "extension", "extension", 40)}` : `${safeName(sourceId ?? "source", "source", 40)}-${safeName(path23.parse(source && source.kind === "darkmind-video" ? source.fileName ?? source.videoId : path23.basename(file.path)).name, "media", 50)}`;
+        const ext = path24.extname(file.path).toLowerCase();
+        const baseName = file.role === "extension" ? `rendered-${safeName(file.extensionId ?? "extension", "extension", 40)}` : `${safeName(sourceId ?? "source", "source", 40)}-${safeName(path24.parse(source && source.kind === "darkmind-video" ? source.fileName ?? source.videoId : path24.basename(file.path)).name, "media", 50)}`;
         const name = unique(`${baseName}${ext}`);
-        const placed = await placeFile(abs2, path23.join(staging, "media", name));
+        const placed = await placeFile(abs2, path24.join(staging, "media", name));
         const role = file.role === "extension" ? "extension" : file.role === "asset" ? "asset" : "original";
         const packageMedia = {
           file: `media/${name}`,
@@ -12998,8 +13431,8 @@ async function exportPremierePackage(request) {
       } else if (mediaByFile.has(file.id)) {
         audioByFile.set(file.id, mediaByFile.get(file.id));
       } else {
-        const name = unique(`${safeName(sourceId ?? file.extensionId ?? "audio", "audio", 40)}-${safeName(path23.parse(file.path).name, "media", 50)}${path23.extname(file.path).toLowerCase()}`);
-        const placed = await placeFile(abs2, path23.join(staging, "media", name));
+        const name = unique(`${safeName(sourceId ?? file.extensionId ?? "audio", "audio", 40)}-${safeName(path24.parse(file.path).name, "media", 50)}${path24.extname(file.path).toLowerCase()}`);
+        const placed = await placeFile(abs2, path24.join(staging, "media", name));
         const role = file.role === "extension" ? "extension" : file.role === "asset" ? "asset" : "original";
         const packageMedia = {
           file: `media/${name}`,
@@ -13151,8 +13584,8 @@ async function exportPremierePackage(request) {
     const captionOverlay = delivery === "overlay" ? { extensions: [...new Set(premiereTracks.flatMap((t) => t.captions ? t.clips.map((c) => c.extensionId) : []))], tracks: captionTracks } : null;
     const reserved = new Set([xmlName, srtName, PACKAGE_REPORT, PACKAGE_MANIFEST, "media"].filter((n) => Boolean(n)).map((n) => n.toLowerCase()));
     const rootName = (wanted) => {
-      const ext = path23.extname(wanted).toLowerCase();
-      const stem = safeName(path23.basename(wanted, path23.extname(wanted)), "file", 60);
+      const ext = path24.extname(wanted).toLowerCase();
+      const stem = safeName(path24.basename(wanted, path24.extname(wanted)), "file", 60);
       let name = `${stem}${ext}`;
       for (let i = 2; reserved.has(name.toLowerCase()); i++) name = `${stem}-${i}${ext}`;
       reserved.add(name.toLowerCase());
@@ -13161,8 +13594,8 @@ async function exportPremierePackage(request) {
     const deliverables = [];
     const deliverableNotes = [];
     const copyDeliverable = async (from, name) => {
-      await fs24.copyFile(path23.join(root, ...from.split("/")), path23.join(staging, name));
-      return hashFile(path23.join(staging, name));
+      await fs26.copyFile(path24.join(root, ...from.split("/")), path24.join(staging, name));
+      return hashFile(path24.join(staging, name));
     };
     const stills = docs.extensions.filter((e) => e.output.image === true);
     if (stills.length) {
@@ -13176,23 +13609,23 @@ async function exportPremierePackage(request) {
         } else if (!fromOriginal || !current?.output.sha256) {
           deliverableNotes.push(`Thumbnail ${still.id} is not included: the deliverable PNG from the original is missing or out of date (darkmind-agent extensions run ${still.id} --original after the thumbnail review).`);
         } else {
-          const name = rootName(path23.basename(still.output.path));
+          const name = rootName(path24.basename(still.output.path));
           const { sha256: sha2563, size } = await copyDeliverable(still.output.path, name);
           deliverables.push({ file: name, kind: "thumbnail", extensionId: still.id, size, sha256: sha2563, from: { file: still.output.path, sha256: current.output.sha256 }, note: `YouTube thumbnail ${still.output.width} \xD7 ${still.output.height} from the original, approved in the thumbnail review \u2013 upload it with the video, not a timeline medium` });
         }
       }
     }
     for (const given of request.attachments ?? []) {
-      const absolute = path23.resolve(root, given);
+      const absolute = path24.resolve(root, given);
       const relPath = rel2(root, absolute);
-      if (!relPath || relPath.startsWith("..") || path23.isAbsolute(relPath)) throw new CliError("invalid-input", `--attach ${given}: only files inside the project folder can be attached`);
+      if (!relPath || relPath.startsWith("..") || path24.isAbsolute(relPath)) throw new CliError("invalid-input", `--attach ${given}: only files inside the project folder can be attached`);
       if (relPath.startsWith(`renders/${PREMIERE_DIR}/`) || relPath.startsWith(".darkmind/")) throw new CliError("invalid-input", `--attach ${given}: files of earlier packages or of .darkmind/ cannot be attached`);
-      const stat = await fs24.stat(absolute).catch(() => null);
+      const stat = await fs26.stat(absolute).catch(() => null);
       if (!stat?.isFile()) throw new CliError("not-found", `--attach ${given}: no such file in the project folder`);
       if (stat.size > MAX_ATTACHMENT_BYTES) throw new CliError("invalid-input", `--attach ${given}: ${stat.size} bytes is too large for an attachment (max ${MAX_ATTACHMENT_BYTES}); media belong on the timeline`);
       if (deliverables.some((d) => d.from.file === relPath)) continue;
       const original = await hashFile(absolute);
-      const name = rootName(path23.basename(relPath));
+      const name = rootName(path24.basename(relPath));
       const { sha256: sha2563, size } = await copyDeliverable(relPath, name);
       deliverables.push({ file: name, kind: "attachment", size, sha256: sha2563, from: { file: relPath, sha256: original.sha256 }, note: /chapter/i.test(name) ? "chapter list for the YouTube description (from the pipeline timeline; generate it again after timeline changes)" : "attached project file" });
     }
@@ -13296,23 +13729,23 @@ async function exportPremierePackage(request) {
       toolchain: toolchainDocument(toolchain, null, null, brandPack)
     };
     const report = importReport(partial);
-    await fs24.writeFile(path23.join(staging, xmlName), xml, "utf8");
-    if (srtName && srt !== null) await fs24.writeFile(path23.join(staging, srtName), srt, "utf8");
-    await fs24.writeFile(path23.join(staging, PACKAGE_REPORT), report, "utf8");
+    await fs26.writeFile(path24.join(staging, xmlName), xml, "utf8");
+    if (srtName && srt !== null) await fs26.writeFile(path24.join(staging, srtName), srt, "utf8");
+    await fs26.writeFile(path24.join(staging, PACKAGE_REPORT), report, "utf8");
     const files = [];
     for (const name of [xmlName, ...srtName ? [srtName] : [], PACKAGE_REPORT]) {
-      const { sha256: sha2563, size } = await hashFile(path23.join(staging, name));
+      const { sha256: sha2563, size } = await hashFile(path24.join(staging, name));
       files.push({ path: name, size, sha256: sha2563 });
     }
     for (const m of media) files.push({ path: m.file, size: m.size, sha256: m.sha256 });
     for (const d of deliverables) files.push({ path: d.file, size: d.size, sha256: d.sha256 });
     files.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
     const packageKey = sha256Hex(JSON.stringify({ exporter: PREMIERE_EXPORTER_VERSION, files }));
-    const premiereDir = path23.join(rendersDir, PREMIERE_DIR);
+    const premiereDir = path24.join(rendersDir, PREMIERE_DIR);
     const version = await nextPackageVersion(premiereDir);
     if (version.previous) {
-      const previousDir = path23.join(premiereDir, version.previous);
-      const previous = await readJsonFile(path23.join(previousDir, PACKAGE_MANIFEST)).catch(() => null);
+      const previousDir = path24.join(premiereDir, version.previous);
+      const previous = await readJsonFile(path24.join(previousDir, PACKAGE_MANIFEST)).catch(() => null);
       if (previous?.packageKey === packageKey) {
         const check3 = await verifyPremierePackage(previousDir);
         if (check3.ok) {
@@ -13322,12 +13755,12 @@ async function exportPremierePackage(request) {
       }
     }
     const manifest = { ...partial, createdAt: (request.now?.() ?? /* @__PURE__ */ new Date()).toISOString(), packageKey, files };
-    await fs24.writeFile(path23.join(staging, PACKAGE_MANIFEST), `${JSON.stringify(manifest, null, 2)}
+    await fs26.writeFile(path24.join(staging, PACKAGE_MANIFEST), `${JSON.stringify(manifest, null, 2)}
 `, "utf8");
     const check2 = await verifyPremierePackage(staging);
     if (!check2.ok) throw new CliError("export-verification-failed", `The package is incomplete: ${check2.problems.join("; ")}`, { problems: check2.problems });
-    const target = path23.join(premiereDir, `v${String(version.number).padStart(4, "0")}`);
-    await fs24.mkdir(premiereDir, { recursive: true });
+    const target = path24.join(premiereDir, `v${String(version.number).padStart(4, "0")}`);
+    await fs26.mkdir(premiereDir, { recursive: true });
     await renameWithRetry(staging, target);
     await pruneCache2(conformDir, keepConform, 14 * 864e5);
     return { status: "exported", dir: rel2(root, target), manifest, warnings: issues.filter((i) => i.severity === "warning") };
@@ -13335,7 +13768,7 @@ async function exportPremierePackage(request) {
     if (error instanceof AbortedError) throw new CliError("aborted", "The export was cancelled; nothing was published (finished conform media stay cached).");
     throw error;
   } finally {
-    await fs24.rm(workDir, { recursive: true, force: true }).catch(() => {
+    await fs26.rm(workDir, { recursive: true, force: true }).catch(() => {
     });
     await release();
   }
@@ -13361,7 +13794,7 @@ function draftMarkers(docs, plan) {
   return markers;
 }
 async function latestPackage(root) {
-  const dir = path23.join(root, "renders", PREMIERE_DIR);
+  const dir = path24.join(root, "renders", PREMIERE_DIR);
   const { previous } = await nextPackageVersion(dir);
   return previous ? `renders/${PREMIERE_DIR}/${previous}` : null;
 }
@@ -13427,7 +13860,7 @@ async function exportCommand(ctx, target, args, options, tools = defaultTools(ct
 async function verifyCommand(ctx, folder) {
   const relDir = folder ?? await latestPackage(ctx.root);
   if (!relDir) throw new CliError("not-found", 'no Premiere package in renders/premiere/; run "darkmind-agent export premiere" first');
-  const dir = path24.resolve(ctx.root, relDir);
+  const dir = path25.resolve(ctx.root, relDir);
   const check2 = await verifyPremierePackage(dir);
   return {
     data: { dir, ok: check2.ok, checkedFiles: check2.checkedFiles, problems: check2.problems, sequence: check2.manifest?.sequence ?? null },
@@ -13437,15 +13870,15 @@ async function verifyCommand(ctx, folder) {
 }
 
 // src/commands/extensions.ts
-import path27 from "node:path";
+import path28 from "node:path";
 
 // src/commands/render.ts
-import { promises as fs26 } from "node:fs";
-import path26 from "node:path";
+import { promises as fs28 } from "node:fs";
+import path27 from "node:path";
 
 // src/commands/media.ts
-import { promises as fs25 } from "node:fs";
-import path25 from "node:path";
+import { promises as fs27 } from "node:fs";
+import path26 from "node:path";
 var LARGE_ORIGINALS_BYTES = 10 * 1024 ** 3;
 var CACHE_MIN_VALIDITY_MS = 10 * 60 * 1e3;
 function parseTime(text3) {
@@ -13483,11 +13916,11 @@ async function snapExcerptStart(tools, input, from) {
 }
 async function loadTransfer(ctx, ticket, server) {
   const directory = statePaths(ctx.root).mediaTickets;
-  const file = path25.join(directory, `${sha256Hex(ticket).slice(0, 32)}.json`);
+  const file = path26.join(directory, `${sha256Hex(ticket).slice(0, 32)}.json`);
   const now = Date.now();
-  for (const name of await fs25.readdir(directory).catch(() => [])) {
-    const entry = await readJsonFile(path25.join(directory, name)).catch(() => null);
-    if (!entry || Date.parse(entry.expiresAt) < now) await fs25.rm(path25.join(directory, name), { force: true });
+  for (const name of await fs27.readdir(directory).catch(() => [])) {
+    const entry = await readJsonFile(path26.join(directory, name)).catch(() => null);
+    if (!entry || Date.parse(entry.expiresAt) < now) await fs27.rm(path26.join(directory, name), { force: true });
   }
   const cached = await readJsonFile(file).catch(() => null);
   if (cached?.kind === "media" && Date.parse(cached.expiresAt) - now > CACHE_MIN_VALIDITY_MS) return { transfer: cached, cached: true };
@@ -13496,27 +13929,29 @@ async function loadTransfer(ctx, ticket, server) {
   return { transfer, cached: false };
 }
 function relativeTo(root, file) {
-  return path25.relative(root, file).split(path25.sep).join("/");
+  return path26.relative(root, file).split(path26.sep).join("/");
 }
-async function proxyFile(ctx, tools, item, range2, outDir, force, warnings, indexEntries) {
-  const name = range2 ? `${item.videoId}_${formatSeconds2(range2.from)}-${formatSeconds2(range2.to)}.mp4` : `${item.videoId}.mp4`;
-  const out = path25.join(outDir, name);
-  const rangeInfo = range2 ? { range: { from: range2.from, to: range2.to } } : {};
-  if (!force && await fs25.stat(out).catch(() => null)) {
-    const indexed = (await readProxyIndex(outDir)).files.find((entry) => entry.file.toLowerCase() === name.toLowerCase());
-    const info2 = await probe(tools, out).catch(() => null);
-    if (info2?.hasVideo && (indexed || !range2)) {
-      const { size: size2 } = await fs25.stat(out);
-      return { videoId: item.videoId, path: relativeTo(ctx.root, out), status: "exists", bytes: size2, ...rangeInfo, durationSeconds: info2.durationSeconds, offset: indexed?.offset ?? "0" };
-    }
-  }
-  const input = item.files?.video.url ?? (range2 ? item.playlistUrl : null);
+function proxyIdentity(item) {
+  const files = item.files;
+  if (!files) return null;
+  const part = (file) => file ? { size: file.size ?? null, etag: file.etag ?? null } : null;
+  const video = part(files.video);
+  if (video.size === null && video.etag === null) return null;
+  return { video, audio: part(files.audio) };
+}
+function originalIdentity(item) {
+  return { size: item.size, etag: item.etag ?? null };
+}
+async function cutProxy(tools, item, range2, out, warnings, local) {
+  const input = local ?? item.files?.video.url ?? (range2 ? item.playlistUrl : null);
   let start = null;
   if (range2 && input) start = await snapExcerptStart(tools, input, range2.from);
   const seek = range2 && start ? ["-ss", seekArgument(start), "-t", formatSeconds2(range2.to - toNumberQ(start))] : [];
   const temp = `${out}.part.mp4`;
   const args = ["-hide_banner", "-nostdin", "-loglevel", "error", "-y"];
-  if (item.files) {
+  if (local) {
+    args.push(...seek, "-i", local, "-map", "0:v:0", "-map", "0:a?");
+  } else if (item.files) {
     args.push(...seek, "-i", item.files.video.url);
     if (item.files.audio) args.push(...seek, "-i", item.files.audio.url, "-map", "0:v:0", "-map", "1:a:0");
     else args.push("-map", "0:v:0", "-map", "0:a?");
@@ -13530,11 +13965,12 @@ async function proxyFile(ctx, tools, item, range2, outDir, force, warnings, inde
     );
   }
   args.push("-c", "copy", "-movflags", "+faststart", temp);
-  await fs25.mkdir(outDir, { recursive: true });
-  let result = await tools.run(tools.ffmpeg, args, { timeoutMs: range2 ? 30 * 6e4 : 4 * 60 * 6e4 });
-  if (result.code !== 0) result = await tools.run(tools.ffmpeg, args, { timeoutMs: range2 ? 30 * 6e4 : 4 * 60 * 6e4 });
+  await fs27.mkdir(path26.dirname(out), { recursive: true });
+  const timeoutMs = range2 || local ? 30 * 6e4 : 4 * 60 * 6e4;
+  let result = await tools.run(tools.ffmpeg, args, { timeoutMs });
+  if (result.code !== 0) result = await tools.run(tools.ffmpeg, args, { timeoutMs });
   if (result.code !== 0) {
-    await fs25.rm(temp, { force: true });
+    await fs27.rm(temp, { force: true });
     const reason = result.stderr.trim().split(/\r?\n/).filter(Boolean).pop() ?? `exit code ${result.code}`;
     throw new CliError("ffmpeg-failed", `ffmpeg failed: ${reason.replace(/https?:\/\/\S+/g, "<url>")}`);
   }
@@ -13548,11 +13984,57 @@ async function proxyFile(ctx, tools, item, range2, outDir, force, warnings, inde
     offset = shown.length ? subQ(start, shown[0]) : start;
   }
   await renameWithRetry(temp, out);
+  return { offset, info };
+}
+async function proxyFile(ctx, tools, item, range2, outDir, force, warnings, indexEntries, cache) {
+  const name = range2 ? `${item.videoId}_${formatSeconds2(range2.from)}-${formatSeconds2(range2.to)}.mp4` : `${item.videoId}.mp4`;
+  const out = path26.join(outDir, name);
+  const rangeInfo = range2 ? { range: { from: range2.from, to: range2.to } } : {};
+  if (!force && await fs27.stat(out).catch(() => null)) {
+    const indexed = (await readProxyIndex(outDir)).files.find((entry) => entry.file.toLowerCase() === name.toLowerCase());
+    const info2 = await probe(tools, out).catch(() => null);
+    if (info2?.hasVideo && (indexed || !range2)) {
+      const { size: size2 } = await fs27.stat(out);
+      return { videoId: item.videoId, path: relativeTo(ctx.root, out), status: "exists", bytes: size2, ...rangeInfo, durationSeconds: info2.durationSeconds, offset: indexed?.offset ?? "0" };
+    }
+  }
+  const identity = proxyIdentity(item);
+  const key = cache && identity ? cacheKey(identity) : null;
+  let status2 = "downloaded";
+  let placed;
+  let offset = rational(0);
+  let info;
+  let fromCachedProxy = false;
+  if (!range2 && cache && identity && key) {
+    const got = await cache.obtain("proxy", item.videoId, key, ".mp4", { identity, fileName: item.fileName }, async (target) => {
+      await cutProxy(tools, item, null, target, warnings, null);
+    }, { force, progress: ctx.progress });
+    if (!got.stored) await cache.update(got.entry);
+    status2 = got.stored ? "downloaded" : "cached";
+    placed = await placeFromCache(got.file, out);
+    info = await probe(tools, out).catch((error) => {
+      throw new CliError("invalid-media", `The proxy file is not readable: ${errorMessage(error)}`);
+    });
+  } else {
+    let local = null;
+    if (range2 && cache && key && !force) {
+      const hit = await cache.lookup("proxy", item.videoId, key);
+      if (hit) {
+        local = hit.file;
+        await cache.update(hit.entry);
+      }
+    }
+    ({ offset, info } = await cutProxy(tools, item, range2, out, warnings, local));
+    if (local) {
+      status2 = "cached";
+      fromCachedProxy = true;
+    }
+  }
   const expected = range2 ? range2.to - toNumberQ(offset) : item.durationSeconds;
   if (expected && info.durationSeconds !== null && Math.abs(info.durationSeconds - expected) > 1) {
     warnings.push(`${name}: duration ${info.durationSeconds.toFixed(2)} s, expected ${expected.toFixed(2)} s.`);
   }
-  const { size } = await fs25.stat(out);
+  const { size } = await fs27.stat(out);
   indexEntries.push({
     file: name,
     videoId: item.videoId,
@@ -13564,28 +14046,70 @@ async function proxyFile(ctx, tools, item, range2, outDir, force, warnings, inde
   return {
     videoId: item.videoId,
     path: relativeTo(ctx.root, out),
-    status: "downloaded",
+    status: status2,
     bytes: size,
     ...rangeInfo,
     offset: formatRationalReadable(offset, 9),
     durationSeconds: info.durationSeconds,
     width: info.width,
     height: info.height,
-    hasAudio: info.hasAudio
+    hasAudio: info.hasAudio,
+    ...placed ? { placed } : {},
+    ...fromCachedProxy ? { fromCachedProxy } : {}
   };
 }
 function originalExtension(item) {
-  const ext = path25.extname(item.originalFileName || item.fileName || "").toLowerCase();
+  const ext = path26.extname(item.originalFileName || item.fileName || "").toLowerCase();
   return /^\.[a-z0-9]{1,8}$/.test(ext) ? ext : ".mp4";
 }
-async function originalFile(ctx, tools, item, outDir, force, hasProbe, warnings) {
-  const out = path25.join(outDir, `${item.videoId}${originalExtension(item)}`);
-  const existing = await fs25.stat(out).catch(() => null);
+async function seedMediaHash(root, out, entry, cacheFile) {
+  if (!entry.sha256 || entry.hashedMtimeMs === void 0) return;
+  const source = await fs27.stat(cacheFile).catch(() => null);
+  const placed = await fs27.stat(out).catch(() => null);
+  if (!source || !placed || source.size !== entry.size || placed.size !== entry.size || Math.round(source.mtimeMs) !== entry.hashedMtimeMs) return;
+  const cache = await HashCache.load(mediaHashCachePath(root));
+  const mtimeMs = Math.round(placed.mtimeMs);
+  cache.record(relativeTo(root, out), placed.size, mtimeMs, entry.sha256, Math.max(Date.now(), mtimeMs + 2001));
+  await cache.save();
+}
+async function originalFile(ctx, tools, item, outDir, force, hasProbe, warnings, cache, streams) {
+  const ext = originalExtension(item);
+  const out = path26.join(outDir, `${item.videoId}${ext}`);
+  const existing = await fs27.stat(out).catch(() => null);
+  const identity = originalIdentity(item);
+  const key = cacheKey(identity);
   if (!force && existing?.size === item.size) {
+    if (cache) await cache.adopt("original", item.videoId, key, ext, { identity, fileName: item.fileName }, out).catch(() => false);
     return { videoId: item.videoId, path: relativeTo(ctx.root, out), status: "exists", bytes: item.size };
   }
-  await fs25.mkdir(outDir, { recursive: true });
-  const result = await downloadFile(item.url, out, { size: item.size, label: item.fileName });
+  let status2 = "downloaded";
+  let resumedBytes = 0;
+  let placed;
+  if (cache) {
+    const got = await cache.obtain("original", item.videoId, key, ext, { identity, fileName: item.fileName }, async (target) => {
+      resumedBytes = (await downloadFile(item.url, target, { size: item.size, label: item.fileName }, { streams })).resumedBytes;
+    }, { force, progress: ctx.progress });
+    let entry = got.entry;
+    if (got.stored) {
+      ctx.progress(`original ${item.videoId}: SHA-256 for the media cache`);
+      const stat = await fs27.stat(got.file);
+      const { sha256: sha2563 } = await hashFile(got.file);
+      entry = await cache.update(entry, { sha256: sha2563, hashedMtimeMs: Math.round(stat.mtimeMs) });
+    } else {
+      entry = await cache.update(entry);
+      status2 = "cached";
+    }
+    placed = await placeFromCache(got.file, out);
+    if (placed === "copy") {
+      warnings.push(
+        `${item.videoId}: copied from the media cache (${formatBytes(item.size)}), because ${cache.dir} is on another drive than the project and symbolic links are not allowed. Set DARKMIND_MEDIA_CACHE to a folder on the project's drive (or enable the Windows developer mode) to link instead of copying.`
+      );
+    }
+    await seedMediaHash(ctx.root, out, entry, got.file).catch(() => void 0);
+  } else {
+    await fs27.mkdir(outDir, { recursive: true });
+    resumedBytes = (await downloadFile(item.url, out, { size: item.size, label: item.fileName }, { streams })).resumedBytes;
+  }
   let info = null;
   if (hasProbe) {
     info = await probe(tools, out).catch((error) => {
@@ -13596,9 +14120,10 @@ async function originalFile(ctx, tools, item, outDir, force, hasProbe, warnings)
   return {
     videoId: item.videoId,
     path: relativeTo(ctx.root, out),
-    status: "downloaded",
+    status: status2,
     bytes: item.size,
-    ...result.resumedBytes > 0 ? { resumedBytes: result.resumedBytes } : {},
+    ...resumedBytes > 0 ? { resumedBytes } : {},
+    ...placed ? { placed } : {},
     ...info ? { durationSeconds: info.durationSeconds, width: info.width, height: info.height, hasAudio: info.hasAudio } : {}
   };
 }
@@ -13616,9 +14141,11 @@ async function mediaCommand(ctx, ticketArg, options = {}, tools = defaultTools(c
   const files = [];
   const failed = [];
   const force = Boolean(options.force);
-  const outDir = path25.resolve(ctx.root, options.out ?? (transfer.mediaKind === "proxy" ? "media/proxy" : "media/original"));
+  const outDir = path26.resolve(ctx.root, options.out ?? (transfer.mediaKind === "proxy" ? "media/proxy" : "media/original"));
   const ticketErrors = new Map(transfer.errors.map((error) => [normalizeCutProjectVideoId(error.videoId), error]));
   let done = 0;
+  const cache = options.noCache ? null : openMediaCache(ctx.env);
+  const streams = Number(ctx.env.DARKMIND_AGENT_DOWNLOAD_STREAMS) > 0 ? Math.floor(Number(ctx.env.DARKMIND_AGENT_DOWNLOAD_STREAMS)) : void 0;
   if (transfer.mediaKind === "proxy") {
     if (!ffmpegVersion || !ffprobeVersion) {
       throw new CliError("ffmpeg-missing", "ffmpeg and ffprobe are required for proxies; install ffmpeg (in PATH) or set DARKMIND_FFMPEG/DARKMIND_FFPROBE.");
@@ -13640,7 +14167,7 @@ async function mediaCommand(ctx, ticketArg, options = {}, tools = defaultTools(c
     const indexEntries = [];
     await runPool(jobs, options.concurrency ?? 3, async ({ item, range: range2 }) => {
       try {
-        files.push(await proxyFile(ctx, tools, item, range2, outDir, force, warnings, indexEntries));
+        files.push(await proxyFile(ctx, tools, item, range2, outDir, force, warnings, indexEntries, cache));
         ctx.progress(`proxy ${++done}/${jobs.length} ${item.videoId}`);
       } catch (error) {
         failed.push({
@@ -13659,7 +14186,7 @@ async function mediaCommand(ctx, ticketArg, options = {}, tools = defaultTools(c
     if (!ffprobeVersion) warnings.push("ffprobe not found: originals are checked by size only.");
     await runPool(transfer.videos, options.concurrency ?? 2, async (item) => {
       try {
-        files.push(await originalFile(ctx, tools, item, outDir, force, Boolean(ffprobeVersion), warnings));
+        files.push(await originalFile(ctx, tools, item, outDir, force, Boolean(ffprobeVersion), warnings, cache, streams));
         ctx.progress(`original ${++done}/${transfer.videos.length} ${item.videoId} (${formatBytes(item.size)})`);
       } catch (error) {
         failed.push({ videoId: item.videoId, code: error instanceof CliError ? error.code : "failed", message: errorMessage(error) });
@@ -13685,11 +14212,12 @@ async function mediaCommand(ctx, ticketArg, options = {}, tools = defaultTools(c
       warnings,
       videoRefsAdded,
       ...cached ? { reusedRedemption: true } : {},
+      mediaCache: cache ? cache.dir : null,
       expiresAt: transfer.expiresAt
     },
     text: [
-      `${transfer.mediaKind}: ${files.length} file(s) in ${relativeTo(ctx.root, outDir) || "."} (${formatBytes(bytes)} downloaded), ${failed.length} failed.`,
-      ...files.map((file) => `  ${file.status === "exists" ? "exists    " : "downloaded"} ${file.path}`),
+      `${transfer.mediaKind}: ${files.length} file(s) in ${relativeTo(ctx.root, outDir) || "."} (${formatBytes(bytes)} downloaded), ${failed.length} failed.${cache ? ` Media cache: ${cache.dir}` : ""}`,
+      ...files.map((file) => `  ${file.status.padEnd(10)} ${file.path}${file.placed && file.placed !== "hardlink" ? ` (${file.placed} of the media cache)` : ""}`),
       ...failed.map((failure) => `  failed     ${failure.videoId}${failure.range ? ` ${failure.range.from}-${failure.range.to}` : ""}: [${failure.code}] ${failure.message}`),
       ...transfer.errors.map((error) => `  unavailable ${error.videoId}: [${error.code}] ${error.message}`),
       ...warnings.map((warning) => `warning: ${warning}`)
@@ -13702,7 +14230,7 @@ async function mediaCommand(ctx, ticketArg, options = {}, tools = defaultTools(c
 async function readRawJson(file, label2) {
   let text3;
   try {
-    text3 = await fs26.readFile(file, "utf8");
+    text3 = await fs28.readFile(file, "utf8");
   } catch {
     throw new CliError("not-found", `${label2} does not exist`);
   }
@@ -13715,9 +14243,9 @@ async function readRawJson(file, label2) {
   }
 }
 async function probeCommand(ctx, options, tools = defaultTools(ctx.env)) {
-  const project = await readRawJson(path26.join(ctx.root, EDIT_DEFAULT_FILES.project), EDIT_DEFAULT_FILES.project);
+  const project = await readRawJson(path27.join(ctx.root, EDIT_DEFAULT_FILES.project), EDIT_DEFAULT_FILES.project);
   const sourcesRel = project.artifacts?.sources ?? EDIT_DEFAULT_FILES.sources;
-  const sourcesAbs = path26.join(ctx.root, ...sourcesRel.split("/"));
+  const sourcesAbs = path27.join(ctx.root, ...sourcesRel.split("/"));
   const doc = await readRawJson(sourcesAbs, sourcesRel);
   if (doc.schemaVersion !== 1 || !Array.isArray(doc.sources)) throw new CliError("invalid-input", `${sourcesRel} is not a sources file of format v1 (run "darkmind-agent validate")`);
   const entries = doc.sources;
@@ -13768,7 +14296,7 @@ async function probeCommand(ctx, options, tools = defaultTools(ctx.env)) {
     try {
       if (entry.kind === "asset") {
         const rel3 = String(entry.path);
-        const abs2 = path26.join(ctx.root, ...rel3.split("/"));
+        const abs2 = path27.join(ctx.root, ...rel3.split("/"));
         const info = await probeStreams(tools, abs2);
         if (!info.durationSeconds || !info.video && !info.audio) {
           outcomes.push({ sourceId, status: "skipped", from: "asset", code: "not-time-based", message: `${rel3} is not time-based media` });
@@ -13783,8 +14311,8 @@ async function probeCommand(ctx, options, tools = defaultTools(ctx.env)) {
       if (local) {
         const info = await probeStreams(tools, local);
         const vfr = await detectVfr(tools, { file: local }, info);
-        const stat = await fs26.stat(local);
-        const rel3 = path26.relative(ctx.root, local).split(path26.sep).join("/");
+        const stat = await fs28.stat(local);
+        const rel3 = path27.relative(ctx.root, local).split(path27.sep).join("/");
         const sha2563 = await cache.hash(rel3, local, stat.size, Math.round(stat.mtimeMs));
         outcomes.push(record(toMediaFacts(info, vfr.vfr, "original", now), "local-original", vfr.basis, { size: stat.size, sha256: sha2563 }));
         continue;
@@ -13855,7 +14383,7 @@ async function planCommand(ctx, options, tools = defaultTools(ctx.env)) {
     segments = ranges.length;
     for (const range2 of ranges) {
       const key = segmentKey(plan, range2, { recipe: RENDER_RECIPES[mode], toolchain: toolchainKey(toolchain), captions: plan.captions.length > 0 });
-      if (await fs26.stat(path26.join(ctx.root, "renders", RENDER_DIRS.cache, "segments", `${key}.mp4`)).catch(() => null)) cached++;
+      if (await fs28.stat(path27.join(ctx.root, "renders", RENDER_DIRS.cache, "segments", `${key}.mp4`)).catch(() => null)) cached++;
     }
   }
   const fps = plan ? parseRational(plan.output.fps) : null;
@@ -13986,7 +14514,7 @@ function label(state) {
 function describeCommand(state, program, args) {
   return [program, ...args].map((part) => /\s/.test(part) ? `"${part}"` : part).join(" ") + (state.trust.execution?.program.resolved ? `  (program: ${state.trust.execution.program.resolved})` : "");
 }
-function summary(state) {
+function summary2(state) {
   return {
     id: state.id,
     file: state.file,
@@ -14018,7 +14546,7 @@ async function extensionsCommand(ctx, action, ids, options, tools = defaultTools
     const approvals = states.filter((s) => s.status === "stale" && !s.trust.approved && s.trust.hash);
     const next = approvals.length ? `Show the commands to the user and get their agreement: darkmind-agent extensions show ${approvals[0].id}` : states.some((s) => s.status === "blocked") ? "Fix the problems of the blocked extensions (missing inputs are restored from the archive or loaded as media, never regenerated)." : pending.length ? `darkmind-agent extensions run (render does it for the timeline, too)` : null;
     return {
-      data: { mode, extensions: states.map(summary), next },
+      data: { mode, extensions: states.map(summary2), next },
       text: [
         `extensions (${mode}): ${states.length} listed, ${states.filter((s) => s.needed).length} used by the timeline`,
         ...states.map((s) => `  ${label(s).padEnd(10)} ${s.id.padEnd(24)} ${s.needed ? "" : stills.has(s.id) ? "(still image, thumbnail review) " : "(not in the timeline) "}${s.status === "current" ? s.output.path : s.reason}`),
@@ -14036,7 +14564,7 @@ async function extensionsCommand(ctx, action, ids, options, tools = defaultTools
         if (gate.status === "blocked") throw gateError(gate);
       }
     }
-    const release = await acquireLock(path27.join(ctx.root, "renders", ".lock"));
+    const release = await acquireLock(path28.join(ctx.root, "renders", ".lock"));
     try {
       const result = await runExtensions({ ...base, only: ids, force: options.force, signal: options.signal, progress: ctx.progress });
       const approvals = result.results.filter((r) => r.approval);
@@ -14063,7 +14591,7 @@ async function extensionsCommand(ctx, action, ids, options, tools = defaultTools
     const data = Object.entries(state.inputs.files).filter(([file]) => !execution || !(file in execution.code));
     return {
       data: {
-        ...summary(state),
+        ...summary2(state),
         command: { program: extension.command.program, args: extension.command.args, resolved: execution?.program.resolved ?? null },
         tools: execution?.tools ?? [],
         code: execution?.code ?? {},
@@ -14123,8 +14651,8 @@ next: darkmind-agent extensions run ${id2}`
 }
 
 // src/commands/levels.ts
-import { promises as fs27 } from "node:fs";
-import path28 from "node:path";
+import { promises as fs29 } from "node:fs";
+import path29 from "node:path";
 var DEFAULT_REFERENCE_LUFS = -14 - DIALOG_BELOW_TARGET_DB;
 var QUIET_SOURCE_GAIN_DB = 20;
 async function levelsCommand(ctx, options, tools = defaultTools(ctx.env)) {
@@ -14149,7 +14677,7 @@ async function levelsCommand(ctx, options, tools = defaultTools(ctx.env)) {
       if (!file) continue;
       const inLocal = parseRational(clip.inLocal);
       const seconds2 = clip.frames / fpsValue;
-      const measured = await measureLoudness(tools, path28.join(ctx.root, file.path), { range: { from: Number(inLocal.n) / Number(inLocal.d), seconds: seconds2 } });
+      const measured = await measureLoudness(tools, path29.join(ctx.root, file.path), { range: { from: Number(inLocal.n) / Number(inLocal.d), seconds: seconds2 } });
       const gain = dialogGain(measured.integratedLufs, reference);
       const current = clip.gainDb ?? 0;
       const proposed = gain ?? current;
@@ -14168,10 +14696,10 @@ async function levelsCommand(ctx, options, tools = defaultTools(ctx.env)) {
   const changed = clips.filter((c) => c.changed);
   let applied = false;
   if (options.apply && changed.length) {
-    const projectFile = path28.join(ctx.root, "project.json");
-    const project = JSON.parse((await fs27.readFile(projectFile, "utf8")).replace(/^\uFEFF/, ""));
-    const timelineFile = path28.join(ctx.root, project.artifacts?.timeline ?? "timeline.json");
-    const timeline = JSON.parse((await fs27.readFile(timelineFile, "utf8")).replace(/^\uFEFF/, ""));
+    const projectFile = path29.join(ctx.root, "project.json");
+    const project = JSON.parse((await fs29.readFile(projectFile, "utf8")).replace(/^\uFEFF/, ""));
+    const timelineFile = path29.join(ctx.root, project.artifacts?.timeline ?? "timeline.json");
+    const timeline = JSON.parse((await fs29.readFile(timelineFile, "utf8")).replace(/^\uFEFF/, ""));
     const byId = new Map(changed.map((c) => [`${c.trackId}/${c.id}`, c.proposedGainDb]));
     for (const track of timeline.audio) for (const clip of track.clips) {
       const gain = byId.get(`${track.id}/${clip.id}`);
@@ -14211,26 +14739,26 @@ async function levelsCommand(ctx, options, tools = defaultTools(ctx.env)) {
 
 // src/commands/plugin.ts
 import { execFile } from "node:child_process";
-import { promises as fs28 } from "node:fs";
-import os2 from "node:os";
-import path29 from "node:path";
+import { promises as fs30 } from "node:fs";
+import os3 from "node:os";
+import path30 from "node:path";
 var PLUGIN_NAME = "darkmind";
 var PLUGIN_MARKETPLACE = "darkmind";
 var PLUGIN_ID = `${PLUGIN_NAME}@${PLUGIN_MARKETPLACE}`;
 var PLUGIN_ZIP_NAME = "darkmind-plugin.zip";
-var PLUGIN_SKILL_PATH = path29.join("plugins", PLUGIN_NAME, "skills", SKILL_NAME);
+var PLUGIN_SKILL_PATH = path30.join("plugins", PLUGIN_NAME, "skills", SKILL_NAME);
 var MARKETPLACE_FILE = ".claude-plugin/marketplace.json";
 var PLUGIN_MANIFEST = `plugins/${PLUGIN_NAME}/.claude-plugin/plugin.json`;
 var MAX_ARCHIVE_BYTES2 = 100 * 1024 * 1024;
 var CLIENTS = ["copilot", "claude"];
 var CLIENT_LABELS = { copilot: "GitHub Copilot", claude: "Claude Code" };
 function homeDir(env, platform) {
-  return (platform === "win32" ? env.USERPROFILE : env.HOME) || env.HOME || os2.homedir();
+  return (platform === "win32" ? env.USERPROFILE : env.HOME) || env.HOME || os3.homedir();
 }
 function pluginHome(ctx, to, platform = process.platform) {
-  if (to) return path29.resolve(ctx.root, to);
-  if (ctx.env.DARKMIND_PLUGIN_HOME) return path29.resolve(ctx.env.DARKMIND_PLUGIN_HOME);
-  return path29.join(homeDir(ctx.env, platform), ".darkmind", "marketplace");
+  if (to) return path30.resolve(ctx.root, to);
+  if (ctx.env.DARKMIND_PLUGIN_HOME) return path30.resolve(ctx.env.DARKMIND_PLUGIN_HOME);
+  return path30.join(homeDir(ctx.env, platform), ".darkmind", "marketplace");
 }
 var defaultRunner = (command, args, env) => new Promise((resolve, reject) => {
   const done = (error, stdout, stderr) => {
@@ -14253,17 +14781,17 @@ async function clientCandidates(client, env, platform) {
   if (client === "copilot") return ["copilot"];
   const home = homeDir(env, platform);
   const exe = platform === "win32" ? "claude.exe" : "claude";
-  const candidates = ["claude", path29.join(home, ".local", "bin", exe)];
+  const candidates = ["claude", path30.join(home, ".local", "bin", exe)];
   if (platform === "win32" && env.LOCALAPPDATA) {
-    const base = path29.join(env.LOCALAPPDATA, "Claude-Data");
+    const base = path30.join(env.LOCALAPPDATA, "Claude-Data");
     const found = [];
-    for (const id2 of await fs28.readdir(base).catch(() => [])) {
-      const codeDir = path29.join(base, id2, "claude-code");
-      for (const version of await fs28.readdir(codeDir).catch(() => [])) {
+    for (const id2 of await fs30.readdir(base).catch(() => [])) {
+      const codeDir = path30.join(base, id2, "claude-code");
+      for (const version of await fs30.readdir(codeDir).catch(() => [])) {
         if (!/^\d+(\.\d+)*$/.test(version)) continue;
-        for (const hash of await fs28.readdir(path29.join(codeDir, version)).catch(() => [])) {
-          const file = path29.join(codeDir, version, hash, exe);
-          if (await fs28.stat(file).catch(() => null)) found.push({ version: version.split(".").map(Number), file });
+        for (const hash of await fs30.readdir(path30.join(codeDir, version)).catch(() => [])) {
+          const file = path30.join(codeDir, version, hash, exe);
+          if (await fs30.stat(file).catch(() => null)) found.push({ version: version.split(".").map(Number), file });
         }
       }
     }
@@ -14297,11 +14825,11 @@ function parseJsonArray(text3) {
 }
 async function runChecked(run2, command, args, env) {
   const result = await run2(command, args, env);
-  if (result.code !== 0) throw new Error(`"${path29.basename(command)} ${args.join(" ")}" failed: ${(result.stderr || result.stdout).trim().split("\n").slice(-3).join(" ")}`);
+  if (result.code !== 0) throw new Error(`"${path30.basename(command)} ${args.join(" ")}" failed: ${(result.stderr || result.stdout).trim().split("\n").slice(-3).join(" ")}`);
   return result;
 }
 function samePath(a, b) {
-  const normalize = (value2) => path29.resolve(value2).replace(/[\\/]+$/, "");
+  const normalize = (value2) => path30.resolve(value2).replace(/[\\/]+$/, "");
   return process.platform === "win32" ? normalize(a).toLowerCase() === normalize(b).toLowerCase() : normalize(a) === normalize(b);
 }
 function describeSource(source) {
@@ -14369,18 +14897,18 @@ async function detectLegacySetup(env, server, platform = process.platform) {
   const home = homeDir(env, platform);
   const legacy = { skillFolders: [], mcpEntries: [] };
   for (const [client, base] of [
-    ["copilot", env.COPILOT_HOME || path29.join(home, ".copilot")],
-    ["claude", env.CLAUDE_CONFIG_DIR || path29.join(home, ".claude")]
+    ["copilot", env.COPILOT_HOME || path30.join(home, ".copilot")],
+    ["claude", env.CLAUDE_CONFIG_DIR || path30.join(home, ".claude")]
   ]) {
-    const folder = path29.join(base, "skills", SKILL_NAME);
-    if (await fs28.stat(path29.join(folder, "SKILL.md")).catch(() => null)) legacy.skillFolders.push({ client, folder });
+    const folder = path30.join(base, "skills", SKILL_NAME);
+    if (await fs30.stat(path30.join(folder, "SKILL.md")).catch(() => null)) legacy.skillFolders.push({ client, folder });
   }
-  const copilotConfig = path29.join(env.COPILOT_HOME || path29.join(home, ".copilot"), "mcp-config.json");
+  const copilotConfig = path30.join(env.COPILOT_HOME || path30.join(home, ".copilot"), "mcp-config.json");
   const copilot = await readJsonFile(copilotConfig).catch(() => null);
   for (const [name, entry] of Object.entries(copilot?.mcpServers ?? {})) {
     if (sameServer(entry?.url, server)) legacy.mcpEntries.push({ client: "copilot", name, file: copilotConfig });
   }
-  const claudeConfig = env.CLAUDE_CONFIG_DIR ? path29.join(env.CLAUDE_CONFIG_DIR, ".claude.json") : path29.join(home, ".claude.json");
+  const claudeConfig = env.CLAUDE_CONFIG_DIR ? path30.join(env.CLAUDE_CONFIG_DIR, ".claude.json") : path30.join(home, ".claude.json");
   const claude = await readJsonFile(claudeConfig).catch(() => null);
   for (const [name, entry] of Object.entries(claude?.mcpServers ?? {})) {
     if (sameServer(entry?.url, server)) legacy.mcpEntries.push({ client: "claude", name, file: claudeConfig });
@@ -14405,38 +14933,38 @@ async function downloadPlugin(ctx, server) {
   }
 }
 async function readInstalled(dir) {
-  const plugin = await readJsonFile(path29.join(dir, ...PLUGIN_MANIFEST.split("/"))).catch(() => null);
+  const plugin = await readJsonFile(path30.join(dir, ...PLUGIN_MANIFEST.split("/"))).catch(() => null);
   if (!plugin) return null;
-  const skill = await readJsonFile(path29.join(dir, PLUGIN_SKILL_PATH, "skill.json")).catch(() => null);
+  const skill = await readJsonFile(path30.join(dir, PLUGIN_SKILL_PATH, "skill.json")).catch(() => null);
   return { version: typeof plugin.version === "string" ? plugin.version : null, server: typeof skill?.server === "string" ? skill.server : null };
 }
 async function listTree(dir, prefix = "") {
   const files = [];
-  for (const entry of await fs28.readdir(path29.join(dir, prefix), { withFileTypes: true }).catch(() => [])) {
-    const relative = path29.join(prefix, entry.name);
+  for (const entry of await fs30.readdir(path30.join(dir, prefix), { withFileTypes: true }).catch(() => [])) {
+    const relative = path30.join(prefix, entry.name);
     if (entry.isDirectory()) files.push(...await listTree(dir, relative));
     else files.push(relative);
   }
   return files;
 }
 async function swapInto(staging, target) {
-  if (!await fs28.stat(target).catch(() => null)) {
-    await fs28.mkdir(path29.dirname(target), { recursive: true });
-    await fs28.rename(staging, target);
+  if (!await fs30.stat(target).catch(() => null)) {
+    await fs30.mkdir(path30.dirname(target), { recursive: true });
+    await fs30.rename(staging, target);
     return;
   }
   const old = `${target}.old-${process.pid}`;
   try {
-    await fs28.rename(target, old);
+    await fs30.rename(target, old);
   } catch {
     const keep = new Set((await listTree(staging)).map((file) => file.toLowerCase()));
-    await fs28.cp(staging, target, { recursive: true, force: true });
-    for (const file of await listTree(target)) if (!keep.has(file.toLowerCase())) await fs28.rm(path29.join(target, file), { force: true });
-    await fs28.rm(staging, { recursive: true, force: true });
+    await fs30.cp(staging, target, { recursive: true, force: true });
+    for (const file of await listTree(target)) if (!keep.has(file.toLowerCase())) await fs30.rm(path30.join(target, file), { force: true });
+    await fs30.rm(staging, { recursive: true, force: true });
     return;
   }
-  await fs28.rename(staging, target);
-  await fs28.rm(old, { recursive: true, force: true });
+  await fs30.rename(staging, target);
+  await fs30.rm(old, { recursive: true, force: true });
 }
 async function pluginCommand(ctx, action, options = {}, deps = {}) {
   const run2 = deps.run ?? defaultRunner;
@@ -14469,11 +14997,11 @@ async function installLocalFolder(ctx, dir, server) {
     throw new CliError("invalid-archive", `The plugin archive of ${server} has no ${MARKETPLACE_FILE} or ${PLUGIN_MANIFEST}.`);
   }
   const staging = `${dir}.tmp-${process.pid}`;
-  await fs28.rm(staging, { recursive: true, force: true });
+  await fs30.rm(staging, { recursive: true, force: true });
   for (const entry of entries) {
-    const file = path29.join(staging, ...entry.name.split("/"));
-    await fs28.mkdir(path29.dirname(file), { recursive: true });
-    await fs28.writeFile(file, entry.data);
+    const file = path30.join(staging, ...entry.name.split("/"));
+    await fs30.mkdir(path30.dirname(file), { recursive: true });
+    await fs30.writeFile(file, entry.data);
   }
   await swapInto(staging, dir);
   return JSON.parse(manifest.data.toString("utf8")).version ?? null;
@@ -14503,14 +15031,14 @@ async function install(p, clients, update, options, scriptPath) {
   }
   let removedLocal = false;
   if (!usesLocal && previous && clients.length === CLIENTS.length && reports.every((report) => report.plugin)) {
-    await fs28.rm(dir, { recursive: true, force: true });
+    await fs30.rm(dir, { recursive: true, force: true });
     removedLocal = true;
   }
   const removed = [];
   if (options.removeLegacy) {
     for (const report of reports.filter((item) => item.plugin && item.command)) {
       for (const { folder } of legacy.skillFolders.filter((item) => item.client === report.client)) {
-        await fs28.rm(folder, { recursive: true, force: true });
+        await fs30.rm(folder, { recursive: true, force: true });
         removed.push(folder);
       }
       for (const entry of legacy.mcpEntries.filter((item) => item.client === report.client)) {
@@ -14600,9 +15128,9 @@ async function statusOf(p, clients) {
 
 // src/commands/preview.ts
 import { createHash as createHash4 } from "node:crypto";
-import { createReadStream as createReadStream3, promises as fs29, watch } from "node:fs";
+import { createReadStream as createReadStream3, promises as fs31, watch } from "node:fs";
 import http2 from "node:http";
-import path30 from "node:path";
+import path31 from "node:path";
 import { pipeline as pipeline2 } from "node:stream/promises";
 
 // src/pipeline/preview-page.ts
@@ -14994,22 +15522,22 @@ async function startPreviewServer(options) {
     const key = createHash4("sha256").update(`${BROWSER_COPY_VERSION}|${file.path}|${file.size}|${file.mtimeMs}`).digest("hex").slice(0, 32);
     const known = copies.get(key);
     if (known) return known;
-    const target = path30.join(root, "renders", ".cache", "preview", `${key}.webm`);
-    const ready = (await fs29.stat(target).catch(() => null))?.isFile();
+    const target = path31.join(root, "renders", ".cache", "preview", `${key}.webm`);
+    const ready = (await fs31.stat(target).catch(() => null))?.isFile();
     const entry = { status: ready ? "ready" : "converting", file: target };
     copies.set(key, entry);
     if (ready) return entry;
     queue = queue.then(async () => {
       const temp = `${target}.${process.pid}.tmp`;
       try {
-        await fs29.mkdir(path30.dirname(target), { recursive: true });
+        await fs31.mkdir(path31.dirname(target), { recursive: true });
         log(`converting ${file.path} for the browser (${file.video?.codec ?? "audio"}${file.video?.alpha ? " with alpha" : ""} \u2192 VP9/WebM, preview only)`);
         const result = await tools.run(tools.ffmpeg, browserCopyArgs(input, temp, file), { timeoutMs: 30 * 6e4 });
         if (result.code !== 0) throw new Error(result.stderr.trim().split(/\r?\n/).slice(-3).join(" ") || `ffmpeg exited with ${result.code}`);
-        await fs29.rename(temp, target);
+        await fs31.rename(temp, target);
         entry.status = "ready";
       } catch (error) {
-        await fs29.rm(temp, { force: true }).catch(() => {
+        await fs31.rm(temp, { force: true }).catch(() => {
         });
         entry.status = "failed";
         entry.error = errorMessage(error);
@@ -15039,7 +15567,7 @@ async function startPreviewServer(options) {
     const next = /* @__PURE__ */ new Map();
     const files = [];
     for (const file of plan?.files ?? []) {
-      const input = path30.join(root, ...file.path.split("/"));
+      const input = path31.join(root, ...file.path.split("/"));
       let served = input;
       let browser = "direct";
       if (!browserPlayable(file)) {
@@ -15198,8 +15726,8 @@ data: ${revision}
   };
 }
 async function sendFile(request, response, file) {
-  const stat = await fs29.stat(file);
-  const type = CONTENT_TYPES[path30.extname(file).toLowerCase()] ?? "application/octet-stream";
+  const stat = await fs31.stat(file);
+  const type = CONTENT_TYPES[path31.extname(file).toLowerCase()] ?? "application/octet-stream";
   const range2 = /^bytes=(\d*)-(\d*)$/.exec(request.headers.range ?? "");
   let start = 0;
   let end = stat.size - 1;
@@ -15247,23 +15775,23 @@ async function previewCommand(ctx, options, tools = defaultTools(ctx.env)) {
 }
 
 // src/commands/recipe.ts
-import { promises as fs30 } from "node:fs";
-import path31 from "node:path";
+import { promises as fs32 } from "node:fs";
+import path32 from "node:path";
 import { pathToFileURL } from "node:url";
 async function brandPackDir(env, scriptPath = process.argv[1]) {
   const explicit = env.DARKMIND_BRAND_PACK?.trim();
-  if (explicit) return path31.resolve(explicit);
+  if (explicit) return path32.resolve(explicit);
   const skill = await detectSkill(scriptPath);
-  return skill ? path31.join(skill.folder, "brand") : null;
+  return skill ? path32.join(skill.folder, "brand") : null;
 }
 async function loadBrandPackModules(env, scriptPath) {
   const dir = await brandPackDir(env, scriptPath);
-  if (!dir || !await fs30.stat(path31.join(dir, "brand.json")).catch(() => null)) {
+  if (!dir || !await fs32.stat(path32.join(dir, "brand.json")).catch(() => null)) {
     throw new CliError("brand-pack-missing", "no brand pack: run darkmind-agent from the editing skill (the Dark Mind plugin) or set DARKMIND_BRAND_PACK to its brand/ folder");
   }
   const load = async (rel3) => {
     try {
-      return await import(pathToFileURL(path31.join(dir, ...rel3.split("/"))).href);
+      return await import(pathToFileURL(path32.join(dir, ...rel3.split("/"))).href);
     } catch (error) {
       throw new CliError("brand-pack-invalid", `brand pack ${dir}: ${rel3} cannot be loaded (${errorMessage(error)}); install the editing skill again`);
     }
@@ -15285,7 +15813,7 @@ var formatIssue = (issue) => `${issue.path || "(recipe)"}: ${issue.message} [${i
 async function readRecipeFile(file) {
   let text3;
   try {
-    text3 = await fs30.readFile(file, "utf8");
+    text3 = await fs32.readFile(file, "utf8");
   } catch (error) {
     throw new CliError("recipe-missing", `${file} cannot be read (${error.code === "ENOENT" ? "missing" : errorMessage(error)})`);
   }
@@ -15296,7 +15824,7 @@ async function readRecipeFile(file) {
   }
 }
 async function readRecipeLock(root) {
-  const file = path31.join(root, EDIT_RECIPE_FILES.lock);
+  const file = path32.join(root, EDIT_RECIPE_FILES.lock);
   const raw = await readJsonFile(file).catch((error) => {
     throw new CliError("recipe-lock-invalid", `${EDIT_RECIPE_FILES.lock} is not valid JSON: ${errorMessage(error)}`);
   });
@@ -15311,12 +15839,12 @@ async function readRecipeLock(root) {
 }
 async function validate(ctx, file) {
   const pack = await loadBrandPackModules(ctx.env);
-  const target = path31.resolve(ctx.root, file ?? EDIT_RECIPE_FILES.draft);
+  const target = path32.resolve(ctx.root, file ?? EDIT_RECIPE_FILES.draft);
   const result = validateRecipe(await readRecipeFile(target), pack.catalog);
   const todo = result.recipe ? [...canonicalRecipeJson(result.recipe).matchAll(/"TODO: /g)].length : 0;
   return {
     data: {
-      file: path31.relative(ctx.root, target).split(path31.sep).join("/") || target,
+      file: path32.relative(ctx.root, target).split(path32.sep).join("/") || target,
       valid: result.valid,
       recipe: result.recipe ? { id: result.recipe.meta.id, title: result.recipe.meta.title } : null,
       brandPack: pack.catalog.brand,
@@ -15337,7 +15865,7 @@ async function show(ctx, file) {
   let meta;
   let origin;
   if (file) {
-    const result = validateRecipe(await readRecipeFile(path31.resolve(ctx.root, file)), null);
+    const result = validateRecipe(await readRecipeFile(path32.resolve(ctx.root, file)), null);
     if (!result.recipe) throw new CliError("recipe-invalid", `${file}: ${result.issues.slice(0, 5).map(formatIssue).join("; ")}`);
     recipe = result.recipe;
     meta = { version: null, sha256: recipeSha256(recipe), source: "draft", publishedAt: null };
@@ -15354,11 +15882,11 @@ async function show(ctx, file) {
 }
 async function timelineClipCount(root, project) {
   const artifacts = project.artifacts ?? {};
-  const timeline = await readJsonFile(path31.join(root, ...(artifacts.timeline ?? "timeline.json").split("/"))).catch(() => null);
+  const timeline = await readJsonFile(path32.join(root, ...(artifacts.timeline ?? "timeline.json").split("/"))).catch(() => null);
   return [...timeline?.video ?? [], ...timeline?.audio ?? []].reduce((n, t) => n + (t.clips?.length ?? 0), 0);
 }
 async function applyRecipeToProject(ctx, pack, recipe, lock, options = {}) {
-  const projectFile = path31.join(ctx.root, "project.json");
+  const projectFile = path32.join(ctx.root, "project.json");
   const project = await readJsonFile(projectFile);
   if (!project) throw new CliError("project-missing", "no project.json in this folder: start the project first (darkmind-agent init, then write project.json \u2013 see SKILL.md)");
   const issues = validateRecipe(recipe, pack.catalog).issues;
@@ -15392,16 +15920,16 @@ async function applyRecipeToProject(ctx, pack, recipe, lock, options = {}) {
     lockedAt: (/* @__PURE__ */ new Date()).toISOString(),
     recipe
   };
-  await writeFileAtomic(path31.join(ctx.root, EDIT_RECIPE_FILES.lock), json(lockDocument));
+  await writeFileAtomic(path32.join(ctx.root, EDIT_RECIPE_FILES.lock), json(lockDocument));
   await writeFileAtomic(projectFile, json({ ...project, ...fields }));
   return { lock: lockDocument, projectJson: fields, changedProfile };
 }
 async function tryRecipe(ctx, file, options) {
   const pack = await loadBrandPackModules(ctx.env);
-  const target = path31.resolve(ctx.root, file ?? EDIT_RECIPE_FILES.draft);
+  const target = path32.resolve(ctx.root, file ?? EDIT_RECIPE_FILES.draft);
   const result = validateRecipe(await readRecipeFile(target), pack.catalog);
   if (!result.recipe || !result.valid) {
-    throw new CliError("recipe-invalid", `${path31.basename(target)} is not a valid recipe: ${result.issues.slice(0, 5).map(formatIssue).join("; ")} (darkmind-agent recipe validate shows all)`, { issues: result.issues });
+    throw new CliError("recipe-invalid", `${path32.basename(target)} is not a valid recipe: ${result.issues.slice(0, 5).map(formatIssue).join("; ")} (darkmind-agent recipe validate shows all)`, { issues: result.issues });
   }
   const applied = await applyRecipeToProject(ctx, pack, result.recipe, { version: null, source: "draft", publishedAt: null }, options);
   const required = Object.entries(result.recipe.structure.blocks).filter(([, spec]) => spec.use === "required").map(([block2]) => block2);
@@ -15485,7 +16013,7 @@ async function chapters(ctx, options) {
   const docs = await pack.projectDocs.loadProjectDocs(ctx.root, pack.dir);
   const result = pack.recipes.projectChapters(lock.recipe, docs);
   const failed = result.issues.some((i) => i.severity === "error");
-  if (options.out && !failed) await writeFileAtomic(path31.resolve(ctx.root, options.out), `${result.text}
+  if (options.out && !failed) await writeFileAtomic(path32.resolve(ctx.root, options.out), `${result.text}
 `);
   return {
     data: { recipe: lock.slug, source: docs.chapters ? "chapters.json" : lock.recipe.technical.deliverables.chapters.derive ? `derived from ${lock.recipe.technical.deliverables.chapters.derive}` : null, ...result, ...options.out && !failed ? { written: options.out } : {} },
@@ -15498,16 +16026,16 @@ async function derive(ctx, options) {
   const docs = await pack.projectDocs.loadProjectDocs(ctx.root, pack.dir).catch((error) => {
     throw new CliError("project-missing", errorMessage(error));
   });
-  const config = await readJsonFile(path31.join(ctx.root, "darkmind.json")).catch(() => null);
+  const config = await readJsonFile(path32.join(ctx.root, "darkmind.json")).catch(() => null);
   const sourceProject = config?.projectId ? { projectId: config.projectId, version: config.baseVersion && config.baseVersion > 0 ? config.baseVersion : null } : null;
   const id2 = options.id ?? "new-format";
   const { recipe, todo, lengthSeconds } = pack.recipes.deriveRecipe(pack.brand, docs, { id: id2, sourceProject });
   const result = validateRecipe(recipe, pack.catalog);
   if (!result.valid) throw new CliError("recipe-derive-failed", `the derived skeleton is invalid: ${result.issues.slice(0, 5).map(formatIssue).join("; ")}`, { issues: result.issues });
-  const out = path31.resolve(ctx.root, options.out ?? EDIT_RECIPE_FILES.draft);
-  const rel3 = path31.relative(ctx.root, out).split(path31.sep).join("/");
+  const out = path32.resolve(ctx.root, options.out ?? EDIT_RECIPE_FILES.draft);
+  const rel3 = path32.relative(ctx.root, out).split(path32.sep).join("/");
   if (!options.print) {
-    if (await fs30.stat(out).catch(() => null) && !options.force) throw new CliError("recipe-draft-exists", `${rel3} exists: pass --force to replace it, or --out <file>`);
+    if (await fs32.stat(out).catch(() => null) && !options.force) throw new CliError("recipe-draft-exists", `${rel3} exists: pass --force to replace it, or --out <file>`);
     await writeFileAtomic(out, json(recipe));
   }
   return {
@@ -15577,8 +16105,8 @@ async function use(ctx, ticket, options) {
   }
   const recipe = result.recipe;
   if (options.draft) {
-    const file = path31.join(ctx.root, EDIT_RECIPE_FILES.draft);
-    if (await fs30.stat(file).catch(() => null) && !options.force) throw new CliError("recipe-draft-exists", `${EDIT_RECIPE_FILES.draft} exists: pass --force to replace it with ${data.slug} version ${data.version}`);
+    const file = path32.join(ctx.root, EDIT_RECIPE_FILES.draft);
+    if (await fs32.stat(file).catch(() => null) && !options.force) throw new CliError("recipe-draft-exists", `${EDIT_RECIPE_FILES.draft} exists: pass --force to replace it with ${data.slug} version ${data.version}`);
     await writeFileAtomic(file, json(recipe));
     return {
       data: { recipe: data.slug, version: data.version, written: EDIT_RECIPE_FILES.draft, basedOnVersion: data.version },
@@ -15617,11 +16145,11 @@ async function use(ctx, ticket, options) {
 async function submit(ctx, ticket, file, options) {
   const value2 = checkTicket(ticket);
   const pack = await loadBrandPackModules(ctx.env);
-  const target = path31.resolve(ctx.root, file ?? EDIT_RECIPE_FILES.draft);
+  const target = path32.resolve(ctx.root, file ?? EDIT_RECIPE_FILES.draft);
   const result = validateRecipe(await readRecipeFile(target), pack.catalog);
-  if (!result.recipe || !result.valid) throw new CliError("recipe-invalid", `${path31.basename(target)} is not a valid recipe: ${result.issues.slice(0, 5).map(formatIssue).join("; ")}`, { issues: result.issues });
+  if (!result.recipe || !result.valid) throw new CliError("recipe-invalid", `${path32.basename(target)} is not a valid recipe: ${result.issues.slice(0, 5).map(formatIssue).join("; ")}`, { issues: result.issues });
   const todo = [...canonicalRecipeJson(result.recipe).matchAll(/"TODO: /g)].length;
-  if (todo) throw new CliError("recipe-todo", `${path31.basename(target)} still has ${todo} "TODO: " text(s): complete them with the editor before publishing`);
+  if (todo) throw new CliError("recipe-todo", `${path32.basename(target)} still has ${todo} "TODO: " text(s): complete them with the editor before publishing`);
   const sha2563 = recipeSha256(result.recipe);
   const { data } = await postTransfer(ctx, "/api/agent-transfer/recipe-submit", { ticket: value2, recipe: result.recipe }, false);
   if (data.sha256 !== sha2563) throw new CliError("recipe-corrupt", `Dark Mind stored SHA-256 ${data.sha256.slice(0, 12)}\u2026, the draft has ${sha2563.slice(0, 12)}\u2026; fetch the version (recipe_get) and compare`);
@@ -15638,7 +16166,7 @@ async function submit(ctx, ticket, file, options) {
 }
 async function status(ctx) {
   const lock = await readRecipeLock(ctx.root);
-  const draft = await fs30.stat(path31.join(ctx.root, EDIT_RECIPE_FILES.draft)).catch(() => null) !== null;
+  const draft = await fs32.stat(path32.join(ctx.root, EDIT_RECIPE_FILES.draft)).catch(() => null) !== null;
   if (!lock) return { data: { recipe: null, draft }, text: `no recipe in this project${draft ? ` (${EDIT_RECIPE_FILES.draft} present)` : ""}` };
   return {
     data: { recipe: lock.slug, version: lock.version, source: lock.source, sha256: lock.sha256, publishedAt: lock.publishedAt, brandPack: lock.brandPack, lockedAt: lock.lockedAt, draft, next: "recipe_list shows the newest published version; an upgrade only with the editor (recipe_get \u2192 recipe use <ticket> --upgrade)" },
@@ -15995,9 +16523,18 @@ Project folder
   download <ticket> [--force]   Restore a version (project_pull); --force replaces local changes
 
 Media
-  media <ticket> [--range <videoId>:<from>-<to>]... [--out <dir>] [--force] [--no-refs]
+  media <ticket> [--range <videoId>:<from>-<to>]... [--out <dir>] [--force] [--no-refs] [--no-cache]
                                 Proxies (ffmpeg, complete or excerpts) or originals (get_media_sources)
-                                into media/proxy or media/original; adds the videos to darkmind.json
+                                into media/proxy or media/original; adds the videos to darkmind.json.
+                                Complete proxies and originals go through the shared media cache
+                                (~/.darkmind/media, DARKMIND_MEDIA_CACHE; "off" disables it): loaded once per
+                                computer, linked into every project folder; excerpts are cut from a cached
+                                complete proxy without a transfer. Large originals load with parallel Range
+                                requests (DARKMIND_AGENT_DOWNLOAD_STREAMS, default 4)
+  cache [status]                What the media cache holds (per video, project links, interrupted downloads)
+  cache prune [--unused] [--older-than <days>] [--video <id>]... [--kind original|proxy] [--all] [--print]
+                                Remove cache entries (no automatic limit); --unused: entries no project folder
+                                links to; --print shows only. Project folders keep their hard-linked files
   brand-assets <ticket> [--to <dir>] [--force]
                                 Loud Society brand assets (get_brand_assets: Neuborn, logos, audio, images; internal
                                 use only) into the skill folder's brand/assets (or --to) for the brand pack's add-block
@@ -16130,6 +16667,12 @@ var OPTIONS = {
   out: { type: "string" },
   range: { type: "string", multiple: true },
   "no-refs": { type: "boolean" },
+  "no-cache": { type: "boolean" },
+  unused: { type: "boolean" },
+  all: { type: "boolean" },
+  "older-than": { type: "string" },
+  kind: { type: "string" },
+  video: { type: "string", multiple: true },
   concurrency: { type: "string" },
   "warn-mb": { type: "string" },
   "allow-invalid": { type: "boolean" },
@@ -16220,7 +16763,7 @@ async function main(argv, io = defaultIo) {
       return command || values.help ? 0 : 2;
     }
     const ctx = {
-      root: path32.resolve(io.cwd, values.dir ?? "."),
+      root: path33.resolve(io.cwd, values.dir ?? "."),
       server: values.server,
       env: io.env,
       progress: (message) => {
@@ -16256,8 +16799,21 @@ async function main(argv, io = defaultIo) {
         result = await downloadCommand(ctx, args[0], { force: values.force, concurrency });
         break;
       case "media":
-        result = await mediaCommand(ctx, args[0], { out: values.out, ranges: values.range, force: values.force, noRefs: values["no-refs"], concurrency });
+        result = await mediaCommand(ctx, args[0], { out: values.out, ranges: values.range, force: values.force, noRefs: values["no-refs"], noCache: values["no-cache"], concurrency });
         break;
+      case "cache": {
+        const days = values["older-than"];
+        if (days !== void 0 && !(Number(days) >= 0)) throw new CliError("usage", "--older-than must be a number of days");
+        result = await cacheCommand(ctx, args[0], {
+          unused: values.unused,
+          olderThanDays: days === void 0 ? void 0 : Number(days),
+          videos: values.video,
+          kind: values.kind,
+          all: values.all,
+          print: values.print
+        });
+        break;
+      }
       case "brand-assets":
         result = await brandAssetsCommand(ctx, args[0], { to: values.to, force: values.force });
         break;
