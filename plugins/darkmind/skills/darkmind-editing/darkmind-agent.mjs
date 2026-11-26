@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// darkmind-agent 0.17.0+766d314eecc3 (built 2026-11-26T08:11:23.811Z)
+// darkmind-agent 0.18.0+52e644bfaa0d (built 2026-11-26T10:09:21.336Z)
 // Local helper for AI agents working on Dark Mind cut projects. Requires Node >= 20 and ffmpeg in PATH.
 // Usage: node darkmind-agent.mjs --help
 var __defProp = Object.defineProperty;
@@ -7259,7 +7259,7 @@ import http from "node:http";
 import https from "node:https";
 
 // src/version.ts
-var AGENT_VERSION = true ? "0.17.0+766d314eecc3" : "0.0.0-dev";
+var AGENT_VERSION = true ? "0.18.0+52e644bfaa0d" : "0.0.0-dev";
 var MIN_NODE_MAJOR = 20;
 function nodeMajor(version = process.versions.node) {
   return Number.parseInt(version.split(".")[0], 10);
@@ -10024,6 +10024,38 @@ async function buildExecutionPlan(options) {
     file.sha256 = actual;
     if (expected && actual !== expected) error(`${what}-changed`, `${file.path} does not match the SHA-256 recorded in sources.json; a changed ${what} needs a new source revision`, ref);
   };
+  const proxyIndex = options.virtualOriginals ? await readProxyIndex(path16.join(root, "media", "proxy")) : null;
+  const virtualOriginal = async (sourceId, source, videoId, facts) => {
+    const entry = proxyIndex?.files.find((e) => normalizeCutProjectVideoId(e.videoId) === videoId && (e.originalFileName || e.fileName));
+    const name = entry?.originalFileName || entry?.fileName || source.fileName || "";
+    const ext = path16.extname(name).toLowerCase();
+    if (!/^\.[a-z0-9]{1,8}$/.test(ext)) {
+      error("original-name-unknown", `the file type of the original of source "${sourceId}" (${videoId}) is unknown; load its complete proxy again with this darkmind-agent (get_media_sources(kind proxy) \u2192 darkmind-agent media <ticket>) or set "fileName" in sources.json`, sourceId);
+      return null;
+    }
+    const abs2 = path16.join(root, "media", "original", `${videoId}${ext}`);
+    const known = fileByPath.get(abs2.toLowerCase());
+    if (known) return known;
+    const v = facts.video;
+    const file = {
+      id: files.length,
+      path: toRel(root, abs2),
+      role: "original",
+      sourceId,
+      videoId,
+      offset: "0",
+      size: source.original?.size ?? 0,
+      mtimeMs: 0,
+      ...source.original?.sha256 ? { sha256: source.original.sha256 } : {},
+      durationSeconds: facts.durationSeconds,
+      video: v ? { width: v.width, height: v.height, rotation: v.rotation, timeBase: "1/90000", alpha: Boolean(v.alpha), codec: v.codec ?? "unknown", pixelFormat: v.pixelFormat ?? "unknown", colorSpace: v.colorSpace ?? null } : null,
+      audio: facts.audio ? { sampleRate: facts.audio.sampleRate, channels: facts.audio.channels } : null,
+      virtual: true
+    };
+    files.push(file);
+    fileByPath.set(abs2.toLowerCase(), file);
+    return file;
+  };
   for (const [sourceId, list2] of windows) {
     const source = sources.get(sourceId);
     if (!source) continue;
@@ -10051,6 +10083,11 @@ async function buildExecutionPlan(options) {
       return file;
     };
     if (mode === "original") {
+      if (!originalPath && options.virtualOriginals && source.media) {
+        const virtual = await virtualOriginal(sourceId, source, videoId, source.media);
+        if (virtual) for (const w of list2) clipFile.set(w.clipId, virtual);
+        continue;
+      }
       const file = await useOriginal();
       if (!file) {
         if (!originalPath) {
@@ -13055,7 +13092,7 @@ function gcd3(a, b) {
   while (b) [a, b] = [b, a % b];
   return a < 0n ? -a : a;
 }
-function conformArgs(spec, input, info, out) {
+function conformArgs(spec, input, info, out, proxy) {
   const frames = spec.toFrame - spec.fromFrame;
   const start = rational(spec.fromFrame, spec.fps);
   const seek = seekFor(start);
@@ -13068,14 +13105,15 @@ function conformArgs(spec, input, info, out) {
     const upmix = info.audio?.channels === 1 ? "pan=stereo|c0=c0|c1=c0," : "";
     const gain = spec.gainDb ? `volume=${spec.gainDb}dB,` : "";
     graph.push(`[0:a]aresample=${spec.sampleRate},${upmix}${gain}atrim=start_pts=${p0}:end_pts=${p0 + samples},asetpts=PTS-STARTPTS,apad=whole_len=${samples},atrim=end_sample=${samples}[a]`);
-    map.push("-map", "[a]", "-c:a", "pcm_s16le", "-ar", String(spec.sampleRate));
+    map.push("-map", "[a]", "-c:a", "pcm_s16le", "-ar", String(spec.sampleRate), ...proxy ? ["-ac", String(proxy.channels)] : []);
   }
   const head = ["-hide_banner", "-nostdin", "-loglevel", "error", "-y", "-ss", `${seek}`, "-i", input];
   if (spec.audioOnly) return [...head, "-filter_complex", graph.join(";"), ...map, out];
   const v = info.video;
   const L = v.timeBase.d / gcd3(v.timeBase.d, delta.d) * delta.d;
   const shift = mulQ(delta, rational(L));
-  graph.unshift(`[0:v]settb=1/${L},setpts=PTS-${shift.n},fps=${spec.fps}:round=up,trim=start_pts=0:end_pts=${frames},setpts=PTS-STARTPTS,format=yuv422p10le,setsar=1[v]`);
+  const look = proxy?.width && proxy.height ? `scale=${proxy.width}:${proxy.height}:flags=bicubic,format=${evenSize(proxy.width, proxy.height) ? "yuv420p" : "yuv444p"}` : "format=yuv422p10le";
+  graph.unshift(`[0:v]settb=1/${L},setpts=PTS-${shift.n},fps=${spec.fps}:round=up,trim=start_pts=0:end_pts=${frames},setpts=PTS-STARTPTS,${look},setsar=1[v]`);
   const unsignalled = (value2) => !value2 || ["unknown", "unspecified", "reserved"].includes(value2);
   const color = [
     "-color_primaries",
@@ -13092,12 +13130,7 @@ function conformArgs(spec, input, info, out) {
     "-map",
     "[v]",
     ...map,
-    "-c:v",
-    "prores_ks",
-    "-profile:v",
-    "2",
-    "-vendor",
-    "apl0",
+    ...proxy?.width ? ["-c:v", "libx264", "-preset", "veryfast", "-crf", "23"] : ["-c:v", "prores_ks", "-profile:v", "2", "-vendor", "apl0"],
     ...color,
     "-r",
     String(spec.fps),
@@ -13136,10 +13169,107 @@ async function verifyConform(tools, file, spec, oriented) {
   }
   return problems;
 }
+var PROXY_DIR = "proxies";
+var evenSize = (width, height) => width % 2 === 0 && height % 2 === 0;
+function proxyFileName(mediaName) {
+  const ext = path24.extname(mediaName).toLowerCase();
+  const base = mediaName.slice(0, mediaName.length - path24.extname(mediaName).length);
+  return `${base}_Proxy${[".mp4", ".mov", ".m4v"].includes(ext) ? ext : ".mov"}`;
+}
+function proxyDivisor(width, height, maxWidth, maxHeight) {
+  const valid = [];
+  for (let d = 1; d <= 16; d++) if (width % d === 0 && height % d === 0 && evenSize(width / d, height / d)) valid.push(d);
+  return valid.find((d) => width / d <= maxWidth && height / d <= maxHeight) ?? valid[valid.length - 1] ?? 1;
+}
+function infoFromFacts(facts) {
+  const v = facts.video;
+  const swap = v ? Math.abs(v.rotation) % 180 === 90 : false;
+  const rate = v?.frameRate ? parseRational(v.frameRate) : null;
+  return {
+    formatName: "recorded-facts",
+    formatStart: rational(0),
+    durationSeconds: parseRational(facts.durationSeconds),
+    size: null,
+    video: v ? {
+      index: 0,
+      codec: v.codec ?? "unknown",
+      pixelFormat: v.pixelFormat ?? "unknown",
+      storedWidth: swap ? v.height : v.width,
+      storedHeight: swap ? v.width : v.height,
+      width: v.width,
+      height: v.height,
+      rotation: v.rotation,
+      timeBase: rational(1, 9e4),
+      rFrameRate: rate,
+      avgFrameRate: rate,
+      sampleAspectRatio: v.sampleAspectRatio,
+      colorTransfer: v.colorTransfer,
+      colorPrimaries: v.colorPrimaries,
+      colorSpace: v.colorSpace ?? null,
+      colorRange: null,
+      alpha: Boolean(v.alpha),
+      frames: null
+    } : null,
+    audio: facts.audio ? { index: v ? 1 : 0, codec: facts.audio.codec ?? "unknown", sampleRate: facts.audio.sampleRate, channels: facts.audio.channels } : null
+  };
+}
+var derivedChannels = (channels) => channels === 1 ? 2 : channels;
+function predictedDerivedInfo(spec, source) {
+  return {
+    formatName: "predicted",
+    formatStart: rational(0),
+    durationSeconds: rational(spec.toFrame - spec.fromFrame, spec.fps),
+    size: null,
+    video: spec.audioOnly || !source.video ? null : { ...source.video, rotation: 0, rFrameRate: rational(spec.fps), avgFrameRate: rational(spec.fps), frames: spec.toFrame - spec.fromFrame },
+    audio: spec.hasAudio && source.audio ? { index: 1, codec: "pcm_s16le", sampleRate: spec.sampleRate, channels: derivedChannels(source.audio.channels) } : null
+  };
+}
+function proxyArgs(input, inputInfo, target, out) {
+  const args = ["-hide_banner", "-nostdin", "-loglevel", "error", "-y", "-i", input];
+  const silence = Boolean(target.audio && !inputInfo.audio);
+  if (silence) args.push("-f", "lavfi", "-i", `anullsrc=r=${target.audio.sampleRate}:cl=mono`);
+  args.push("-map", "0:v:0");
+  if (target.audio) args.push("-map", silence ? "1:a:0" : "0:a:0");
+  args.push(
+    "-vf",
+    `scale=${target.width}:${target.height}:flags=bicubic,setsar=1`,
+    "-c:v",
+    "libx264",
+    "-preset",
+    "veryfast",
+    "-crf",
+    "23",
+    "-pix_fmt",
+    evenSize(target.width, target.height) ? "yuv420p" : "yuv444p",
+    "-fps_mode",
+    "passthrough",
+    "-metadata:s:v:0",
+    "rotate=0"
+  );
+  if (target.audio) args.push("-c:a", "aac", "-b:a", "128k", "-ac", String(target.audio.channels), "-ar", String(target.audio.sampleRate));
+  else args.push("-an");
+  if (silence) args.push("-shortest");
+  if (/\.(mp4|m4v)$/i.test(out)) args.push("-movflags", "+faststart");
+  args.push(out);
+  return args;
+}
+async function verifyProxy(tools, file, expected) {
+  const problems = [];
+  const info = await probeStreams(tools, file);
+  if (!info.video) return ["no video stream"];
+  if (info.video.width !== expected.width || info.video.height !== expected.height) problems.push(`size ${info.video.width}x${info.video.height} instead of ${expected.width}x${expected.height}`);
+  if ((info.audio?.channels ?? null) !== expected.channels) problems.push(`${info.audio?.channels ?? 0} audio channel(s) instead of ${expected.channels ?? 0}`);
+  if (expected.durationSeconds && info.durationSeconds && Math.abs(toNumberQ(info.durationSeconds) - toNumberQ(expected.durationSeconds)) > 1.5 / expected.fps) {
+    problems.push(`lasts ${toNumberQ(info.durationSeconds).toFixed(3)} s instead of ${toNumberQ(expected.durationSeconds).toFixed(3)} s`);
+  }
+  return problems;
+}
 async function verifyPremierePackage(dir) {
   const problems = [];
   const manifest = await readJsonFile(path24.join(dir, PACKAGE_MANIFEST)).catch(() => null);
-  if (!manifest || manifest.kind !== "darkmind-premiere-package") return { dir, ok: false, manifest: null, problems: [`${PACKAGE_MANIFEST} is missing or not a Premiere package manifest`], checkedFiles: 0 };
+  if (!manifest || manifest.kind !== "darkmind-premiere-package") return { dir, ok: false, manifest: null, problems: [`${PACKAGE_MANIFEST} is missing or not a Premiere package manifest`], checkedFiles: 0, pending: [] };
+  const pendingMedia = new Set(manifest.media.filter((m) => m.state === "pending").map((m) => m.file));
+  const pending = [];
   let checked = 0;
   for (const file of manifest.files) {
     const abs2 = path24.join(dir, ...file.path.split("/"));
@@ -13165,10 +13295,13 @@ async function verifyPremierePackage(dir) {
         continue;
       }
       const relPath = url.split("/").map(decodeURIComponent).join("/");
-      if (!listed2.has(relPath)) problems.push(`${manifest.sequence.file} references ${relPath}, which is not in the manifest`);
+      if (listed2.has(relPath)) continue;
+      if (pendingMedia.has(relPath)) {
+        if (!pending.includes(relPath)) pending.push(relPath);
+      } else problems.push(`${manifest.sequence.file} references ${relPath}, which is not in the manifest`);
     }
   }
-  return { dir, ok: problems.length === 0, manifest, problems, checkedFiles: checked };
+  return { dir, ok: problems.length === 0, manifest, problems, checkedFiles: checked, pending: pending.sort() };
 }
 function importReport(m) {
   const lines = [];
@@ -13223,6 +13356,24 @@ function importReport(m) {
     if (l.ducking && l.musicTracks.length) lines.push("", `The render lowers the music (track ${l.musicTracks.join(", ")}) by ${l.ducking.underDialogDb} dB under dialog with ${l.ducking.rampSeconds} s ramps; the package keeps the music at its clip level \u2013 duck it in Premiere (Essential Sound > Music > Ducking, or volume keyframes).`);
     lines.push("");
   }
+  if (m.mode === "proxy") {
+    const open = m.media.filter((media) => media.state && media.state !== "final");
+    lines.push("## Proxy workflow (hi-res later)", "");
+    if (m.hiresFill?.status === "complete") {
+      lines.push(`The hi-res media are in \`media/\` (export hires${m.hiresFill.filledAt ? `, ${m.hiresFill.filledAt}` : ""}). Open the Premiere project again; if a clip still shows the proxy, use **Toggle Proxies** (off) or right-click > Proxy > Reconnect Full Resolution Media\u2026 / Link Media\u2026 and point to \`media/\`. The proxies in \`${PROXY_DIR}/\` may stay attached.`, "");
+    } else {
+      lines.push(
+        `This package was exported before the originals were downloaded. Premiere works on the proxies in \`${PROXY_DIR}/\`; the hi-res files follow later into \`media/\` under the names the XML already uses. **Do not make the final export before the hi-res media are in place:** while a hi-res file is missing, Premiere exports from the proxy without a warning (also with proxies off).`,
+        ""
+      );
+      lines.push("| Medium | State | Proxy |", "|--------|-------|-------|");
+      for (const media of open) {
+        const state = media.state === "pending" ? "hi-res follows (offline until then)" : media.state === "placeholder" ? "placeholder sound from the proxy, replaced by the hi-res sound" : "rendered from proxies, replaced by the hi-res render";
+        lines.push(`| \`${media.file}\` | ${state} | ${media.proxy ? `\`${media.proxy.file}\` (${media.proxy.width} \xD7 ${media.proxy.height}, 1/${media.proxy.divisor})` : "\u2013"} |`);
+      }
+      lines.push("");
+    }
+  }
   const conforms = m.media.filter((media) => media.conform);
   if (conforms.length) {
     lines.push("## Conform media (rules C1, mono and gain)", "");
@@ -13249,6 +13400,7 @@ async function exportPremierePackage(request) {
   const { root, tools } = request;
   const progress = request.progress ?? (() => {
   });
+  const proxyMode = Boolean(request.proxy);
   const handleSeconds = request.handleSeconds ?? DEFAULT_CONFORM_HANDLE_SECONDS;
   if (!(Number.isFinite(handleSeconds) && handleSeconds >= 0 && handleSeconds <= 600)) throw new CliError("invalid-input", "--handles must be between 0 and 600 seconds");
   const rendersDir = path24.join(root, "renders");
@@ -13264,12 +13416,12 @@ async function exportPremierePackage(request) {
     if (request.reviewGates !== false) gate = (await requireReviewGate(root, "export", { toolchain: override })).gate;
     let extensionResults = [];
     if (request.extensions !== false) {
-      const summary3 = await runExtensions({ root, mode: "original", tools, env: request.env, neededOnly: true, signal: request.signal, progress });
+      const summary3 = await runExtensions({ root, mode: proxyMode ? "proxy" : "original", tools, env: request.env, neededOnly: true, signal: request.signal, progress });
       if (!summary3.ok) throw extensionsError(summary3);
       extensionResults = summary3.results.map(({ id: id2, action, key, sha256: sha2563, output }) => ({ id: id2, action, key, sha256: sha2563, output }));
     }
     const hashCache = await HashCache.load(mediaHashCachePath(root));
-    const planned = await buildExecutionPlan({ root, mode: "original", tools, hashes: { cache: hashCache, computeOriginals: true }, signal: request.signal });
+    const planned = await buildExecutionPlan({ root, mode: "original", tools, hashes: { cache: hashCache, computeOriginals: true }, signal: request.signal, virtualOriginals: proxyMode });
     let state = null;
     if (gate && planned.validation.documents) {
       state = await computeReviewState(root, { validation: planned.validation, toolchain: override });
@@ -13279,6 +13431,16 @@ async function exportPremierePackage(request) {
     }
     const issues = [...planned.issues];
     for (const problem of detected.problems) issues.push({ severity: "error", ...problem });
+    const completeProxies = /* @__PURE__ */ new Map();
+    for (const file of proxyMode ? (planned.plan?.files ?? []).filter((f) => f.virtual) : []) {
+      const { candidates } = await proxyCandidates(path24.join(root, "media", "proxy"), file.videoId);
+      const full = candidates.find((c) => c.kind === "full" && c.offset.n === 0n);
+      if (full) completeProxies.set(file.id, { file: full.file, info: await probeStreams(tools, full.file, { signal: request.signal }) });
+      else {
+        issues.push({ severity: "error", code: "proxy-missing", message: `export premiere --proxy needs the complete proxy of source "${file.sourceId}" (${file.videoId}): Premiere attaches only proxies as long as the original`, ref: file.sourceId });
+        planned.needs.push({ videoId: file.videoId, sourceId: file.sourceId, kind: "proxy", ranges: null, hint: `get_media_sources(kind proxy, ${file.videoId}) \u2192 darkmind-agent media <ticket>` });
+      }
+    }
     const plan = planned.plan;
     const docs = planned.validation.documents;
     const conformSources = new Map(planned.validation.conform.map((c) => [c.sourceId, c.reasons]));
@@ -13302,6 +13464,7 @@ async function exportPremierePackage(request) {
     await fs26.mkdir(workDir, { recursive: true });
     const staging = path24.join(workDir, "package");
     await fs26.mkdir(path24.join(staging, "media"), { recursive: true });
+    if (proxyMode) await fs26.mkdir(path24.join(staging, PROXY_DIR), { recursive: true });
     const sources = new Map((docs.sources?.sources ?? []).map((s) => [s.id, s]));
     const usedNames = /* @__PURE__ */ new Set();
     const unique = (name) => {
@@ -13364,6 +13527,7 @@ async function exportPremierePackage(request) {
         sha256: entry.sha256,
         placed,
         from: { file: file.path, sha256: sha2563 },
+        ...proxyMode ? { state: "final" } : {},
         conform: {
           rule: spec.audioOnly ? spec.reasons.includes("mono") ? "mono" : "gain" : "C1",
           reasons: spec.reasons,
@@ -13380,11 +13544,94 @@ async function exportPremierePackage(request) {
       media.push(packageMedia);
       return { entry: packageMedia, xmeml: xmemlFile(packageMedia.file, name, derivedInfo, rate), offsetFrames: spec.fromFrame, gainDb: spec.gainDb ?? 0 };
     };
+    const makeProxy = async (mediaName, hires, divisor, build, sourceId) => {
+      const name = proxyFileName(mediaName);
+      const temp = path24.join(workDir, `proxy-${name}`);
+      progress(`proxy ${name} (1/${divisor} of ${hires.width}x${hires.height})`);
+      const result = await tools.run(tools.ffmpeg, build(temp), { cwd: workDir, signal: request.signal, timeoutMs: 6 * 60 * 6e4 });
+      if (result.code !== 0) throw new CliError("ffmpeg-failed", `proxy of source "${sourceId}" failed: ${result.stderr.trim().split(/\r?\n/).slice(-3).join(" | ")}`);
+      const problems = await verifyProxy(tools, temp, { ...hires, width: hires.width / divisor, height: hires.height / divisor });
+      if (problems.length) throw new CliError("proxy-verification-failed", `the proxy of source "${sourceId}" does not match its hi-res medium: ${problems.join("; ")}`, { problems });
+      const target2 = path24.join(staging, PROXY_DIR, name);
+      await renameWithRetry(temp, target2);
+      const { sha256: sha2563, size } = await hashFile(target2);
+      return { file: `${PROXY_DIR}/${name}`, size, sha256: sha2563, width: hires.width / divisor, height: hires.height / divisor, divisor };
+    };
+    const divisorFor = (width, height, proxy) => proxyDivisor(width, height, Math.max(proxy.video?.width ?? width, 2), Math.max(proxy.video?.height ?? height, 2));
+    const pendingOriginal = async (file, info, name, sha2563, sourceId) => {
+      const source = completeProxies.get(file.id);
+      const facts = sources.get(file.sourceId).media;
+      let proxy;
+      if (info.video) {
+        const d = divisorFor(info.video.width, info.video.height, source.info);
+        const target2 = { width: info.video.width / d, height: info.video.height / d, audio: info.audio ? { sampleRate: info.audio.sampleRate, channels: info.audio.channels } : null };
+        proxy = await makeProxy(name, { width: info.video.width, height: info.video.height, channels: info.audio?.channels ?? null, durationSeconds: info.durationSeconds, fps: toNumberQ(info.video.rFrameRate ?? rational(rate)) }, d, (out) => proxyArgs(source.file, source.info, target2, out), file.sourceId);
+      }
+      const entry = {
+        file: `media/${name}`,
+        role: "original",
+        editable: "native",
+        ...sourceId ? { sourceId } : {},
+        ...file.videoId ? { videoId: file.videoId } : {},
+        size: file.size,
+        sha256: sha2563,
+        from: { file: file.path, sha256: sha2563 },
+        state: "pending",
+        ...proxy ? { proxy } : {},
+        hires: { facts }
+      };
+      media.push(entry);
+      return entry;
+    };
+    const derivePending = async (file, info, spec) => {
+      const source = completeProxies.get(file.id);
+      const ext = spec.audioOnly ? "wav" : "mov";
+      const name = unique(`${safeName(spec.sourceId, "source", 40)}-${spec.audioOnly ? "stereo-audio" : `conform-${rate}p`}-${spec.fromFrame}-${spec.toFrame}.${ext}`);
+      const channels2 = derivedChannels(info.audio?.channels ?? 2);
+      const conform = {
+        rule: spec.audioOnly ? spec.reasons.includes("mono") ? "mono" : "gain" : "C1",
+        reasons: spec.reasons,
+        ...spec.gainDb ? { gainDb: spec.gainDb } : {},
+        fromSeconds: formatRationalReadable(framesToSeconds(spec.fromFrame, fps), 6),
+        toSeconds: formatRationalReadable(framesToSeconds(spec.toFrame, fps), 6),
+        frames: spec.toFrame - spec.fromFrame,
+        rate: `${rate}/1`,
+        video: spec.audioOnly ? null : "ProRes 422 10-bit, constant frame rate, physically rotated",
+        audio: spec.hasAudio ? `PCM 16-bit ${spec.sampleRate} Hz stereo` : null,
+        handleSeconds
+      };
+      const facts = sources.get(file.sourceId).media;
+      if (spec.audioOnly) {
+        progress(`placeholder sound ${name} (from the proxy)`);
+        const temp = path24.join(workDir, `placeholder-${name}`);
+        const result = await tools.run(tools.ffmpeg, conformArgs(spec, source.file, source.info, temp, { channels: channels2 }), { cwd: workDir, signal: request.signal, timeoutMs: 60 * 6e4 });
+        if (result.code !== 0) throw new CliError("ffmpeg-failed", `placeholder sound of source "${spec.sourceId}" failed: ${result.stderr.trim().split(/\r?\n/).slice(-3).join(" | ")}`);
+        const target2 = path24.join(staging, "media", name);
+        await renameWithRetry(temp, target2);
+        const { sha256: sha2563, size } = await hashFile(target2);
+        const entry2 = { file: `media/${name}`, role: "stereo-audio", editable: "native", sourceId: spec.sourceId, ...file.videoId ? { videoId: file.videoId } : {}, size, sha256: sha2563, placed: "copy", from: { file: file.path, sha256: file.sha256 ?? "" }, conform, state: "placeholder", hires: { spec, facts } };
+        media.push(entry2);
+        return { entry: entry2, xmeml: xmemlFile(entry2.file, name, await probeStreams(tools, target2, { signal: request.signal }), rate), offsetFrames: spec.fromFrame, gainDb: spec.gainDb ?? 0 };
+      }
+      const oriented = info.video;
+      const d = divisorFor(oriented.width, oriented.height, source.info);
+      const proxy = await makeProxy(
+        name,
+        { width: oriented.width, height: oriented.height, channels: spec.hasAudio ? channels2 : null, durationSeconds: rational(spec.toFrame - spec.fromFrame, spec.fps), fps: rate },
+        d,
+        (out) => conformArgs(spec, source.file, source.info, out, { width: oriented.width / d, height: oriented.height / d, channels: channels2 }),
+        spec.sourceId
+      );
+      const entry = { file: `media/${name}`, role: "conform", editable: "native", sourceId: spec.sourceId, ...file.videoId ? { videoId: file.videoId } : {}, size: 0, sha256: "", from: { file: file.path, sha256: file.sha256 ?? "" }, conform, state: "pending", proxy, hires: { spec, facts } };
+      media.push(entry);
+      return { entry, xmeml: xmemlFile(entry.file, name, predictedDerivedInfo(spec, info), rate), offsetFrames: spec.fromFrame, gainDb: spec.gainDb ?? 0 };
+    };
     for (const file of plan.files) {
       if (!allClips.some((clip) => clip.file === file.id)) continue;
       const abs2 = path24.join(root, ...file.path.split("/"));
-      const info = await probeStreams(tools, abs2, { signal: request.signal });
-      const sha2563 = await fileSha(file);
+      const virtual = Boolean(file.virtual);
+      const info = virtual ? infoFromFacts(sources.get(file.sourceId).media) : await probeStreams(tools, abs2, { signal: request.signal });
+      const sha2563 = virtual ? file.sha256 ?? "" : await fileSha(file);
       const sourceId = file.sourceId;
       const clips = allClips.filter((clip) => clip.file === file.id);
       const source = sourceId ? sources.get(sourceId) : void 0;
@@ -13397,7 +13644,7 @@ async function exportPremierePackage(request) {
       const reasons = sourceId ? conformSources.get(sourceId) : void 0;
       if (reasons && info.video) {
         const spec = { sourceId, reasons: [...reasons, ...mono ? ["mono"] : [], ...boost > 0 ? ["gain"] : []], ...gainSpec, ...range2(), fps: rate, sampleRate: plan.output.sampleRate, hasAudio: Boolean(info.audio) };
-        const derived = await derive2(file, abs2, info, sha2563, spec);
+        const derived = virtual ? await derivePending(file, info, spec) : await derive2(file, abs2, info, sha2563, spec);
         mediaByFile.set(file.id, derived);
         audioByFile.set(file.id, derived);
         continue;
@@ -13406,32 +13653,42 @@ async function exportPremierePackage(request) {
         const ext = path24.extname(file.path).toLowerCase();
         const baseName = file.role === "extension" ? `rendered-${safeName(file.extensionId ?? "extension", "extension", 40)}` : `${safeName(sourceId ?? "source", "source", 40)}-${safeName(path24.parse(source && source.kind === "darkmind-video" ? source.fileName ?? source.videoId : path24.basename(file.path)).name, "media", 50)}`;
         const name = unique(`${baseName}${ext}`);
-        const placed = await placeFile(abs2, path24.join(staging, "media", name));
-        const role = file.role === "extension" ? "extension" : file.role === "asset" ? "asset" : "original";
-        const packageMedia = {
-          file: `media/${name}`,
-          role,
-          editable: role === "extension" ? "rendered" : "native",
-          ...sourceId ? { sourceId } : {},
-          ...file.videoId ? { videoId: file.videoId } : {},
-          ...file.extensionId ? { extensionId: file.extensionId } : {},
-          size: file.size,
-          sha256: sha2563,
-          placed,
-          from: { file: file.path, sha256: sha2563 }
-        };
-        media.push(packageMedia);
+        let packageMedia;
+        if (virtual) packageMedia = await pendingOriginal(file, info, name, sha2563, sourceId);
+        else {
+          const placed = await placeFile(abs2, path24.join(staging, "media", name));
+          const role = file.role === "extension" ? "extension" : file.role === "asset" ? "asset" : "original";
+          packageMedia = {
+            file: `media/${name}`,
+            role,
+            editable: role === "extension" ? "rendered" : "native",
+            ...sourceId ? { sourceId } : {},
+            ...file.videoId ? { videoId: file.videoId } : {},
+            ...file.extensionId ? { extensionId: file.extensionId } : {},
+            size: file.size,
+            sha256: sha2563,
+            placed,
+            from: { file: file.path, sha256: sha2563 },
+            ...proxyMode ? { state: "final" } : {}
+          };
+          media.push(packageMedia);
+        }
         const { timebase, ntsc } = nominal(info);
         mediaByFile.set(file.id, { entry: packageMedia, xmeml: { ...xmemlFile(packageMedia.file, name, info, info.video ? timebase : rate), ntsc: info.video ? ntsc : false }, offsetFrames: 0 });
       }
       if (!clips.some((clip) => clip.kind === "audio")) continue;
       if (mono || boost > 0) {
         const spec = { sourceId: sourceId ?? file.extensionId ?? "audio", reasons: [...mono ? ["mono"] : [], ...boost > 0 ? ["gain"] : []], ...gainSpec, ...range2(), fps: rate, sampleRate: plan.output.sampleRate, hasAudio: true, audioOnly: true };
-        audioByFile.set(file.id, await derive2(file, abs2, info, sha2563, spec));
+        audioByFile.set(file.id, virtual ? await derivePending(file, info, spec) : await derive2(file, abs2, info, sha2563, spec));
       } else if (mediaByFile.has(file.id)) {
         audioByFile.set(file.id, mediaByFile.get(file.id));
       } else {
         const name = unique(`${safeName(sourceId ?? file.extensionId ?? "audio", "audio", 40)}-${safeName(path24.parse(file.path).name, "media", 50)}${path24.extname(file.path).toLowerCase()}`);
+        if (virtual) {
+          const pending = await pendingOriginal(file, info, name, sha2563, sourceId);
+          audioByFile.set(file.id, { entry: pending, xmeml: xmemlFile(pending.file, name, info, rate), offsetFrames: 0 });
+          continue;
+        }
         const placed = await placeFile(abs2, path24.join(staging, "media", name));
         const role = file.role === "extension" ? "extension" : file.role === "asset" ? "asset" : "original";
         const packageMedia = {
@@ -13444,13 +13701,25 @@ async function exportPremierePackage(request) {
           size: file.size,
           sha256: sha2563,
           placed,
-          from: { file: file.path, sha256: sha2563 }
+          from: { file: file.path, sha256: sha2563 },
+          ...proxyMode ? { state: "final" } : {}
         };
         media.push(packageMedia);
         audioByFile.set(file.id, { entry: packageMedia, xmeml: xmemlFile(packageMedia.file, name, info, rate), offsetFrames: 0 });
       }
     }
     await hashCache.save();
+    if (proxyMode) {
+      const rendered = media.filter((m) => m.role === "extension" && m.extensionId);
+      const ids = [...new Set(rendered.map((m) => m.extensionId))];
+      const inspection = ids.length ? await inspectExtensions({ root, mode: "proxy", tools, env: request.env, only: ids }) : { states: [] };
+      for (const m of rendered) {
+        if (inspection.states.find((state2) => state2.id === m.extensionId)?.modeDependent) {
+          m.state = "proxy-render";
+          m.hires = { extensionId: m.extensionId };
+        }
+      }
+    }
     const timelineClips = new Map([...(docs.timeline?.video ?? []).flatMap((t) => t.clips), ...(docs.timeline?.audio ?? []).flatMap((t) => t.clips)].map((c) => [c.id, c]));
     const packageClips = [];
     const inMedia = (clip, offsetFrames) => subQ(parseRational(clip.inExec), rational(offsetFrames, rate));
@@ -13582,7 +13851,7 @@ async function exportPremierePackage(request) {
     });
     const captionTracks = premiereTracks.flatMap((t, index) => t.captions ? [`V${index + 1}`] : []);
     const captionOverlay = delivery === "overlay" ? { extensions: [...new Set(premiereTracks.flatMap((t) => t.captions ? t.clips.map((c) => c.extensionId) : []))], tracks: captionTracks } : null;
-    const reserved = new Set([xmlName, srtName, PACKAGE_REPORT, PACKAGE_MANIFEST, "media"].filter((n) => Boolean(n)).map((n) => n.toLowerCase()));
+    const reserved = new Set([xmlName, srtName, PACKAGE_REPORT, PACKAGE_MANIFEST, "media", PROXY_DIR].filter((n) => Boolean(n)).map((n) => n.toLowerCase()));
     const rootName = (wanted) => {
       const ext = path24.extname(wanted).toLowerCase();
       const stem = safeName(path24.basename(wanted, path24.extname(wanted)), "file", 60);
@@ -13598,7 +13867,9 @@ async function exportPremierePackage(request) {
       return hashFile(path24.join(staging, name));
     };
     const stills = docs.extensions.filter((e) => e.output.image === true);
-    if (stills.length) {
+    if (stills.length && proxyMode) {
+      deliverableNotes.push(`Thumbnail${stills.length > 1 ? "s" : ""} ${stills.map((still) => still.id).join(", ")}: not in a proxy package \u2013 the deliverable PNG comes from the original (darkmind-agent extensions run <id> --original after the thumbnail review); export a full package or add it by hand.`);
+    } else if (stills.length) {
       const inspection = await inspectExtensions({ root, mode: "original", tools, env: request.env, only: stills.map((s) => s.id) });
       const stillGate = state ? evaluateGate(state, "still-original") : null;
       for (const still of stills) {
@@ -13686,10 +13957,33 @@ async function exportPremierePackage(request) {
       ...loudness ? [`Loudness: the package does not contain the mastered mix \u2013 set ${loudness.target.integratedLufs} LUFS / ${loudness.target.truePeakDbtp} dBTP when exporting from Premiere (see "Loudness" below).`] : [],
       "Save the Premiere project (File > Save As\u2026) wherever you like \u2013 it is a separate working state; changes are not transferred back into the pipeline."
     ];
+    const pendingFiles = media.filter((m) => m.state === "pending");
+    if (proxyMode && pendingFiles.length) {
+      const offlineCount = pendingFiles.length;
+      importOrder.splice(
+        1,
+        1,
+        `File > Import\u2026 (Ctrl+I) and select \`${xmlName}\`. ${offlineCount} hi-res file(s) are not in \`media/\` yet: Premiere first searches the disk ("Locating media\u2026") \u2013 cancel it; in **Link Media** click **Offline All**. The clips are offline (red) for now.`,
+        `Project panel: select the offline items (${pendingFiles.map((m) => `\`${path24.basename(m.file)}\``).join(", ")}) \u2192 right-click \u2192 **Proxy > Attach Proxies\u2026** \u2192 choose the matching \`<name>_Proxy\` file in \`${PROXY_DIR}/\` (Premiere may match the others by itself).`,
+        "Program Monitor: Button Editor (+) \u2192 drag **Toggle Proxies** into the button bar and switch it on (blue): the clips play from the proxies. Edit as usual \u2013 cuts, framing and levels refer to the hi-res media."
+      );
+      importOrder.splice(
+        importOrder.length - 1,
+        0,
+        `Hi-res before the final export: close Premiere, let the agent run \`darkmind-agent export hires\` for this folder (it needs the originals: get_media_sources(kind original) \u2192 darkmind-agent media <ticket>), then open the Premiere project again \u2013 the clips are online; switch **Toggle Proxies** off. If a clip still shows its proxy: right-click \u2192 Proxy > Reconnect Full Resolution Media\u2026 (or Link Media\u2026) and point to \`media/\`. **Never export the final video before that:** while a hi-res file is missing, Premiere exports from the proxy without a warning.`
+      );
+      notes.push(`Proxy package: ${offlineCount} hi-res medium/media follow with darkmind-agent export hires; proxies in ${PROXY_DIR}/ (Premiere's naming <name>_Proxy, exact divisor of the hi-res size, same frame rate, length and audio channels \u2013 Premiere's rules for attaching proxies).`);
+    }
+    const placeholders = media.filter((m) => m.state === "placeholder" || m.state === "proxy-render");
+    if (proxyMode && placeholders.length) notes.push(`Placeholders until export hires: ${placeholders.map((m) => `\`${m.file}\` (${m.state === "placeholder" ? "sound from the proxy" : "rendered from proxies"})`).join(", ")} \u2013 same names and format, replaced by the hi-res version (close Premiere first).`);
     const recipe = docs.project.recipe ? { id: docs.project.recipe.id, version: docs.project.recipe.version === null ? "draft" : String(docs.project.recipe.version) } : null;
     const partial = {
       kind: "darkmind-premiere-package",
       version: 1,
+      ...proxyMode ? {
+        mode: "proxy",
+        hiresFill: { status: media.some((m) => m.state && m.state !== "final") ? "pending" : "complete", filledAt: null, files: [] }
+      } : {},
       exporterVersion: PREMIERE_EXPORTER_VERSION,
       agentVersion: AGENT_VERSION,
       project: { title, recipe },
@@ -13737,10 +14031,13 @@ async function exportPremierePackage(request) {
       const { sha256: sha2563, size } = await hashFile(path24.join(staging, name));
       files.push({ path: name, size, sha256: sha2563 });
     }
-    for (const m of media) files.push({ path: m.file, size: m.size, sha256: m.sha256 });
+    for (const m of media) {
+      if (m.state !== "pending") files.push({ path: m.file, size: m.size, sha256: m.sha256 });
+      if (m.proxy) files.push({ path: m.proxy.file, size: m.proxy.size, sha256: m.proxy.sha256 });
+    }
     for (const d of deliverables) files.push({ path: d.file, size: d.size, sha256: d.sha256 });
     files.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
-    const packageKey = sha256Hex(JSON.stringify({ exporter: PREMIERE_EXPORTER_VERSION, files }));
+    const packageKey = sha256Hex(JSON.stringify({ exporter: PREMIERE_EXPORTER_VERSION, files, ...proxyMode ? { mode: "proxy", pending: pendingFiles.map((m) => m.file) } : {} }));
     const premiereDir = path24.join(rendersDir, PREMIERE_DIR);
     const version = await nextPackageVersion(premiereDir);
     if (version.previous) {
@@ -13793,6 +14090,166 @@ function draftMarkers(docs, plan) {
   }
   return markers;
 }
+var LOCKED_CODES = /* @__PURE__ */ new Set(["EBUSY", "EPERM", "EACCES"]);
+async function fillPremiereHires(request) {
+  const { root, tools } = request;
+  const progress = request.progress ?? (() => {
+  });
+  const relDir = request.dir ?? await latestPackage(root);
+  if (!relDir) throw new CliError("not-found", 'no Premiere package in renders/premiere/; run "darkmind-agent export premiere --proxy" first');
+  const dir = path24.resolve(root, relDir);
+  const manifest = await readJsonFile(path24.join(dir, PACKAGE_MANIFEST)).catch(() => null);
+  if (!manifest || manifest.kind !== "darkmind-premiere-package") throw new CliError("not-found", `${relDir} is not a Premiere package (no ${PACKAGE_MANIFEST})`);
+  if (manifest.mode !== "proxy") throw new CliError("not-a-proxy-package", `${relDir} was exported with the hi-res media already (not with --proxy); nothing to fill`);
+  const open = manifest.media.filter((m) => m.state && m.state !== "final");
+  if (!open.length) return { status: "complete", dir: rel2(root, dir) || dir, filled: [], manifest };
+  const rendersDir = path24.join(root, "renders");
+  const release = await acquireLock(path24.join(rendersDir, ".lock"));
+  const workDir = path24.join(dir, ".hires-tmp");
+  const filled = [];
+  try {
+    await fs26.rm(workDir, { recursive: true, force: true });
+    await fs26.mkdir(workDir, { recursive: true });
+    const detected = await detectToolchain(tools, request.env, { needFont: false });
+    if (!detected.toolchain) throw new PreflightError("preflight-failed", detected.problems.map((p) => p.message).join("; "), { issues: detected.problems.map((p) => ({ severity: "error", ...p })) });
+    const toolchain = detected.toolchain;
+    const hashCache = await HashCache.load(mediaHashCachePath(root));
+    const originals = /* @__PURE__ */ new Map();
+    const needs = [];
+    for (const m of open) {
+      if (m.state === "proxy-render" || !m.videoId || originals.has(m.videoId)) continue;
+      const abs2 = await findOriginal(root, m.videoId);
+      if (!abs2) {
+        if (!needs.some((n) => n.videoId === m.videoId)) needs.push({ videoId: m.videoId, sourceId: m.sourceId ?? "", kind: "original", ranges: null, hint: `get_media_sources(kind original, ${m.videoId}) \u2192 darkmind-agent media <ticket>` });
+        continue;
+      }
+      const info = await probeStreams(tools, abs2, { signal: request.signal });
+      const facts = m.hires?.facts;
+      if (facts) {
+        const differences = factsDifferences(facts, toMediaFacts(info, facts.video?.vfr ?? false, "original", ""));
+        if ((facts.audio?.channels ?? 0) !== (info.audio?.channels ?? 0)) differences.push(`audio channels ${facts.audio?.channels ?? 0} \u2192 ${info.audio?.channels ?? 0}`);
+        if (differences.length) throw new CliError("original-mismatch", `${rel2(root, abs2)} differs from the original this package was exported for (${differences.join("; ")}); export a new package`, { videoId: m.videoId, differences });
+      }
+      const stat = await fs26.stat(abs2);
+      const sha2563 = await hashCache.hash(rel2(root, abs2), abs2, stat.size, Math.round(stat.mtimeMs));
+      const recorded = open.find((e) => e.videoId === m.videoId && e.role === "original" && e.sha256)?.sha256;
+      if (recorded && recorded !== sha2563) throw new CliError("original-mismatch", `${rel2(root, abs2)} does not match the SHA-256 recorded in sources.json when the package was exported; export a new package`, { videoId: m.videoId });
+      originals.set(m.videoId, { abs: abs2, info, sha256: sha2563 });
+    }
+    await hashCache.save();
+    if (needs.length) {
+      throw new CliError("media-missing", `export hires needs the originals of ${needs.map((n) => n.videoId).join(", ")} in media/original/:
+${needs.map((n) => `needs: ${n.hint}`).join("\n")}`, { needs });
+    }
+    const renders = open.filter((m) => m.state === "proxy-render" && m.extensionId);
+    if (renders.length) {
+      const summary3 = await runExtensions({ root, mode: "original", tools, env: request.env, only: [...new Set(renders.map((m) => m.extensionId))], signal: request.signal, progress });
+      if (!summary3.ok) throw extensionsError(summary3);
+    }
+    const conformDir = path24.join(rendersDir, RENDER_DIRS.cache, "conform");
+    const built = [];
+    for (const m of open) {
+      const temp = path24.join(workDir, path24.basename(m.file));
+      if (m.state === "proxy-render") {
+        const extension = manifest.extensions.find((e) => e.id === m.extensionId);
+        if (!extension) throw new CliError("invalid-input", `${m.file}: extension ${m.extensionId} is not in the manifest`);
+        const output = path24.join(root, ...extension.output.split("/"));
+        const [before, after] = await Promise.all([probeStreams(tools, path24.join(dir, ...m.file.split("/"))), probeStreams(tools, output)]);
+        const sameShape = (before.video?.width ?? 0) === (after.video?.width ?? 0) && (before.video?.height ?? 0) === (after.video?.height ?? 0) && Boolean(before.audio) === Boolean(after.audio) && Math.abs(toNumberQ(before.durationSeconds ?? rational(0)) - toNumberQ(after.durationSeconds ?? rational(0))) < 0.5 / Number(parseRational(manifest.sequence.fps).n);
+        if (!sameShape) throw new CliError("extension-changed", `the output of extension ${m.extensionId} from the originals does not have the size/length of the one in the package; the project changed since the export \u2013 export a new package`);
+        const placed2 = await placeFile(output, temp);
+        const { sha256: sha2563, size } = await hashFile(temp);
+        built.push({ entry: m, temp, placed: placed2, size, sha256: sha2563, from: { file: extension.output, sha256: sha2563 } });
+        continue;
+      }
+      const original = originals.get(m.videoId);
+      const originalRel = rel2(root, original.abs);
+      if (m.role === "original") {
+        progress(`hi-res ${m.file}`);
+        const placed2 = await placeFile(original.abs, temp);
+        built.push({ entry: m, temp, placed: placed2, size: (await fs26.stat(temp)).size, sha256: original.sha256, from: { file: originalRel, sha256: original.sha256 } });
+        continue;
+      }
+      const spec = m.hires?.spec;
+      if (!spec) throw new CliError("invalid-input", `${m.file}: the manifest has no conform recipe for it; export a new package`);
+      const ext = spec.audioOnly ? "wav" : "mov";
+      const key = sha256Hex(JSON.stringify({ version: CONFORM_VERSION, original: original.sha256, spec, ffmpeg: toolchain.ffmpeg }));
+      const cached = path24.join(conformDir, `${key}.${ext}`);
+      let entry = await cachedEntry(cached);
+      if (!entry) {
+        progress(`${spec.audioOnly ? "stereo audio" : "conform"} ${spec.sourceId} (${spec.reasons.join(", ")}, frames ${spec.fromFrame}-${spec.toFrame})`);
+        const work = path24.join(workDir, `build-${path24.basename(m.file)}`);
+        const result = await tools.run(tools.ffmpeg, conformArgs(spec, original.abs, original.info, work), { cwd: workDir, signal: request.signal, timeoutMs: 6 * 60 * 6e4 });
+        if (result.code !== 0) throw new CliError("ffmpeg-failed", `conform of source "${spec.sourceId}" failed: ${result.stderr.trim().split(/\r?\n/).slice(-3).join(" | ")}`);
+        const problems = await verifyConform(tools, work, spec, original.info.video ? { width: original.info.video.width, height: original.info.video.height } : null);
+        if (problems.length) throw new CliError("conform-verification-failed", `conform of source "${spec.sourceId}" does not match the plan: ${problems.join("; ")}`, { problems });
+        entry = await storeEntry(work, cached, spec.toFrame - spec.fromFrame);
+      }
+      const placed = await placeFile(cached, temp);
+      built.push({ entry: m, temp, placed, size: entry.size, sha256: entry.sha256, from: { file: originalRel, sha256: original.sha256 } });
+    }
+    const now = (request.now?.() ?? /* @__PURE__ */ new Date()).toISOString();
+    const save = async () => {
+      const done = new Set(filled.map((f) => f.file));
+      const files = manifest.files.filter((f) => !done.has(f.path));
+      for (const b of built) if (done.has(b.entry.file)) files.push({ path: b.entry.file, size: b.size, sha256: b.sha256 });
+      files.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+      manifest.files = files;
+      const complete = manifest.media.every((m) => !m.state || m.state === "final");
+      manifest.hiresFill = { status: complete ? "complete" : "pending", filledAt: complete ? now : manifest.hiresFill?.filledAt ?? null, files: [.../* @__PURE__ */ new Set([...manifest.hiresFill?.files ?? [], ...done])].sort() };
+      await fs26.writeFile(path24.join(dir, PACKAGE_REPORT), importReport(manifest), "utf8");
+      const report = await hashFile(path24.join(dir, PACKAGE_REPORT));
+      manifest.files = manifest.files.map((f) => f.path === PACKAGE_REPORT ? { path: f.path, size: report.size, sha256: report.sha256 } : f);
+      await fs26.writeFile(path24.join(dir, PACKAGE_MANIFEST), `${JSON.stringify(manifest, null, 2)}
+`, "utf8");
+    };
+    try {
+      for (const b of built) {
+        const target = path24.join(dir, ...b.entry.file.split("/"));
+        if (!await fs26.stat(target).catch(() => null)) continue;
+        const probe2 = `${target}.hires-check`;
+        try {
+          await fs26.rename(target, probe2);
+        } catch (error) {
+          if (LOCKED_CODES.has(error.code ?? "")) {
+            throw new CliError("premiere-open", `${b.entry.file} is in use \u2013 close Premiere Pro (it keeps the package media open) and run "darkmind-agent export hires" again; nothing was changed`, { file: b.entry.file, filled: [] });
+          }
+          throw error;
+        }
+        await renameWithRetry(probe2, target);
+      }
+      for (const b of built) {
+        const target = path24.join(dir, ...b.entry.file.split("/"));
+        try {
+          await renameWithRetry(b.temp, target);
+        } catch (error) {
+          if (LOCKED_CODES.has(error.code ?? "")) {
+            throw new CliError("premiere-open", `${b.entry.file} is in use \u2013 close Premiere Pro (it keeps the package media open) and run "darkmind-agent export hires" again; files moved so far are recorded`, { file: b.entry.file, filled: filled.map((f) => f.file) });
+          }
+          throw error;
+        }
+        b.entry.state = "final";
+        b.entry.size = b.size;
+        b.entry.sha256 = b.sha256;
+        b.entry.placed = b.placed;
+        b.entry.from = b.from;
+        filled.push({ file: b.entry.file, role: b.entry.role, from: b.from.file, placed: b.placed });
+      }
+    } finally {
+      if (filled.length) await save();
+    }
+    const check2 = await verifyPremierePackage(dir);
+    if (!check2.ok) throw new CliError("export-verification-failed", `The package is incomplete after export hires: ${check2.problems.join("; ")}`, { problems: check2.problems });
+    return { status: "filled", dir: rel2(root, dir) || dir, filled, manifest };
+  } catch (error) {
+    if (error instanceof AbortedError) throw new CliError("aborted", "export hires was cancelled; files already moved into media/ are recorded in the manifest");
+    throw error;
+  } finally {
+    await fs26.rm(workDir, { recursive: true, force: true }).catch(() => {
+    });
+    await release();
+  }
+}
 async function latestPackage(root) {
   const dir = path24.join(root, "renders", PREMIERE_DIR);
   const { previous } = await nextPackageVersion(dir);
@@ -13802,7 +14259,8 @@ async function latestPackage(root) {
 // src/commands/export.ts
 async function exportCommand(ctx, target, args, options, tools = defaultTools(ctx.env)) {
   if (target === "verify") return verifyCommand(ctx, args[0]);
-  if (target !== "premiere") throw new CliError("usage", `export needs a target: "export premiere" or "export verify [<folder>]"${target ? `, not "${target}"` : ""}`);
+  if (target === "hires") return hiresCommand(ctx, args[0], options.signal, tools);
+  if (target !== "premiere") throw new CliError("usage", `export needs a target: "export premiere [--proxy]", "export hires [<folder>]" or "export verify [<folder>]"${target ? `, not "${target}"` : ""}`);
   if (args.length) throw new CliError("usage", `export premiere takes no arguments, not "${args.join(" ")}"`);
   let handleSeconds;
   if (options.handles !== void 0) {
@@ -13811,7 +14269,7 @@ async function exportCommand(ctx, target, args, options, tools = defaultTools(ct
   }
   let outcome;
   try {
-    outcome = await exportPremierePackage({ root: ctx.root, tools, env: ctx.env, handleSeconds, attachments: options.attach, signal: options.signal, progress: ctx.progress });
+    outcome = await exportPremierePackage({ root: ctx.root, tools, env: ctx.env, handleSeconds, attachments: options.attach, proxy: options.proxy, signal: options.signal, progress: ctx.progress });
   } catch (error) {
     if (error instanceof CliError && error.code === "preflight-failed") {
       const details = error.details;
@@ -13824,6 +14282,7 @@ async function exportCommand(ctx, target, args, options, tools = defaultTools(ct
   const rendered = manifest.extensions.map((e) => e.id);
   const conforms = manifest.media.filter((m) => m.conform);
   const report = `${outcome.dir}/${PACKAGE_REPORT}`;
+  const pending = manifest.media.filter((m) => m.state && m.state !== "final");
   return {
     data: {
       status: outcome.status,
@@ -13834,7 +14293,8 @@ async function exportCommand(ctx, target, args, options, tools = defaultTools(ct
       manifest: `${outcome.dir}/manifest.json`,
       sequence: manifest.sequence,
       captions: manifest.captions,
-      media: manifest.media.map(({ file, role, editable, sourceId, extensionId, size, placed, conform }) => ({ file, role, editable, sourceId, extensionId, size, placed, ...conform ? { conform } : {} })),
+      ...manifest.mode ? { mode: manifest.mode, hiresFill: manifest.hiresFill } : {},
+      media: manifest.media.map(({ file, role, editable, sourceId, extensionId, size, placed, conform, state, proxy }) => ({ file, role, editable, sourceId, extensionId, size, placed, ...conform ? { conform } : {}, ...state ? { state } : {}, ...proxy ? { proxy: proxy.file } : {} })),
       extensions: manifest.extensions,
       deliverables: manifest.deliverables,
       loudness: manifest.loudness,
@@ -13842,12 +14302,14 @@ async function exportCommand(ctx, target, args, options, tools = defaultTools(ct
       importOrder: manifest.importOrder,
       compatibility: manifest.compatibility,
       warnings: outcome.warnings,
-      next: `Give the editor the folder ${outcome.dir} and its ${PACKAGE_REPORT} (import steps). Premiere changes stay in Premiere (no re-import).`
+      next: pending.length ? `Give the editor the folder ${outcome.dir} and its ${PACKAGE_REPORT}: import, Offline All, Attach Proxies (${pending.filter((m) => m.proxy).length} proxies in proxies/). Before the final export from Premiere: get_media_sources(kind original) \u2192 darkmind-agent media <ticket>, the editor closes Premiere, darkmind-agent export hires ${outcome.dir}, the editor reopens the project. Premiere changes stay in Premiere (no re-import).` : `Give the editor the folder ${outcome.dir} and its ${PACKAGE_REPORT} (import steps). Premiere changes stay in Premiere (no re-import).`
     },
     text: [
       `${outcome.status === "unchanged" ? "unchanged" : "exported"} ${outcome.dir} \u2013 ${manifest.sequence.file}${manifest.captions.file ? ` + ${manifest.captions.file}` : ""}, ${manifest.media.length} media files (${formatBytes(bytes)}), ${manifest.sequence.frames} frames (${manifest.sequence.durationSeconds} s)`,
       ...conforms.map((m) => `conform (C1, ${m.conform.reasons.join("+")}): ${m.file} = ${m.sourceId} ${m.conform.fromSeconds}\u2013${m.conform.toSeconds} s`),
       rendered.length ? `rendered media (not natively editable): ${rendered.join(", ")}` : "",
+      ...pending.map((m) => `${m.state === "pending" ? "hi-res later" : m.state === "placeholder" ? "placeholder sound" : "rendered from proxies"}: ${m.file}${m.proxy ? ` \u2013 proxy ${m.proxy.file} (1/${m.proxy.divisor})` : ""}`),
+      pending.length ? `proxy package: the editor attaches the proxies in Premiere; before the final export run "darkmind-agent export hires ${outcome.dir}" with Premiere closed` : "",
       `captions: ${manifest.captions.delivery === "srt" ? `${manifest.captions.count} as SRT (import separately at 00:00:00:00)` : manifest.captions.delivery === "overlay" ? manifest.captions.overlay?.tracks.length ? `rendered overlay only, own track ${manifest.captions.overlay.tracks.join(", ")} (T8)` : "brand style but no overlay on the timeline \u2013 no captions in the package" : "none"}`,
       ...(manifest.deliverables?.files ?? []).map((d) => `next to IMPORT.md: ${d.file} (${d.kind})`),
       ...(manifest.deliverables?.notes ?? []).map((n) => `note: ${n}`),
@@ -13857,14 +14319,26 @@ async function exportCommand(ctx, target, args, options, tools = defaultTools(ct
     ].filter(Boolean).join("\n")
   };
 }
+async function hiresCommand(ctx, folder, signal, tools) {
+  const outcome = await fillPremiereHires({ root: ctx.root, tools, env: ctx.env, dir: folder, signal, progress: ctx.progress });
+  const next = outcome.status === "complete" ? `${outcome.dir} already holds every hi-res medium.` : `Tell the editor: open the Premiere project again (the clips are online), switch Toggle Proxies off \u2013 if a clip still shows its proxy: right-click > Proxy > Reconnect Full Resolution Media\u2026 and point to media/. Only now export the final video from Premiere.`;
+  return {
+    data: { status: outcome.status, dir: outcome.dir, filled: outcome.filled, hiresFill: outcome.manifest.hiresFill ?? null, next },
+    text: [
+      outcome.status === "complete" ? `${outcome.dir}: complete, nothing to fill` : `${outcome.dir}: ${outcome.filled.length} hi-res file(s) in place`,
+      ...outcome.filled.map((f) => `  ${f.file} \u2190 ${f.from} (${f.placed})`),
+      next
+    ].join("\n")
+  };
+}
 async function verifyCommand(ctx, folder) {
   const relDir = folder ?? await latestPackage(ctx.root);
   if (!relDir) throw new CliError("not-found", 'no Premiere package in renders/premiere/; run "darkmind-agent export premiere" first');
   const dir = path25.resolve(ctx.root, relDir);
   const check2 = await verifyPremierePackage(dir);
   return {
-    data: { dir, ok: check2.ok, checkedFiles: check2.checkedFiles, problems: check2.problems, sequence: check2.manifest?.sequence ?? null },
-    text: check2.ok ? `${dir}: complete (${check2.checkedFiles} files match the manifest; media paths relative to the XML)` : [`${dir}: ${check2.problems.length} problem(s)`, ...check2.problems.map((p) => `  - ${p}`)].join("\n"),
+    data: { dir, ok: check2.ok, checkedFiles: check2.checkedFiles, problems: check2.problems, pending: check2.pending, sequence: check2.manifest?.sequence ?? null },
+    text: check2.ok ? `${dir}: ${check2.pending.length ? `consistent proxy package, ${check2.pending.length} hi-res file(s) pending (darkmind-agent export hires)` : "complete"} (${check2.checkedFiles} files match the manifest; media paths relative to the XML)` : [`${dir}: ${check2.problems.length} problem(s)`, ...check2.problems.map((p) => `  - ${p}`)].join("\n"),
     exitCode: check2.ok ? 0 : 1
   };
 }
@@ -14041,7 +14515,9 @@ async function proxyFile(ctx, tools, item, range2, outDir, force, warnings, inde
     kind: range2 ? "excerpt" : "full",
     offset: formatRationalReadable(offset, 9),
     ...range2 ? { requested: { from: range2.from, to: range2.to } } : {},
-    durationSeconds: info.durationSeconds === null ? null : String(info.durationSeconds)
+    durationSeconds: info.durationSeconds === null ? null : String(info.durationSeconds),
+    fileName: item.fileName ?? null,
+    originalFileName: item.originalFileName ?? null
   });
   return {
     videoId: item.videoId,
@@ -16630,7 +17106,19 @@ Premiere hand-off (one-way; Premiere changes are never transferred back)
                                 approved thumbnail from the original and --attach files (e.g. the chapter list) go
                                 next to IMPORT.md. Needs the same approvals as render --original; extensions are
                                 brought up to date first
-  export verify [<folder>]      Check a package (also after moving it): files, sizes, SHA-256, XML media paths
+  export premiere --proxy [--handles <seconds>] [--attach <project file>]...
+                                The same package before the originals are downloaded: the XML names the hi-res
+                                media (offline in Premiere at first), proxies/ holds <name>_Proxy files from the
+                                complete proxies (exact divisor of the hi-res size, same rate, length, channels) for
+                                Proxy > Attach Proxies; sound derivatives get placeholder sound, source-reading
+                                extensions are rendered from proxies. Needs the complete proxies and the recorded
+                                facts of the originals (probe --ticket); same approvals as export premiere
+  export hires [<folder>]       Put the hi-res media into a proxy package (default: the newest): originals from
+                                media/original/ (must match the recorded facts), conform/stereo files with the
+                                recorded recipe, extensions from the originals; built next to the package, then
+                                moved into media/ \u2013 stops with premiere-open while Premiere holds a file
+  export verify [<folder>]      Check a package (also after moving it): files, sizes, SHA-256, XML media paths;
+                                reports the hi-res files a proxy package still waits for
 
 Dark Mind plugin (GitHub Copilot and Claude Code: skill, this script and the Dark Mind MCP server)
   plugin install [--client copilot|claude|none]... [--remove-legacy] [--local [--to <dir>]]
@@ -16862,7 +17350,7 @@ async function main(argv, io = defaultIo) {
         );
         break;
       case "export":
-        result = await withInterrupt((signal) => exportCommand(ctx, args[0], args.slice(1), { handles: values.handles, attach: values.attach, signal }));
+        result = await withInterrupt((signal) => exportCommand(ctx, args[0], args.slice(1), { handles: values.handles, attach: values.attach, proxy: values.proxy, signal }));
         break;
       default:
         throw new CliError("usage", `Unknown command "${command}". Run "darkmind-agent --help".`);

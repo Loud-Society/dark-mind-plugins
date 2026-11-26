@@ -228,7 +228,10 @@ Only after the final check and only if the editor wants to continue in Premiere:
 `IMPORT.md`. Changes made in Premiere are **not** transferred back. Brand projects: captions arrive only as the
 rendered overlay on a track of its own (no caption track), brand blocks as rendered media, the approved thumbnail and
 the chapter list next to `IMPORT.md`, and the package holds the clip levels, not the −14 LUFS master (`IMPORT.md` says
-how to set it in Premiere). Details in [references/PREMIERE.md](references/PREMIERE.md).
+how to set it in Premiere). Before the originals are downloaded (large camera masters), offer a **proxy package**:
+`darkmind-agent export premiere --proxy` – the editor works on proxies and the hi-res media follow with
+`darkmind-agent export hires` before the final export (Premiere closed). Details in
+[references/PREMIERE.md](references/PREMIERE.md).
 
 ## Operating hints
 

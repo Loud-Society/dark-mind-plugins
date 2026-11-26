@@ -1,6 +1,6 @@
 {
   "name": "darkmind-editing",
-  "version": "0.17.0+766d314eecc3",
+  "version": "0.18.0+52e644bfaa0d",
   "server": "https://darkmind.cloud",
   "install": "plugin"
 }
